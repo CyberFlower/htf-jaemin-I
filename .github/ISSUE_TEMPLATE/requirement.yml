@@ -1,0 +1,40 @@
+name: 요구사항 제안·변경
+description: 요구사항을 새로 제안하거나 기존 요구사항(Confirmed 포함)의 변경을 제안합니다
+title: "[req] "
+labels: ["requirement"]
+body:
+  - type: dropdown
+    id: project
+    attributes:
+      label: 프로젝트
+      options:
+        - grandma (GRD)
+        - game (GAM)
+    validations:
+      required: true
+  - type: input
+    id: req-id
+    attributes:
+      label: 대상 요구사항 ID
+      description: 새 요구사항이면 비워 두세요. 예 GRD-007
+  - type: textarea
+    id: story
+    attributes:
+      label: 이야기
+      description: "<누구>로서 <어떤 상황>에서 <무엇>을 하고 싶다. 그래야 <이유>."
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: 수용 기준
+      description: 관찰할 수 있는 결과로 적어 주세요. 오판 케이스(하지 않아야 하는 것)도 하나 이상 넣어 주세요.
+  - type: input
+    id: goal
+    attributes:
+      label: 기여하는 Goal ID
+      description: 예 GRD-G2
+  - type: textarea
+    id: reason
+    attributes:
+      label: 변경 이유 (기존 요구사항을 바꾸는 경우)

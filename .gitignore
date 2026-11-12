@@ -1,0 +1,45 @@
+# OS · 편집기
+.DS_Store
+Thumbs.db
+*.swp
+*~
+.idea/
+*.iml
+.vscode/*
+!.vscode/extensions.json
+
+# Android · Gradle (구현 단계 대비)
+.gradle/
+build/
+captures/
+.externalNativeBuild/
+.cxx/
+local.properties
+output-metadata.json
+*.aab
+# APK는 제출 규칙상 apk/ 폴더에만 커밋한다
+*.apk
+!apk/*.apk
+
+# 서명 키 · 자격 증명 (절대 커밋 금지)
+*.jks
+*.keystore
+keystore.properties
+secrets.properties
+.env
+.env.*
+!.env.example
+
+# 웹 목업 (방식이 정해지면 필요한 항목만 남긴다)
+node_modules/
+dist/
+.vite/
+coverage/
+
+# 에이전트 개인 설정
+.claude/settings.local.json
+CLAUDE.local.md
+
+# 임시
+*.log
+tmp/

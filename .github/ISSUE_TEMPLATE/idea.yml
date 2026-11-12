@@ -1,0 +1,41 @@
+name: 아이디어
+description: 프로젝트에 넣을 기능이나 경험 아이디어를 제안합니다
+title: "[idea] "
+labels: ["idea"]
+body:
+  - type: dropdown
+    id: project
+    attributes:
+      label: 프로젝트
+      options:
+        - grandma (다녀왔습니다)
+        - game (내 차로 짓는 도시)
+        - 두 프로젝트 모두
+    validations:
+      required: true
+  - type: textarea
+    id: idea
+    attributes:
+      label: 아이디어
+      description: 누가, 어떤 순간에, 무엇을 하게 되나요?
+    validations:
+      required: true
+  - type: textarea
+    id: why-car
+    attributes:
+      label: 왜 차 안이어야 하나요?
+      description: 같은 기능을 폰 앱으로 만들면 무엇이 사라지나요? 주행 중과 정차 중에 각각 어떻게 동작하나요?
+  - type: checkboxes
+    id: criteria
+    attributes:
+      label: 강해지는 심사 항목
+      options:
+        - label: 차량특화성
+        - label: 창의성
+        - label: 기술 활용성
+        - label: 사업성
+  - type: textarea
+    id: sdk
+    attributes:
+      label: 쓰이는 차량 기능이나 SDK (알면)
+      description: docs/contest/dev-environment.md를 참고하세요. 모르면 비워 두세요.

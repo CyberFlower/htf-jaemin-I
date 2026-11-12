@@ -1,0 +1,36 @@
+name: 확인 필요 · 질문
+description: SDK 지원 여부, 공모전 규정, 기획상 결정 등 아직 모르는 것을 기록합니다
+title: "[question] "
+labels: ["question"]
+body:
+  - type: dropdown
+    id: scope
+    attributes:
+      label: 범위
+      options:
+        - 공통 (docs/open-questions.md)
+        - grandma (GRD)
+        - game (GAM)
+    validations:
+      required: true
+  - type: textarea
+    id: question
+    attributes:
+      label: 질문
+    validations:
+      required: true
+  - type: textarea
+    id: impact
+    attributes:
+      label: 왜 중요한가요
+      description: 영향을 받는 요구사항 ID나 문서를 적어 주세요
+  - type: dropdown
+    id: how
+    attributes:
+      label: 확인 방법
+      options:
+        - 공식 문서 확인
+        - 에뮬레이터에서 실험
+        - 주최측 문의
+        - 팀 결정
+        - 조사
