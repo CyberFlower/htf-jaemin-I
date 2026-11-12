@@ -97,11 +97,11 @@ dependencyResolutionManagement {
 | Fuel | 연비 등 연료 정보 | `CAR_ENERGY` | GAM: 보급 토큰 · GRD: 출발 준비 |
 | HVAC | 온도, 풍량, 습도 제어·조회 | `CAR_CLIMATE` | GRD: 동행자 공조 |
 | Light | 조명 상태, 앰비언트 라이트 제어 | `CAR_LIGHTS` | |
-| Odometer | 총 주행 거리, 트립 거리·시간, 거리 단위 | `CAR_DRIVE` | GAM: 건축 자재, 정비 퀘스트 |
+| Odometer | 총 주행 거리, 트립 거리·시간, 거리 단위 | `CAR_DRIVE` | GAM: 건축 자재, 정비 퀘스트, 단거리 비율 |
 | Safety | 차량 경고(Warning) | `CAR_SAFETY` | GAM: 도시 이상 현상 |
 | Seat | 위치, 각도, 기능 제어·조회 | `CAR_SEATS` | GRD: 탑승 후보 (점유 정보 확인 필요) |
 | SideMirror | 사이드미러 열선 | `CAR_MIRRORS` | |
-| Steeringwheel | 핸들 상태, 열선 | 퍼미션 표에 없음 | |
+| Steeringwheel | 핸들 상태, 열선 | 퍼미션 표에 없음 | GAM: 음성 차량 제어 (범위 검토 중) |
 | Tire | 타이어 상태 | `CAR_SAFETY` | GAM: 공기압 경고 |
 | Toll | 하이패스 음성 안내 음량 | `CAR_TOLL` | |
 | TurnSignal | 방향 지시등 | `CAR_LIGHTS` | |
@@ -132,12 +132,14 @@ dependencyResolutionManagement {
 
 | 항목 | 영향 | 비고 |
 |---|---|---|
-| 차량 **속도·기어** | 주행 중/정차 중 판단 (두 프로젝트의 공통 원칙) | Vehicle 도메인 목록에 없습니다. Brake(주차 브레이크)를 쓰거나 AAOS 표준 API(CarPropertyManager, CarUxRestrictionsManager)를 써야 할 수 있습니다. SDK 정책은 같은 기능이 AAOS에 있으면 AAOS를 따른다고 합니다. 3rd-party 앱에 허용되는지는 확인이 필요합니다 |
+| 차량 **속도·기어·시동 상태** | 주행 중/정차 중 판단 (두 프로젝트의 공통 원칙), GAM 공회전·급제동 판단 | Vehicle 도메인 목록에 없습니다. Brake(주차 브레이크)를 쓰거나 AAOS 표준 API(CarPropertyManager, CarUxRestrictionsManager)를 써야 할 수 있습니다. SDK 정책은 같은 기능이 AAOS에 있으면 AAOS를 따른다고 합니다. 3rd-party 앱에 허용되는지는 확인이 필요합니다 |
 | 좌석 점유(탑승) 감지 | GRD 동행 확인 | Seat 도메인 설명은 위치·각도·기능 위주입니다 |
 | Safety 경고 종류, Tire 공기압 항목 | GAM 이상 현상 | 공기압·과열 경고가 있는지 확인이 필요합니다 |
 | Virtual Console로 조작할 수 있는 신호 | 두 프로젝트의 데모 | 가이드 링크가 404입니다 |
 | 에뮬레이터 화면 규격 | README 필수 항목, 레이아웃 | 실행해서 확인합니다 |
 | 정비 이력 API | GAM 정비 퀘스트 | 없다고 가정하고 수동 입력부터 시작합니다 |
+| 12V 배터리 상태 | GAM 배터리 관리 퀘스트 | EvBattery 설명은 고전압 배터리·충전 위주입니다 |
+| Seat 열선, Steeringwheel 열선 제어의 정확한 API 이름 | GAM 음성 차량 제어 | care 원본의 `setHeatingLevel()` 등은 확인되지 않은 이름입니다 |
 | 운전자 주의 분산 최소화 설계 가이드 | 두 프로젝트의 주행 중 UX | 별도 문서가 있다고만 확인했습니다 |
 | FusedLocation·STT·TTS 의존성 좌표와 퍼미션 | 구현 | 각 SDK의 project-setup / declaring-permissions 페이지에 있습니다 |
 

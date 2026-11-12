@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="ko" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>차량용 앱 공모전 - CarCare Mate 기획 요약</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Pretendard', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#f0f7ff',
+              400: '#38bdf8',
+              500: '#0ea5e9',
+              600: '#0284c7',
+              cyan: '#06b6d4',
+              accent: '#10b981',
+              neon: '#22c55e',
+              purple: '#8b5cf6',
+              card: '#0f172a',
+              darkbg: '#090d16',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      font-family: 'Pretendard', sans-serif;
+      background-color: #060911;
+      color: #f1f5f9;
+      background-image: 
+        radial-gradient(circle at 15% 15%, rgba(14, 165, 233, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 85% 75%, rgba(139, 92, 246, 0.08) 0%, transparent 40%);
+    }
+    .glass-card {
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .glass-card-hover {
+      transition: all 0.3s ease;
+    }
+    .glass-card-hover:hover {
+      border-color: rgba(56, 189, 248, 0.4);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px -10px rgba(14, 165, 233, 0.25);
+    }
+    .glow-cyan {
+      box-shadow: 0 0 20px rgba(6, 182, 212, 0.3);
+    }
+    .glow-emerald {
+      box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+    }
+    .glow-purple {
+      box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
+    }
+    /* Custom tab navigation styling */
+    .tab-btn.active {
+      background: linear-gradient(135deg, #0284c7 0%, #06b6d4 100%);
+      color: #ffffff;
+      font-weight: 600;
+      box-shadow: 0 4px 15px rgba(6, 182, 212, 0.3);
+    }
+  </style>
+</head>
+<body class="min-h-screen pb-16">
+
+  <!-- TOP HEADER / INFOGRAPHIC BANNER -->
+  <header class="w-full border-b border-slate-800 bg-slate-950/80 backdrop-blur-md sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-sky-500 via-cyan-400 to-emerald-400 p-0.5 shadow-lg shadow-sky-500/20">
+          <div class="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center">
+            <svg class="w-6 h-6 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+          </div>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="px-2 py-0.5 text-xs font-semibold rounded bg-sky-950 text-sky-400 border border-sky-800/50">공모전 기획 요약</span>
+            <span class="text-xs text-slate-400">Pleos Connect SDK 기반 IVI 앱</span>
+          </div>
+          <h1 class="text-xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-slate-200 to-slate-400">
+            카케어 메이트 <span class="text-cyan-400 text-lg font-medium">(CarCare Mate)</span>
+          </h1>
+        </div>
+      </div>
+
+      <!-- Quick Nav Controls -->
+      <div class="flex items-center gap-2 bg-slate-900/90 p-1.5 rounded-xl border border-slate-800">
+        <button onclick="switchTab('overview')" id="tab-overview" class="tab-btn active px-4 py-1.5 rounded-lg text-sm transition-all text-slate-300">
+          📍 전체 요약
+        </button>
+        <button onclick="switchTab('diff')" id="tab-diff" class="tab-btn px-4 py-1.5 rounded-lg text-sm transition-all text-slate-300">
+          ⚡ 차별성 비교
+        </button>
+        <button onclick="switchTab('scenario1')" id="tab-scenario1" class="tab-btn px-4 py-1.5 rounded-lg text-sm transition-all text-slate-300">
+          🛠️ 시나리오 1
+        </button>
+        <button onclick="switchTab('scenario2')" id="tab-scenario2" class="tab-btn px-4 py-1.5 rounded-lg text-sm transition-all text-slate-300">
+          🎙️ 시나리오 2
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
+
+    <!-- SECTION 1: APP CONCEPT & HERO METRICS -->
+    <section id="section-overview" class="space-y-8">
+      
+      <!-- HERO BANNER INFOGRAPHIC -->
+      <div class="glass-card rounded-2xl p-6 md:p-8 relative overflow-hidden">
+        <div class="absolute -right-12 -top-12 w-64 h-64 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -left-12 -bottom-12 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          <div class="lg:col-span-7 space-y-4">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-950/80 border border-cyan-800 text-cyan-300 text-xs font-medium">
+              <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+              인텔리전트 IVI 차량 라이프케어 솔루션
+            </div>
+            <h2 class="text-3xl sm:text-4xl font-black tracking-tight text-white leading-tight">
+              운전 습관 분석 기반 <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-sky-400 to-emerald-400">차량 수명 연장</span> & <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-200">능동 케어 어시스턴트</span>
+            </h2>
+            <p class="text-slate-300 text-base leading-relaxed">
+              초보 운전자와 차량을 오래 타고 싶은 장기 보유 운전자는 획일적인 교체 주기(1만 km 등)나 두꺼운 매뉴얼 학습에 어려움을 느낍니다. 
+              <strong>CarCare Mate</strong>는 Pleos SDK 기반 실시간 데이터 센싱으로 단거리·공회전·급제동 등 가혹 주행 패턴을 파악하여 <strong>소모품 교체 주기를 동적으로 재산출</strong>하고, 음성 인터랙션 기반의 <strong>능동 차량 제어 가이드</strong>를 제공합니다.
+            </p>
+
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-2">
+              <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-800">
+                <div class="text-xs text-slate-400 font-medium">주요 타겟 (Target Persona)</div>
+                <div class="text-sm font-bold text-slate-200 mt-0.5">초보 & 수명 연장 지향 운전자</div>
+              </div>
+              <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-800">
+                <div class="text-xs text-slate-400 font-medium">핵심 플랫폼</div>
+                <div class="text-sm font-bold text-cyan-400 mt-0.5">차량 자체 IVI (Android Automotive)</div>
+              </div>
+              <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-800 col-span-2 sm:col-span-1">
+                <div class="text-xs text-slate-400 font-medium">핵심 가치</div>
+                <div class="text-sm font-bold text-emerald-400 mt-0.5">차량 수명 연장 & 유지비 절감</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- SVG ILLUSTRATION / ARCHITECTURE MINI DIAGRAM -->
+          <div class="lg:col-span-5 flex justify-center">
+            <div class="w-full max-w-md bg-slate-950/80 p-4 rounded-xl border border-slate-800 shadow-2xl">
+              <div class="text-xs font-semibold text-slate-400 mb-3 flex items-center justify-between">
+                <span>SYSTEM ARCHITECTURE DIAGRAM</span>
+                <span class="text-cyan-400 font-mono">Pleos Connect SDK</span>
+              </div>
+              
+              <!-- SVG DIAGRAM -->
+              <svg viewBox="0 0 400 240" class="w-full h-auto text-xs" fill="none">
+                <!-- Vehicle Data Nodes -->
+                <rect x="15" y="20" width="105" height="40" rx="8" fill="#0f172a" stroke="#0ea5e9" stroke-width="1.5"/>
+                <text x="67" y="38" text-anchor="middle" fill="#38bdf8" font-weight="600" font-size="11">Vehicle SDK</text>
+                <text x="67" y="52" text-anchor="middle" fill="#94a3b8" font-size="9">Brake, Fuel, Ev, HVAC</text>
+
+                <rect x="15" y="75" width="105" height="40" rx="8" fill="#0f172a" stroke="#06b6d4" stroke-width="1.5"/>
+                <text x="67" y="93" text-anchor="middle" fill="#22d3ee" font-weight="600" font-size="11">FusedLocation</text>
+                <text x="67" y="107" text-anchor="middle" fill="#94a3b8" font-size="9">위치/단거리 패턴 분석</text>
+
+                <rect x="15" y="130" width="105" height="40" rx="8" fill="#0f172a" stroke="#10b981" stroke-width="1.5"/>
+                <text x="67" y="148" text-anchor="middle" fill="#34d399" font-weight="600" font-size="11">NaviHelper</text>
+                <text x="67" y="162" text-anchor="middle" fill="#94a3b8" font-size="9">드라이브 코스 추천</text>
+
+                <rect x="15" y="185" width="105" height="40" rx="8" fill="#0f172a" stroke="#8b5cf6" stroke-width="1.5"/>
+                <text x="67" y="203" text-anchor="middle" fill="#a78bfa" font-weight="600" font-size="11">STT / TTS</text>
+                <text x="67" y="217" text-anchor="middle" fill="#94a3b8" font-size="9">인텔리전트 대화 인터페이스</text>
+
+                <!-- Arrows to Central Engine -->
+                <path d="M120 40 H160" stroke="#0ea5e9" stroke-width="1.5" stroke-dasharray="3 3"/>
+                <path d="M120 95 H160" stroke="#06b6d4" stroke-width="1.5" stroke-dasharray="3 3"/>
+                <path d="M120 150 H160" stroke="#10b981" stroke-width="1.5" stroke-dasharray="3 3"/>
+                <path d="M120 205 H160" stroke="#8b5cf6" stroke-width="1.5" stroke-dasharray="3 3"/>
+
+                <!-- Central Engine -->
+                <rect x="160" y="55" width="100" height="130" rx="12" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
+                <text x="210" y="85" text-anchor="middle" fill="#ffffff" font-weight="700" font-size="12">CarCare Mate</text>
+                <text x="210" y="102" text-anchor="middle" fill="#38bdf8" font-weight="600" font-size="10">진단 알고리즘</text>
+                <line x1="175" y1="115" x2="245" y2="115" stroke="#334155" stroke-width="1"/>
+                <text x="210" y="132" text-anchor="middle" fill="#94a3b8" font-size="9">동적 마모도 계산</text>
+                <text x="210" y="147" text-anchor="middle" fill="#94a3b8" font-size="9">음성 인텐트 분석</text>
+                <text x="210" y="162" text-anchor="middle" fill="#94a3b8" font-size="9">직접 제어 매핑</text>
+
+                <!-- Arrow to Output -->
+                <path d="M260 120 H290" stroke="#38bdf8" stroke-width="2"/>
+
+                <!-- Output Display Node -->
+                <rect x="290" y="75" width="95" height="90" rx="10" fill="#0f172a" stroke="#10b981" stroke-width="2"/>
+                <text x="337" y="100" text-anchor="middle" fill="#34d399" font-weight="700" font-size="11">차량 IVI 화면</text>
+                <text x="337" y="120" text-anchor="middle" fill="#cbd5e1" font-size="9">🔊 능동 케어 가이드</text>
+                <text x="337" y="137" text-anchor="middle" fill="#cbd5e1" font-size="9">📊 동적 주기 튜닝</text>
+                <text x="337" y="154" text-anchor="middle" fill="#cbd5e1" font-size="9">⚡ 차량 기능 실행</text>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4 KEY CAPABILITIES INFOGRAPHIC GRID -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="glass-card glass-card-hover rounded-xl p-5 border-l-4 border-l-sky-500">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-xs font-bold text-sky-400 tracking-wider uppercase">Feature 01</span>
+            <div class="p-2 rounded-lg bg-sky-950 text-sky-400">🚗</div>
+          </div>
+          <h3 class="font-bold text-white text-base">동적 교체 주기 산출</h3>
+          <p class="text-slate-400 text-xs mt-2 leading-relaxed">
+            단거리 주행, 공회전, 급제동 패턴을 센서로 분석해 획일적 주기 대신 실제 맞춤 교체 시점 제시
+          </p>
+        </div>
+
+        <div class="glass-card glass-card-hover rounded-xl p-5 border-l-4 border-l-cyan-500">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-xs font-bold text-cyan-400 tracking-wider uppercase">Feature 02</span>
+            <div class="p-2 rounded-lg bg-cyan-950 text-cyan-400">🔋</div>
+          </div>
+          <h3 class="font-bold text-white text-base">배터리 & 리프레시 드라이브</h3>
+          <p class="text-slate-400 text-xs mt-2 leading-relaxed">
+            12V/고전압 배터리 방전 방지 및 리프레시 드라이브 코스(NaviHelper) 자동 연계 추천
+          </p>
+        </div>
+
+        <div class="glass-card glass-card-hover rounded-xl p-5 border-l-4 border-l-purple-500">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-xs font-bold text-purple-400 tracking-wider uppercase">Feature 03</span>
+            <div class="p-2 rounded-lg bg-purple-950 text-purple-400">🎙️</div>
+          </div>
+          <h3 class="font-bold text-white text-base">스마트 차량 매뉴얼 가이드</h3>
+          <p class="text-slate-400 text-xs mt-2 leading-relaxed">
+            두꺼운 설명서 검색 없이 "크루즈 차간 거리 어떻게 조절해?" 질문 시 시선 고정 상태로 간결 음성 답신
+          </p>
+        </div>
+
+        <div class="glass-card glass-card-hover rounded-xl p-5 border-l-4 border-l-emerald-500">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-xs font-bold text-emerald-400 tracking-wider uppercase">Feature 04</span>
+            <div class="p-2 rounded-lg bg-emerald-950 text-emerald-400">⚡</div>
+          </div>
+          <h3 class="font-bold text-white text-base">능동 차량 제어 (Write API)</h3>
+          <p class="text-slate-400 text-xs mt-2 leading-relaxed">
+            설명에 그치지 않고 Vehicle set API를 호출해 "열선 시트 2단 켜줘" 등 즉시 실행 수행
+          </p>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- SECTION 2: COMPETITOR COMPARISON -->
+    <section id="section-diff" class="space-y-6">
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-2 border-b border-slate-800 pb-4">
+        <div>
+          <span class="text-xs font-bold text-cyan-400 tracking-wider uppercase">Competitive Advantage</span>
+          <h2 class="text-2xl font-extrabold text-white">기존 앱 vs CarCare Mate 차별성 비교</h2>
+        </div>
+        <p class="text-xs text-slate-400">공모전 심사위원용 핵심 차별화(USP) 포인트 정리</p>
+      </div>
+
+      <!-- COMPARISON TABLE CARD -->
+      <div class="glass-card rounded-2xl overflow-hidden border border-slate-800">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-sm">
+            <thead class="bg-slate-900/90 text-slate-300 font-semibold border-b border-slate-800">
+              <tr>
+                <th class="py-4 px-6 w-1/4">비교 항목</th>
+                <th class="py-4 px-6 w-1/3 text-slate-400">기존 서비스 (마이클, OBD-II, 모바일 앱)</th>
+                <th class="py-4 px-6 w-5/12 text-cyan-300 bg-cyan-950/30 border-l border-cyan-800/40">
+                  ✨ CarCare Mate (Pleos SDK 기반)
+                </th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-800/60 text-slate-300">
+              <tr class="hover:bg-slate-900/40 transition">
+                <td class="py-4 px-6 font-semibold text-slate-200">구동 환경 & 접근성</td>
+                <td class="py-4 px-6 text-slate-400">
+                  스마트폰 외부 앱 중심<br>
+                  <span class="text-xs text-slate-500">(주행 중 수동 조작 위험, 별도 동글 필요)</span>
+                </td>
+                <td class="py-4 px-6 bg-cyan-950/20 border-l border-cyan-800/30 text-white font-medium">
+                  <span class="px-2 py-0.5 rounded bg-cyan-900/80 text-cyan-300 text-xs mr-1">차량 자체 IVI 탑재</span><br>
+                  차량 디스플레이 직접 동작 및 음성 중심 인터랙션
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-900/40 transition">
+                <td class="py-4 px-6 font-semibold text-slate-200">소모품 주기 산출</td>
+                <td class="py-4 px-6 text-slate-400">
+                  수동 주유/정비 입력 또는 단순 정적 주행거리 기준 (예: 1만 km 고정)
+                </td>
+                <td class="py-4 px-6 bg-cyan-950/20 border-l border-cyan-800/30 text-emerald-300 font-medium">
+                  <span class="px-2 py-0.5 rounded bg-emerald-900/80 text-emerald-300 text-xs mr-1">동적 튜닝 알고리즘</span><br>
+                  단거리 비율, 공회전, 급제동 등 센서 수집 기반 실시간 위험도 계산
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-900/40 transition">
+                <td class="py-4 px-6 font-semibold text-slate-200">매뉴얼 제공 방식</td>
+                <td class="py-4 px-6 text-slate-400">
+                  텍스트/PDF 검색 또는 인터넷 블로그 연결
+                </td>
+                <td class="py-4 px-6 bg-cyan-950/20 border-l border-cyan-800/30 text-sky-300 font-medium">
+                  <span class="px-2 py-0.5 rounded bg-sky-900/80 text-sky-300 text-xs mr-1">STT / TTS 음성 어시스턴트</span><br>
+                  전방 시선 유지 상태에서 음성 질의응답 (Hands-Free)
+                </td>
+              </tr>
+              <tr class="hover:bg-slate-900/40 transition">
+                <td class="py-4 px-6 font-semibold text-slate-200">차량 제어 연동</td>
+                <td class="py-4 px-6 text-slate-400">
+                  단순 정보 조회(Read-only)에 국한
+                </td>
+                <td class="py-4 px-6 bg-cyan-950/20 border-l border-cyan-800/30 text-purple-300 font-medium">
+                  <span class="px-2 py-0.5 rounded bg-purple-900/80 text-purple-300 text-xs mr-1">Vehicle set() Direct API</span><br>
+                  매뉴얼 설명 후 "열선/공조/차간거리 조절해줘" 시 직접 제어 수행
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 3: SCENARIO 1 (DYNAMIC MAINTENANCE FULL MATRIX) -->
+    <section id="section-scenario1" class="space-y-6">
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-2 border-b border-slate-800 pb-4">
+        <div>
+          <span class="text-xs font-bold text-emerald-400 tracking-wider uppercase">Scenario 01</span>
+          <h2 class="text-2xl font-extrabold text-white">주행 습관 기반 스마트 소모품 & 배터리 관리</h2>
+        </div>
+        <div class="flex gap-2">
+          <span class="px-2.5 py-1 rounded-md bg-slate-800 text-slate-300 text-xs border border-slate-700">FusedLocation</span>
+          <span class="px-2.5 py-1 rounded-md bg-slate-800 text-slate-300 text-xs border border-slate-700">Odometer</span>
+          <span class="px-2.5 py-1 rounded-md bg-slate-800 text-slate-300 text-xs border border-slate-700">Vehicle Data APIs</span>
+        </div>
+      </div>
+
+      <!-- WORKFLOW INFOGRAPHIC FOR SCENARIO 1 -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <!-- STEP 1 -->
+        <div class="glass-card rounded-2xl p-6 relative">
+          <div class="w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-400 font-bold flex items-center justify-center text-sm mb-4 border border-emerald-500/40">
+            01
+          </div>
+          <h3 class="text-lg font-bold text-white mb-2">실시간 습관 수집 (Background)</h3>
+          <p class="text-slate-400 text-sm leading-relaxed mb-4">
+            시동 온/오프 순간부터 주행 거리, 워밍업 시간, 급제동 빈도, 공회전 시간을 실시간 센싱합니다.
+          </p>
+          <div class="p-3 rounded-xl bg-slate-950/80 text-xs space-y-1.5 border border-slate-800 font-mono text-slate-300">
+            <div class="flex justify-between"><span class="text-slate-500">Distance:</span> <span class="text-emerald-400">3.2 km (단거리)</span></div>
+            <div class="flex justify-between"><span class="text-slate-500">Trip Time:</span> <span>8 minutes</span></div>
+            <div class="flex justify-between"><span class="text-slate-500">Short Trip Ratio:</span> <span class="text-amber-400">82% (가혹 조건)</span></div>
+          </div>
+        </div>
+
+        <!-- STEP 2 -->
+        <div class="glass-card rounded-2xl p-6 relative">
+          <div class="w-8 h-8 rounded-full bg-cyan-500/20 text-cyan-400 font-bold flex items-center justify-center text-sm mb-4 border border-cyan-500/40">
+            02
+          </div>
+          <h3 class="text-lg font-bold text-white mb-2">동적 소모품 마모 진단</h3>
+          <p class="text-slate-400 text-sm leading-relaxed mb-4">
+            가혹 주행 비율을 진단하여 엔진오일 수분 축적, 12V 배터리 방전 위험, 브레이크 마모 속도를 계산합니다.
+          </p>
+          <div class="p-3 rounded-xl bg-slate-950/80 text-xs space-y-2 border border-slate-800">
+            <div>
+              <div class="flex justify-between text-slate-300 mb-1"><span>엔진오일 열화도</span> <span class="text-amber-400 font-bold">권장 교체 D-15일</span></div>
+              <div class="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden">
+                <div class="bg-amber-400 h-full w-[78%]"></div>
+              </div>
+            </div>
+            <div>
+              <div class="flex justify-between text-slate-300 mb-1"><span>12V 배터리 방전 위험</span> <span class="text-rose-400 font-bold">주의 (충전 부족)</span></div>
+              <div class="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden">
+                <div class="bg-rose-500 h-full w-[85%]"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 3 -->
+        <div class="glass-card rounded-2xl p-6 relative">
+          <div class="w-8 h-8 rounded-full bg-sky-500/20 text-sky-400 font-bold flex items-center justify-center text-sm mb-4 border border-sky-500/40">
+            03
+          </div>
+          <h3 class="text-lg font-bold text-white mb-2">맞춤 솔루션 & 드라이브 추천</h3>
+          <p class="text-slate-400 text-sm leading-relaxed mb-4">
+            TTS 음성 브리핑 후 `NaviHelper`와 연계하여 배터리 충전 및 오일 열 발산을 위한 주말 외곽 코스를 추천합니다.
+          </p>
+          <div class="p-3 rounded-xl bg-sky-950/40 border border-sky-800/60 text-xs space-y-2">
+            <div class="flex items-center gap-2 text-sky-300 font-semibold">
+              <span>🔊 Voice Guide</span>
+            </div>
+            <p class="text-slate-300 italic text-[11px] stroke-slate-700">
+              "홍길동님, 최근 단거리 주행이 많아 배터리 충전이 부족합니다. 주말 20분 외곽 드라이브 코스를 추천해 드릴까요?"
+            </p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- DETAILED MATRIX TABLE FOR SCENARIO 1 (FULL EXTENDED CASES) -->
+      <div class="pt-4 space-y-3">
+        <h3 class="text-lg font-bold text-white flex items-center gap-2">
+          <span>📊</span> 주요 소모품별 진단 및 케어 매트릭스 (Full Extended Matrix)
+        </h3>
+        
+        <div class="glass-card rounded-2xl overflow-hidden border border-slate-800">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-slate-900/90 text-slate-300 font-semibold border-b border-slate-800">
+                <tr>
+                  <th class="py-3.5 px-4 w-1/6">진단 소모품</th>
+                  <th class="py-3.5 px-4 w-1/5">수집 데이터 (Pleos SDK)</th>
+                  <th class="py-3.5 px-4 w-1/4">판정 알고리즘 (조건)</th>
+                  <th class="py-3.5 px-4 w-5/12">맞춤형 가이드 & 솔루션 연동</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-800/60 text-slate-300">
+                
+                <!-- CASE 1: BATTERY -->
+                <tr class="hover:bg-slate-900/40 transition">
+                  <td class="py-4 px-4 font-bold text-cyan-400">
+                    🔋 12V / HV 배터리
+                  </td>
+                  <td class="py-4 px-4 font-mono text-slate-400">
+                    EvBattery, Fuel,<br>Odometer, FusedLocation
+                  </td>
+                  <td class="py-4 px-4 text-slate-300">
+                    <span class="px-1.5 py-0.5 rounded bg-amber-950 text-amber-400 border border-amber-800/50 font-semibold">단거리 주행</span><br>
+                    5km 미만 주행 비율 &gt; 70% &amp; 시동 횟수 대비 주행시간 부족
+                  </td>
+                  <td class="py-4 px-4 text-slate-200">
+                    <strong>[음성 경고 + NaviHelper 연동]</strong><br>
+                    "배터리 충전율 저하 감지. 주말 15분 이상 외곽 순환 드라이브 코스로 리프레시를 추천합니다." (원터치 목적지 설정)
+                  </td>
+                </tr>
+
+                <!-- CASE 2: BRAKES -->
+                <tr class="hover:bg-slate-900/40 transition">
+                  <td class="py-4 px-4 font-bold text-emerald-400">
+                    🛑 제동 장치 &amp; 타이어
+                  </td>
+                  <td class="py-4 px-4 font-mono text-slate-400">
+                    Vehicle.Brake,<br>FusedLocation, Speed
+                  </td>
+                  <td class="py-4 px-4 text-slate-300">
+                    <span class="px-1.5 py-0.5 rounded bg-rose-950 text-rose-400 border border-rose-800/50 font-semibold">도심 정체 &amp; 급제동</span><br>
+                    km당 제동 횟수 기준치 1.4배 초과 &amp; 급감속 빈도 증가
+                  </td>
+                  <td class="py-4 px-4 text-slate-200">
+                    <strong>[동적 주기 산출 + 회생제동 가이드]</strong><br>
+                    "브레이크 패드 마모 속도가 빠릅니다. 정체 구간 내리막길 회생제동 단수 높임 주행 팁을 적용해 패드 수명을 연장하세요."
+                  </td>
+                </tr>
+
+                <!-- CASE 3: ENGINE OIL -->
+                <tr class="hover:bg-slate-900/40 transition">
+                  <td class="py-4 px-4 font-bold text-amber-400">
+                    🛢️ 엔진오일 &amp; 흡기필터
+                  </td>
+                  <td class="py-4 px-4 font-mono text-slate-400">
+                    Odometer, Trip Time,<br>Vehicle.Fuel
+                  </td>
+                  <td class="py-4 px-4 text-slate-300">
+                    <span class="px-1.5 py-0.5 rounded bg-amber-950 text-amber-400 border border-amber-800/50 font-semibold">공회전 과다</span><br>
+                    주행거리 대비 엔진 가동시간(공회전) 비율 높음 (오일 열화 가속)
+                  </td>
+                  <td class="py-4 px-4 text-slate-200">
+                    <strong>[가혹 조건 교체 시점 재산출]</strong><br>
+                    "주행거리는 5,000km이지만 공회전 가동 시간 기준 오일 열화도는 8,000km 수준입니다. 오일 교체 점검을 권장합니다."
+                  </td>
+                </tr>
+
+                <!-- CASE 4: HVAC FILTER -->
+                <tr class="hover:bg-slate-900/40 transition">
+                  <td class="py-4 px-4 font-bold text-purple-400">
+                    ❄️ 공조 캐빈 필터
+                  </td>
+                  <td class="py-4 px-4 font-mono text-slate-400">
+                    Vehicle.HVAC,<br>Ignition State
+                  </td>
+                  <td class="py-4 px-4 text-slate-300">
+                    <span class="px-1.5 py-0.5 rounded bg-purple-950 text-purple-400 border border-purple-800/50 font-semibold">A/C 직후 시동 OFF</span><br>
+                    에어컨 가동 후 송풍 건조 없이 시동 OFF 5회 이상 연속 감지
+                  </td>
+                  <td class="py-4 px-4 text-slate-200">
+                    <strong>[곰팡이 예방 + 능동 제어 제안]</strong><br>
+                    "에바포레이터 습기 방지를 위해 시동 끄기 전 애프터블로우 건조 기능을 자동으로 가동할까요?"
+                  </td>
+                </tr>
+
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- SECTION 4: SCENARIO 2 (VOICE MANUAL & DIRECT CONTROL) -->
+    <section id="section-scenario2" class="space-y-6">
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-2 border-b border-slate-800 pb-4">
+        <div>
+          <span class="text-xs font-bold text-purple-400 tracking-wider uppercase">Scenario 02</span>
+          <h2 class="text-2xl font-extrabold text-white">스마트 차량 매뉴얼 & 능동 제어 어시스턴트</h2>
+        </div>
+        <div class="flex gap-2">
+          <span class="px-2.5 py-1 rounded-md bg-slate-800 text-slate-300 text-xs border border-slate-700">SpeechToText</span>
+          <span class="px-2.5 py-1 rounded-md bg-slate-800 text-slate-300 text-xs border border-slate-700">TextToSpeech</span>
+          <span class="px-2.5 py-1 rounded-md bg-slate-800 text-slate-300 text-xs border border-slate-700">Vehicle (HVAC, Seat, Cruise)</span>
+        </div>
+      </div>
+
+      <!-- INTERACTIVE VOICE SIMULATION CARD -->
+      <div class="glass-card rounded-2xl p-6 border border-purple-500/30">
+        <div class="text-xs font-bold text-purple-400 tracking-wider uppercase mb-4 flex items-center gap-2">
+          <span class="w-2 h-2 rounded-full bg-purple-400 animate-ping"></span>
+          대화형 음성 대화 & 능동 제어 프로세스 시뮬레이션
+        </div>
+
+        <div class="space-y-4 max-w-3xl mx-auto">
+          
+          <!-- User Voice Input -->
+          <div class="flex items-start gap-3">
+            <div class="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-sm font-bold text-slate-300 shrink-0">
+              👤
+            </div>
+            <div class="p-4 rounded-2xl rounded-tl-none bg-slate-900 border border-slate-800 text-sm text-slate-200">
+              <div class="text-[10px] text-purple-400 font-mono mb-1">STT Input</div>
+              "헤이 메이트, 스마트 크루즈 차간 거리 어떻게 조절해? 그리고 핸들 열선이랑 시트 2단계로 켜줘."
+            </div>
+          </div>
+
+          <!-- App Processing Indicator -->
+          <div class="flex justify-center py-1">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-950/60 border border-purple-800/60 text-xs text-purple-300">
+              <svg class="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+              </svg>
+              <span>인텐트 분석: [매뉴얼 가이드] + [Vehicle SDK set() 직접 실행]</span>
+            </div>
+          </div>
+
+          <!-- App System Response -->
+          <div class="flex items-start gap-3 justify-end">
+            <div class="p-4 rounded-2xl rounded-tr-none bg-sky-950/80 border border-sky-800 text-sm text-slate-100 max-w-xl">
+              <div class="text-[10px] text-cyan-400 font-mono mb-1">TTS Voice Response & Vehicle Execution</div>
+              <p class="leading-relaxed">
+                "스티어링 휠 우측의 차간거리 버튼을 누른 후 상하 스위치로 4단계 조절이 가능합니다. 
+                <strong class="text-emerald-400">요청하신 핸들 열선과 운전석 시트 2단계 작동을 지금 완료했습니다.</strong>"
+              </p>
+              
+              <!-- Direct API Execution Badges -->
+              <div class="mt-3 pt-2 stroke-slate-800 border-t border-sky-800/50 flex flex-wrap gap-2 text-[10px] font-mono">
+                <span class="px-2 py-0.5 rounded bg-emerald-950 text-emerald-400 border border-emerald-800">
+                  Vehicle.SteeringWheel.setHeating(true)
+                </span>
+                <span class="px-2 py-0.5 rounded bg-emerald-950 text-emerald-400 border border-emerald-800">
+                  Vehicle.Seat.setHeatingLevel(2)
+                </span>
+              </div>
+            </div>
+            <div class="w-8 h-8 rounded-full bg-cyan-600 flex items-center justify-center text-sm font-bold text-white shrink-0 glow-cyan">
+              🤖
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+<!-- ... existing code -->

@@ -10,7 +10,7 @@
 | 코드 | 이름 | 한 줄 소개 (초안) | 원본 기획 | 문서 |
 |---|---|---|---|---|
 | `GRD` | 다녀왔습니다 | 가족 채팅방의 "언제 한번 가자"를 차량이 함께 실제로 다녀온 하루로 만드는 동행 여정 앱 | [draft/proposal-grandma.html](draft/proposal-grandma.html) | [projects/grandma](projects/grandma/) |
-| `GAM` | 내 차로 짓는 도시 | 운행과 소모 기록으로 도시를 키우고, 정비 시기는 퀘스트로 알아차리는 앱 | [draft/proposal-game.png](draft/proposal-game.png) | [projects/game](projects/game/) |
+| `GAM` | 내 차로 짓는 도시 | 운행과 소모 기록으로 도시를 키우고, 정비 시기는 퀘스트로 알아차리는 앱 | [draft/proposal-game.png](draft/proposal-game.png), [draft/proposal-care.html](draft/proposal-care.html) (케어 요소) | [projects/game](projects/game/) |
 
 game의 퀘스트가 차량 정비 알림이나 grandma의 "동행 여정"을 받아들이는 방향을 검토 중입니다. 두 작품을 따로 낼지 하나로 합칠지는 아직 정하지 않았습니다([미결정 질문 Q1](docs/open-questions.md)).
 

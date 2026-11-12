@@ -7,7 +7,7 @@ Codex는 이 파일을 직접 읽고, Claude Code는 `CLAUDE.md`를 통해 읽�
 
 - **무엇:** 현대자동차그룹 차량용 앱 개발 공모전에 낼 Pleos Connect(AAOS 기반 차량 인포테인먼트) 앱 2개의 기획, 요구사항, 목업
   - `projects/grandma`: 다녀왔습니다 (`GRD`). 기억을 다음 약속으로 잇는 가족 동행 여정
-  - `projects/game`: 내 차로 짓는 도시 (`GAM`). 운행 보상으로 도시를 키우고 정비를 퀘스트로 관리
+  - `projects/game`: 내 차로 짓는 도시 (`GAM`). 운행 보상으로 도시를 키우고 정비를 퀘스트로 관리. `draft/proposal-care.html`(CarCare Mate)은 별도 프로젝트가 아니라 game의 케어 요소입니다
 - **누가:** 5인 팀. 각자 Codex나 Claude Code를 쓰며 같은 문서를 동시에 고칩니다.
 - **지금 단계:** 요구사항 정의. 목업 구현 방식은 미정입니다([ADR-0002](docs/decisions/0002-mockup-implementation.md), Proposed).
 - **마감:** 1차 접수 2026-11-15 23:59 (KST). 2차 PT 2026-12-03.
