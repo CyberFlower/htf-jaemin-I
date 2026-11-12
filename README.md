@@ -64,6 +64,8 @@ game의 퀘스트가 차량 정비 알림이나 grandma의 "동행 여정"을 �
 
 자세한 내용은 [docs/process/workflow.md](docs/process/workflow.md)를 참고하세요.
 
+Use Case와 기능 요구사항(FR)을 작성·보강할 때는 [앱 공통 템플릿](docs/process/templates/README.md)을 사용합니다. 복사용 양식, 작성 예시, 기존 `DECISIONS.md`와의 연결 방법을 제공합니다.
+
 ## 처음 오신 분
 
 1. 이 README → [AGENTS.md](AGENTS.md) (사람도 읽습니다) → 맡은 프로젝트의 `GOAL.md` 순서로 읽습니다.

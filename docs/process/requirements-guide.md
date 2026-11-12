@@ -4,6 +4,7 @@
 
 ```text
 GOAL.md           왜 만들고 무엇을 이룰 것인가 (Goal, Non-goal, 성공 기준)
+  ├ USE_CASES.md      사용자 목표를 이루는 기본·대안·예외 흐름 (필요한 시나리오부터 추가)
   └ REQUIREMENTS.md   무엇을 만들 것인가 (ID별 요구사항)
       └ PROPOSAL.md       접수양식에 옮길 원고 (위 두 문서의 요약)
 OPEN_QUESTIONS.md   아직 모르는 것
@@ -12,9 +13,11 @@ DECISIONS.md        정한 것과 그 이유
 
 요구사항은 `GOAL.md`의 Goal 중 하나 이상에 기여해야 합니다. 어느 Goal에도 속하지 않으면 Goal을 고치거나 요구사항을 버립니다.
 
+Use Case와 FR을 함께 다듬을 때는 [공통 템플릿](templates/README.md)을 씁니다. Goal → UC 흐름 → FR → 수용 기준을 연결하되, 기존 Goal·Confirmed 요구사항·결정의 우선순위는 [AGENTS.md](../../AGENTS.md)를 따릅니다. `USE_CASES.md`는 기존 요구사항에 점진적으로 연결하는 보완 문서입니다.
+
 ## 2. 형식
 
-`REQUIREMENTS.md`에 아래 블록을 복사해 씁니다. 요구사항마다 절을 따로 두는 이유는 여러 사람이 동시에 고쳐도 충돌하지 않게 하기 위해서입니다.
+`REQUIREMENTS.md`에 아래 블록을 복사해 씁니다. 요구사항마다 절을 따로 두는 이유는 여러 사람이 동시에 고쳐도 충돌하지 않게 하기 위해서입니다. 아래는 기존 간단 형식이며, UC 흐름·결정·미결정 연결을 포함한 [공통 FR 블록](templates/functional-requirements.md)으로 보강할 수 있습니다. 기존 필드와 ID는 유지합니다.
 
 ```markdown
 ### GRD-000 짧은 제목
@@ -40,6 +43,7 @@ DECISIONS.md        정한 것과 그 이유
 | `GRD-###` / `GRD-N##` | 다녀왔습니다: 기능 / 비기능·원칙 |
 | `GAM-###` / `GAM-N##` | 내 차로 짓는 도시: 기능 / 비기능·원칙 |
 | `GRD-G#` / `GAM-G#` | Goal (`GOAL.md`) |
+| `GRD-UC-###` / `GAM-UC-###` | Use Case (`USE_CASES.md`, 공통 템플릿의 추가 표기) |
 | `GRD-Q#` / `GAM-Q#` / `Q#` | 미결정 질문 (프로젝트 / 저장소 공통) |
 
 번호는 재사용하지 않습니다. 없애는 항목은 지우지 말고 Dropped로 바꿉니다.
@@ -104,3 +108,5 @@ SDK 의존은 `SDK 도메인/API (퍼미션) — 검증 태그` 형태로 씁니
 - [ ] SDK 의존마다 검증 태그가 있습니다
 - [ ] 모르는 것은 `OPEN_QUESTIONS.md`의 질문으로 연결했습니다
 - [ ] 근거 없는 수치가 없습니다
+- [ ] UC를 연결했다면 흐름 번호와 FR의 양쪽 참조가 맞습니다
+- [ ] 관련 결정은 파일과 ID로 참조하고, 미결정 사항은 질문으로 연결했습니다
