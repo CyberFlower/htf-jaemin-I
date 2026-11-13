@@ -9,6 +9,7 @@
 | 문서 | 내용 |
 |---|---|
 | [GOAL.md](GOAL.md) | 문제, 타깃, Goal과 Non-goal, 대표 시나리오, 성공 기준, 원칙 |
+| [USE_CASES.md](USE_CASES.md) | 자료에서 추출한 사용자 목표와 기본·대안·예외 흐름 (Draft) |
 | [REQUIREMENTS.md](REQUIREMENTS.md) | ID별 요구사항 (`GRD-###`, `GRD-N##`) |
 | [PROPOSAL.md](PROPOSAL.md) | 접수양식 02의 1~8번 원고 |
 | [OPEN_QUESTIONS.md](OPEN_QUESTIONS.md) | 아직 모르는 것 (`GRD-Q#`) |
