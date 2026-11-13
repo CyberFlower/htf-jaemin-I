@@ -1,0 +1,588 @@
+{
+  "schemaVersion": 1,
+  "description": "목업용 로컬 지식 그래프. 장소 사실과 개인 기억은 별도 출처를 유지한다.",
+  "nodes": [
+    {
+      "id": "p1",
+      "type": "place",
+      "label": "모래빛 식탁",
+      "name": "모래빛 식탁",
+      "category": "food",
+      "destination": "안목해변",
+      "minutes": 5,
+      "description": "해변 곁에서 천천히 먹는 한 끼",
+      "art": "bowl",
+      "features": [
+        "light",
+        "quiet",
+        "parking",
+        "indoor"
+      ]
+    },
+    {
+      "id": "p2",
+      "type": "place",
+      "label": "파도 서가",
+      "name": "파도 서가",
+      "category": "cafe",
+      "destination": "안목해변",
+      "minutes": 3,
+      "description": "책 한 권과 함께 머무는 바다",
+      "art": "coffee",
+      "features": [
+        "sea",
+        "quiet",
+        "indoor"
+      ]
+    },
+    {
+      "id": "p3",
+      "type": "place",
+      "label": "솔바람 산책길",
+      "name": "솔바람 산책길",
+      "category": "visit",
+      "destination": "안목해변",
+      "minutes": 8,
+      "description": "소나무 사이로 이어지는 짧은 산책",
+      "art": "tree",
+      "features": [
+        "easy",
+        "quiet",
+        "outdoor"
+      ]
+    },
+    {
+      "id": "p4",
+      "type": "place",
+      "label": "항구의 부엌",
+      "name": "항구의 부엌",
+      "category": "food",
+      "destination": "안목해변",
+      "minutes": 7,
+      "description": "여행지의 맛을 만나는 작은 식당",
+      "art": "fish",
+      "features": [
+        "local",
+        "parking",
+        "indoor"
+      ]
+    },
+    {
+      "id": "p5",
+      "type": "place",
+      "label": "해안 전망대",
+      "name": "해안 전망대",
+      "category": "visit",
+      "destination": "안목해변",
+      "minutes": 12,
+      "description": "시야가 열리는 해안의 작은 쉼표",
+      "art": "sun",
+      "features": [
+        "sea",
+        "outdoor"
+      ]
+    },
+    {
+      "id": "p6",
+      "type": "place",
+      "label": "흰돌 정원",
+      "name": "흰돌 정원",
+      "category": "cafe",
+      "destination": "안목해변",
+      "minutes": 9,
+      "description": "정원과 실내를 함께 즐기는 공간",
+      "art": "leaf",
+      "features": [
+        "quiet",
+        "easy",
+        "indoor",
+        "parking"
+      ]
+    },
+    {
+      "id": "p7",
+      "type": "place",
+      "label": "호수 옆 식탁",
+      "name": "호수 옆 식탁",
+      "category": "food",
+      "destination": "청초호",
+      "minutes": 4,
+      "description": "호수를 바라보며 가볍게 먹기",
+      "art": "bowl",
+      "features": [
+        "light",
+        "sea",
+        "indoor"
+      ]
+    },
+    {
+      "id": "p8",
+      "type": "place",
+      "label": "물결 산책로",
+      "name": "물결 산책로",
+      "category": "visit",
+      "destination": "청초호",
+      "minutes": 6,
+      "description": "호숫가를 따라 걷는 느린 오후",
+      "art": "tree",
+      "features": [
+        "easy",
+        "quiet",
+        "outdoor"
+      ]
+    },
+    {
+      "id": "p9",
+      "type": "place",
+      "label": "작은 기록실",
+      "name": "작은 기록실",
+      "category": "cafe",
+      "destination": "청초호",
+      "minutes": 5,
+      "description": "여행의 한 장면을 남기는 카페",
+      "art": "coffee",
+      "features": [
+        "quiet",
+        "indoor",
+        "parking"
+      ]
+    },
+    {
+      "id": "t-quiet",
+      "type": "trait",
+      "label": "조용한 분위기"
+    },
+    {
+      "id": "t-light",
+      "type": "trait",
+      "label": "가벼운 식사"
+    },
+    {
+      "id": "t-sea",
+      "type": "trait",
+      "label": "바다 전망"
+    },
+    {
+      "id": "t-easy",
+      "type": "trait",
+      "label": "걷기 편함"
+    },
+    {
+      "id": "t-parking",
+      "type": "trait",
+      "label": "주차 정보"
+    },
+    {
+      "id": "t-indoor",
+      "type": "trait",
+      "label": "실내 공간"
+    },
+    {
+      "id": "t-local",
+      "type": "trait",
+      "label": "지역의 맛"
+    },
+    {
+      "id": "t-outdoor",
+      "type": "trait",
+      "label": "야외 산책"
+    },
+    {
+      "id": "s-demo",
+      "label": "목업용 장소 편집 데이터",
+      "kind": "sample",
+      "date": "2026-11-13",
+      "note": "실재 업체·현장 조사 결과가 아닙니다. 방문 전 확인용으로 사용할 수 없습니다.",
+      "type": "source"
+    },
+    {
+      "id": "u",
+      "type": "person",
+      "label": "나"
+    },
+    {
+      "id": "mom",
+      "type": "person",
+      "label": "어머니"
+    },
+    {
+      "id": "d1",
+      "type": "destination",
+      "label": "안목해변"
+    },
+    {
+      "id": "d2",
+      "type": "destination",
+      "label": "청초호"
+    },
+    {
+      "id": "v1",
+      "type": "visit",
+      "label": "2026-10-18 방문",
+      "place": "p2",
+      "date": "2026-10-18",
+      "companions": [
+        "mom"
+      ],
+      "note": "다음에는 바다 근처에서 가볍게 점심도 먹자.",
+      "use": true
+    },
+    {
+      "id": "v2",
+      "type": "visit",
+      "label": "2026-10-18 방문",
+      "place": "p3",
+      "date": "2026-10-18",
+      "companions": [
+        "mom"
+      ],
+      "note": "바람이 좋았던 짧은 산책.",
+      "use": true
+    }
+  ],
+  "edges": [
+    {
+      "from": "p1",
+      "to": "d1",
+      "type": "NEAR",
+      "minutes": 5,
+      "source": "s-demo"
+    },
+    {
+      "from": "p1",
+      "to": "t-light",
+      "type": "HAS_TRAIT",
+      "source": "s-demo",
+      "asOf": "2026-11-13",
+      "confidence": "sample"
+    },
+    {
+      "from": "p1",
+      "to": "t-quiet",
+      "type": "HAS_TRAIT",
+      "source": "s-demo",
+      "asOf": "2026-11-13",
+      "confidence": "sample"
+    },
+    {
+      "from": "p1",
+      "to": "t-parking",
+      "type": "HAS_TRAIT",
+      "source": "s-demo",
+      "asOf": "2026-11-13",
+      "confidence": "sample"
+    },
+    {
+      "from": "p1",
+      "to": "t-indoor",
+      "type": "HAS_TRAIT",
+      "source": "s-demo",
+      "asOf": "2026-11-13",
+      "confidence": "sample"
+    },
+    {
+      "from": "p2",
+      "to": "d1",
+      "type": "NEAR",
+      "minutes": 3,
+      "source": "s-demo"
+    },
+    {
+      "from": "p2",
+      "to": "t-sea",
+      "type": "HAS_TRAIT",
+      "source": "s-demo",
+      "asOf": "2026-11-13",
+      "confidence": "sample"
+    },
+    {
+      "from": "p2",
+      "to": "t-quiet",
+      "type": "HAS_TRAIT",
+      "source": "s-demo",
+      "asOf": "2026-11-13",
+      "confidence": "sample"
+    },
+    {
+      "from": "p2",
+      "to": "t-indoor",
+      "type": "HAS_TRAIT",
+      "source": "s-demo",
+      "asOf": "2026-11-13",
+      "confidence": "sample"
+    },
+    {
+      "from": "p3",
+      "to": "d1",
+      "type": "NEAR",
+      "minutes": 8,
+      "source": "s-demo"
+    },
+    {
+      "from": "p3",
+      "to": "t-easy",
+      "type": "HAS_TRAIT",
+      "source": "s-demo",
+      "asOf": "2026-11-13",
+      "confidence": "sample"
+    },
+    {
+      "from": "p3",
+      "to": "t-quiet",
+      "type": "HAS_TRAIT",
+      "source": "s-demo",
+      "asOf": "2026-11-13",
+      "confidence": "sample"
+    },
+    {
+      "from": "p3",
+      "to": "t-outdoor",
+      "type": "HAS_TRAIT",
+      "source": "s-demo",
+      "asOf": "2026-11-13",
+      "confidence": "sample"
+    },
+    {
+      "from": "p4",
+      "to": "d1",
+      "type": "NEAR",
+      "minutes": 7,
+      "source": "s-demo"
+    },
+    {
+      "from": "p4",
+      "to": "t-local",
+      "type": "HAS_TRAIT",
+      "source": "s-demo",
+      "asOf": "2026-11-13",
+      "confidence": "sample"
+    },
+    {
+      "from": "p4",
+      "to": "t-parking",
+      "type": "HAS_TRAIT",
+      "source": "s-demo",
+      "asOf": "2026-11-13",
+      "confidence": "sample"
+    },
+    {
+      "from": "p4",
+      "to": "t-indoor",
+      "type": "HAS_TRAIT",
+      "source": "s-demo",
+      "asOf": "2026-11-13",
+      "confidence": "sample"
+    },
+    {
+      "from": "p5",
+      "to": "d1",
+      "type": "NEAR",
+      "minutes": 12,
+      "source": "s-demo"
+    },
+    {
+      "from": "p5",
+      "to": "t-sea",
+      "type": "HAS_TRAIT",
+      "source": "s-demo",
+      "asOf": "2026-11-13",
+      "confidence": "sample"
+    },
+    {
+      "from": "p5",
+      "to": "t-outdoor",
+      "type": "HAS_TRAIT",
+      "source": "s-demo",
+      "asOf": "2026-11-13",
+      "confidence": "sample"
+    },
+    {
+      "from": "p6",
+      "to": "d1",
+      "type": "NEAR",
+      "minutes": 9,
+      "source": "s-demo"
+    },
+    {
+      "from": "p6",
+      "to": "t-quiet",
+      "type": "HAS_TRAIT",
+      "source": "s-demo",
+      "asOf": "2026-11-13",
+      "confidence": "sample"
+    },
+    {
+      "from": "p6",
+      "to": "t-easy",
+      "type": "HAS_TRAIT",
+      "source": "s-demo",
+      "asOf": "2026-11-13",
+      "confidence": "sample"
+    },
+    {
+      "from": "p6",
+      "to": "t-indoor",
+      "type": "HAS_TRAIT",
+      "source": "s-demo",
+      "asOf": "2026-11-13",
+      "confidence": "sample"
+    },
+    {
+      "from": "p6",
+      "to": "t-parking",
+      "type": "HAS_TRAIT",
+      "source": "s-demo",
+      "asOf": "2026-11-13",
+      "confidence": "unknown"
+    },
+    {
+      "from": "p7",
+      "to": "d2",
+      "type": "NEAR",
+      "minutes": 4,
+      "source": "s-demo"
+    },
+    {
+      "from": "p7",
+      "to": "t-light",
+      "type": "HAS_TRAIT",
+      "source": "s-demo",
+      "asOf": "2026-11-13",
+      "confidence": "sample"
+    },
+    {
+      "from": "p7",
+      "to": "t-sea",
+      "type": "HAS_TRAIT",
+      "source": "s-demo",
+      "asOf": "2026-11-13",
+      "confidence": "sample"
+    },
+    {
+      "from": "p7",
+      "to": "t-indoor",
+      "type": "HAS_TRAIT",
+      "source": "s-demo",
+      "asOf": "2026-11-13",
+      "confidence": "sample"
+    },
+    {
+      "from": "p8",
+      "to": "d2",
+      "type": "NEAR",
+      "minutes": 6,
+      "source": "s-demo"
+    },
+    {
+      "from": "p8",
+      "to": "t-easy",
+      "type": "HAS_TRAIT",
+      "source": "s-demo",
+      "asOf": "2026-11-13",
+      "confidence": "sample"
+    },
+    {
+      "from": "p8",
+      "to": "t-quiet",
+      "type": "HAS_TRAIT",
+      "source": "s-demo",
+      "asOf": "2026-11-13",
+      "confidence": "sample"
+    },
+    {
+      "from": "p8",
+      "to": "t-outdoor",
+      "type": "HAS_TRAIT",
+      "source": "s-demo",
+      "asOf": "2026-11-13",
+      "confidence": "sample"
+    },
+    {
+      "from": "p9",
+      "to": "d2",
+      "type": "NEAR",
+      "minutes": 5,
+      "source": "s-demo"
+    },
+    {
+      "from": "p9",
+      "to": "t-quiet",
+      "type": "HAS_TRAIT",
+      "source": "s-demo",
+      "asOf": "2026-11-13",
+      "confidence": "sample"
+    },
+    {
+      "from": "p9",
+      "to": "t-indoor",
+      "type": "HAS_TRAIT",
+      "source": "s-demo",
+      "asOf": "2026-11-13",
+      "confidence": "sample"
+    },
+    {
+      "from": "p9",
+      "to": "t-parking",
+      "type": "HAS_TRAIT",
+      "source": "s-demo",
+      "asOf": "2026-11-13",
+      "confidence": "sample"
+    },
+    {
+      "from": "u",
+      "to": "t-quiet",
+      "type": "PREFERS",
+      "source": "사용자 명시 입력"
+    },
+    {
+      "from": "u",
+      "to": "t-light",
+      "type": "PREFERS",
+      "source": "사용자 명시 입력"
+    },
+    {
+      "from": "u",
+      "to": "t-sea",
+      "type": "PREFERS",
+      "source": "사용자 명시 입력"
+    },
+    {
+      "from": "mom",
+      "to": "t-easy",
+      "type": "PREFERS",
+      "source": "동행자 확인 선호 — 데모"
+    },
+    {
+      "from": "u",
+      "to": "v1",
+      "type": "CONFIRMED_VISIT",
+      "use": true
+    },
+    {
+      "from": "v1",
+      "to": "p2",
+      "type": "AT_PLACE"
+    },
+    {
+      "from": "v1",
+      "to": "mom",
+      "type": "WITH_PERSON"
+    },
+    {
+      "from": "u",
+      "to": "v2",
+      "type": "CONFIRMED_VISIT",
+      "use": true
+    },
+    {
+      "from": "v2",
+      "to": "p3",
+      "type": "AT_PLACE"
+    },
+    {
+      "from": "v2",
+      "to": "mom",
+      "type": "WITH_PERSON"
+    }
+  ]
+}

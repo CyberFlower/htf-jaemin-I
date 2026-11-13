@@ -16,3 +16,7 @@
 | [DECISIONS.md](DECISIONS.md) | 이 프로젝트에서 정한 것 |
 
 game 프로젝트와의 관계: game의 퀘스트로 "동행 여정"을 제공하는 안을 검토 중입니다([open-questions.md](../../docs/open-questions.md) Q1).
+
+## 실험 목업
+
+[14.6인치 차량 화면 HTML 목업](../../spikes/grandma-journey-context/README.md): 맥락 기반 장소 추천, 방문 스탬프, 선택·음성 시연으로 남기는 방문 기록을 검토합니다. [UC 보완안](../../spikes/grandma-journey-context/docs/UC-PROPOSAL.md)은 Draft이며, ADR·Decisions 및 확정 요구사항을 변경하지 않습니다.
