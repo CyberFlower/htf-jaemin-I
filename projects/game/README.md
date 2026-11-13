@@ -9,6 +9,7 @@
 | 문서 | 내용 |
 |---|---|
 | [GOAL.md](GOAL.md) | 의도, 타깃, Goal과 Non-goal, 핵심 루프, 퀘스트 구조, 성공 기준, 원칙 |
+| [USE_CASES.md](USE_CASES.md) | 사용자 목표별 기본·대안·예외 흐름 (`GAM-UC-###`, Draft) |
 | [REQUIREMENTS.md](REQUIREMENTS.md) | ID별 요구사항 (`GAM-###`, `GAM-N##`) |
 | [PROPOSAL.md](PROPOSAL.md) | 접수양식 02의 1~8번 원고 |
 | [OPEN_QUESTIONS.md](OPEN_QUESTIONS.md) | 아직 모르는 것 (`GAM-Q#`) |
