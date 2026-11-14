@@ -12,6 +12,7 @@ window.MOCKUP_DATA["grandma"] = {
       "id": "SC-01",
       "title": "기억",
       "state": "정차",
+      "sdk": "SpeechToText · FusedLocation",
       "src": null,
       "kind": null
     },
@@ -19,6 +20,7 @@ window.MOCKUP_DATA["grandma"] = {
       "id": "SC-02",
       "title": "조율·확정",
       "state": "정차",
+      "sdk": "— (외부 날씨·장소 API, 확인 필요)",
       "src": null,
       "kind": null
     },
@@ -26,6 +28,7 @@ window.MOCKUP_DATA["grandma"] = {
       "id": "SC-03",
       "title": "출발",
       "state": "정차",
+      "sdk": "Vehicle Fuel/EvBattery · NaviHelper",
       "src": null,
       "kind": null
     },
@@ -33,6 +36,7 @@ window.MOCKUP_DATA["grandma"] = {
       "id": "SC-04",
       "title": "주행 (1구간)",
       "state": "주행",
+      "sdk": "TextToSpeech · 주행 판단: AAOS (Q11)",
       "src": null,
       "kind": null
     },
@@ -40,6 +44,7 @@ window.MOCKUP_DATA["grandma"] = {
       "id": "SC-05",
       "title": "동행",
       "state": "정차",
+      "sdk": "Vehicle Door · Seat · NaviHelper",
       "src": null,
       "kind": null
     },
@@ -47,6 +52,7 @@ window.MOCKUP_DATA["grandma"] = {
       "id": "SC-06",
       "title": "주행 (2구간)",
       "state": "주행",
+      "sdk": "TextToSpeech",
       "src": null,
       "kind": null
     },
@@ -54,6 +60,7 @@ window.MOCKUP_DATA["grandma"] = {
       "id": "SC-07",
       "title": "다녀옴",
       "state": "주차",
+      "sdk": "FusedLocation · SpeechToText",
       "src": null,
       "kind": null
     },
@@ -61,6 +68,7 @@ window.MOCKUP_DATA["grandma"] = {
       "id": "SC-08",
       "title": "다시 가는 여정",
       "state": "정차",
+      "sdk": "NaviHelper · FusedLocation · SpeechToText (목업은 시연)",
       "src": "../grandma-journey-context/journey-demo.html?embed=1",
       "kind": "html"
     }

@@ -12,6 +12,7 @@ const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(here, '..', '..');
 const check = process.argv.includes('--check');
 const COLUMNS = ['ID', '장면', '차량 상태', '화면', '틀', '한 줄 설명', '요구사항', '심사'];
+const OPTIONAL = ['SDK']; // 있으면 읽습니다. 틀에서 S 키로 켜는 SDK 줄에 씁니다
 const IMAGE = /\.(png|jpe?g|webp|gif|svg)$/i;
 const problems = [];
 
@@ -37,7 +38,8 @@ function sceneTable(lines, file) {
   const head = rows[0];
   const missing = COLUMNS.filter((c) => !head.includes(c));
   if (missing.length) { problems.push(`${file}: 장면 표에 열이 없습니다: ${missing.join(', ')}`); return []; }
-  return rows.slice(2).map((r) => Object.fromEntries(COLUMNS.map((c) => [c, r[head.indexOf(c)] ?? ''])));
+  const cols = COLUMNS.concat(OPTIONAL.filter((c) => head.includes(c)));
+  return rows.slice(2).map((r) => Object.fromEntries(cols.map((c) => [c, r[head.indexOf(c)] ?? ''])));
 }
 
 function frameSource(cell, dir, file, id) {
@@ -117,7 +119,7 @@ for (const p of projects) {
     const frame = frameSource(r['틀'], dir, file, id);
     // 틀에는 장면 번호, 이름, 차량 상태만 보입니다. 나머지 열은 SCENARIO.md에서 읽습니다.
     return {
-      id, title: plain(r['장면']), state: filled(r['차량 상태']),
+      id, title: plain(r['장면']), state: filled(r['차량 상태']), sdk: filled(r['SDK'] || ''),
       src: frame ? frame.src : null, kind: frame ? frame.kind : null,
     };
   });
