@@ -455,8 +455,4 @@ button.chip.name { font-family: inherit; }
 #pop .pop-row .btn { width: auto; min-width: 0; padding: 0 26px; font-size: 32px; }
 #pop .btn .ic { width: 32px; height: 32px; }
 
-/* 시설 말풍선의 옮기기: 제목 줄 오른쪽 작은 버튼 (말풍선 높이를 늘리지 않음) */
-.fp-head .fp-move { margin-left: auto; width: 58px; height: 58px; border: 0; border-radius: 50%; background: #efe3cc; color: #6b5a45; display: grid; place-items: center; box-shadow: 0 4px 0 #d9c9a8; }
-.fp-head .fp-move:active { translate: 0 3px; }
-.fp-head .fp-move .ic { width: 30px; height: 30px; }
 #pop.below { transform: translate(-50%, 0); }

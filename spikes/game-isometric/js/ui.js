@@ -377,7 +377,7 @@ function openFacPop(p) {
   const hrs = Math.ceil((cap - st) / r0 / 3600), u = upLabel(site);
   const r1 = L < CFG.LV.max ? incomeAt(p.type, L + 1) : r0;
   pop.innerHTML = `
-    <div class="fp-head"><b>${FAC[p.type].name}</b><i class="lv">Lv ${L}</i>${starsHtml(L)}<button class="fp-move" id="fpMove" aria-label="옮기기">${ic('move', 30)}</button></div>
+    <div class="fp-head"><b>${FAC[p.type].name}</b><i class="lv">Lv ${L}</i>${starsHtml(L)}</div>
     <div class="fp-top">${ic(FAC[p.type].icon, 50)}<b>${fmtShort(n)}</b><small>/ ${fmtShort(cap)}</small></div>
     <div class="track"><i style="width:${clamp(st / cap * 100, 0, 100)}%"></i></div>
     <div class="fp-sub">초당 ${fmtRate(r0)}${L < CFG.LV.max ? ` → ${fmtRate(r1)}` : ''} · ${n >= cap - 1 ? '가득 참' : ic('clock', 28) + ` ${hrs}시간`}</div>
@@ -385,7 +385,6 @@ function openFacPop(p) {
       <button class="btn up ${u.lack ? 'lack' : ''} ${u.brk ? 'brk' : ''}" id="fpUp" ${u.off ? 'disabled' : ''}>${u.html}</button></div>`;
   placePop(s[0], s[1], scr(iso(p.x + .5, p.y + .5, -12))[1]);
   $('#fpTake').addEventListener('click', () => { hidePop(); doCollect(p.id, w[0], w[1] + 50); });
-  $('#fpMove').addEventListener('click', () => startMove(p.id));
   $('#fpUp').addEventListener('click', e => tryUpgrade(site, e.currentTarget, {
     after: r => { R.bump[p.id] = R.t; if (r.broke) fxBuild(p.x, p.y); openFacPop(p); },
   }));
@@ -849,14 +848,35 @@ cv.addEventListener('pointerdown', e => {
   try { cv.setPointerCapture(e.pointerId); } catch (err) { /* 캡처 불가 환경 */ }
   touches.set(e.pointerId, stagePt(e));
   if (touches.size === 2) { const [a, b] = [...touches.values()]; pinch = { d: Math.hypot(a[0] - b[0], a[1] - b[1]) || 1, uz: CAM.uz }; drag = null; hidePop(); }
-  else if (touches.size === 1) drag = { start: stagePt(e), last: stagePt(e), moved: false };
+  else if (touches.size === 1) {
+    drag = { start: stagePt(e), last: stagePt(e), moved: false, long: false };
+    const d = drag;
+    clearTimeout(longT); longT = setTimeout(() => longPress(d), 450);
+  }
+  if (touches.size !== 1) clearTimeout(longT);
 });
+/* 길게 누르기: 건물(고정 건물 제외)·장식이면 바로 옮기기 모드 (GAM-050, GAM-033) */
+let longT = 0;
+function longPress(d) {
+  if (drag !== d || d.moved || pinch || place || state.gear === 'D' || !overlay.hidden) return;
+  const [x, y] = unScr(...d.start);
+  for (let i = R.hits.length - 1; i >= 0; i--) {
+    const h = R.hits[i]; if (!h.test(x, y)) continue;
+    if (h.kind === 'fac' && state.built[h.key]) { d.long = true; R.bump[h.key] = R.t; startMove(h.key); if (navigator.vibrate) navigator.vibrate(20); return; }
+    if (h.kind === 'decor') {
+      const dc = state.decor.find(o => o.x === h.x && o.y === h.y); if (!dc) return;
+      d.long = true; hidePop(); place = { kind: 'decorMove', type: dc.type, fx: dc.x, fy: dc.y, x: dc.x, y: dc.y }; showPlaceBar(); sfx.tap();
+      if (navigator.vibrate) navigator.vibrate(20); return;
+    }
+    return;                                                             // 맨 위가 주민·말풍선 등이면 길게 누르기로 보지 않음
+  }
+}
 cv.addEventListener('pointermove', e => {
   if (!touches.has(e.pointerId)) return;
   const pt = stagePt(e); touches.set(e.pointerId, pt);
   if (pinch && touches.size >= 2) { const [a, b] = [...touches.values()]; zoomAt(pinch.uz * Math.hypot(a[0] - b[0], a[1] - b[1]) / pinch.d, (a[0] + b[0]) / 2, (a[1] + b[1]) / 2); return; }
   if (!drag) return;
-  if (!drag.moved && Math.hypot(pt[0] - drag.start[0], pt[1] - drag.start[1]) > 14) { drag.moved = true; hidePop(); }
+  if (!drag.moved && !drag.long && Math.hypot(pt[0] - drag.start[0], pt[1] - drag.start[1]) > 14) { drag.moved = true; clearTimeout(longT); hidePop(); }
   if (drag.moved) { CAM.px -= (pt[0] - drag.last[0]) / VIEW.z; CAM.py -= (pt[1] - drag.last[1]) / VIEW.z; applyCam(); }
   drag.last = pt;
 });
@@ -864,7 +884,8 @@ function endPointer(e) {
   if (!touches.has(e.pointerId)) return;
   touches.delete(e.pointerId);
   if (pinch) { if (touches.size < 2) pinch = null; drag = null; return; }   // 확대한 뒤에는 누르기로 보지 않음
-  if (drag && !drag.moved && e.type === 'pointerup') tapAt(e);
+  clearTimeout(longT);
+  if (drag && !drag.moved && !drag.long && e.type === 'pointerup') tapAt(e);
   drag = null;
 }
 cv.addEventListener('pointerup', endPointer);
@@ -901,9 +922,8 @@ function onHit(h) {
   if (h.kind === 'decor') {                                         // 장식(기본 나무·풀 포함): 옮기기, 보관함에 넣기
     const d = state.decor.find(o => o.x === h.x && o.y === h.y); if (!d) return;
     const s = scr(iso(h.x + .5, h.y + .5, 70));
-    pop.innerHTML = `<b class="pop-title">${DECOR[d.type].name}</b><div class="pop-row"><button class="btn ghost" id="decMove">옮기기</button><button class="btn ghost" id="decKeep">보관함에</button></div>`;
+    pop.innerHTML = `<b class="pop-title">${DECOR[d.type].name}</b><button class="btn ghost" id="decKeep">보관함에</button>`;
     placePop(s[0], s[1]);
-    $('#decMove').addEventListener('click', () => { hidePop(); place = { kind: 'decorMove', type: d.type, fx: d.x, fy: d.y, x: d.x, y: d.y }; showPlaceBar(); sfx.tap(); });
     $('#decKeep').addEventListener('click', () => { pickupDecor(h.x, h.y); hidePop(); sfx.pop(); });
     return;
   }
@@ -913,12 +933,6 @@ function onHit(h) {
     else if (h.type === 'shop') openShop();
     else if (h.type === 'garage') openCare();
     else if (FAC[h.type].rate) openFacPop({ id: h.key, type: h.type, x: h.x, y: h.y });
-    else if (state.built[h.key]) {                                     // 장식 건물(공원·무대): 옮기기
-      const s = scr(iso(h.x + .5, h.y + .5, (HGT[h.type] || 90) + 10));
-      pop.innerHTML = `<b class="pop-title">${FAC[h.type].name}</b><button class="btn ghost" id="popMove">${ic('move', 32)}옮기기</button>`;
-      placePop(s[0], s[1]);
-      $('#popMove').addEventListener('click', () => startMove(h.key));
-    }
   }
 }
 
