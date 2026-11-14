@@ -1,7 +1,7 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 const root = new URL('../', import.meta.url);
 let html = readFileSync(new URL('src/index.html', root), 'utf8');
-for (const name of ['style.css', 'vehicle.css', 'touch.css']) {
+for (const name of ['style.css', 'vehicle.css', 'touch.css', 'journey.css']) {
   html = html.replace(`<link rel="stylesheet" href="${name}">`, () => '<style>' + readFileSync(new URL('src/' + name, root), 'utf8') + '</style>');
 }
 for (const name of ['core.js', 'app.js', 'display.js']) {
