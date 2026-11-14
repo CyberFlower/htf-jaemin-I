@@ -70,7 +70,7 @@ Draft / 2026-11-13. 실험 목업에서 도출한 Draft 제안입니다. 목업�
 
 ## 기존 UC의 보완 지점
 
-통합 설명은 [시나리오](../../SCENARIOS.md), [API 채용안](../../API-ADOPTION.md), [외부 장소 연계안](../../PLACE-INTEGRATION.md)을 참고합니다. 홈 UC-015에서 추천 상세로 들어가는 범위는 GRD-Q26에서 검토합니다.
+통합 설명은 [시나리오](../../../projects/grandma/SCENARIOS.md), [API 채용안](../../../projects/grandma/API-ADOPTION.md), [외부 장소 연계안](../../../projects/grandma/PLACE-INTEGRATION.md)을 참고합니다. 홈 UC-015에서 추천 상세로 들어가는 범위는 GRD-Q26에서 검토합니다.
 
 - UC-006·012: 동행 예정과 실제 방문 동행을 분리한다. 관계명으로 취향·보행 능력을 추정하지 않는다.
 - UC-008: 장소별 확인된 방문을 저장한다. 여러 방문과 실제 동행의 연결을 유지한다.

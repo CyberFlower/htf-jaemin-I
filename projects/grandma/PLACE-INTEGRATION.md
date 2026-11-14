@@ -1,6 +1,6 @@
 # 다녀왔습니다: 100×100과 외부 장소 정보 연계안
 
-상태: **Draft / 2026-11-14**. 외부 API 호출·데이터 수입·제휴는 아직 수행하지 않았다. [시나리오](SCENARIOS.md)와 [지식 모델 제안](mockup/docs/PRODUCT-AND-KNOWLEDGE.md)을 구체화하며, 제공 조건과 미확인 사항을 구현 전 확인한다.
+상태: **Draft / 2026-11-14**. 외부 API 호출·데이터 수입·제휴는 아직 수행하지 않았다. [시나리오](SCENARIOS.md)와 [지식 모델 제안](../../spikes/grandma-journey-context/docs/PRODUCT-AND-KNOWLEDGE.md)을 구체화하며, 제공 조건과 미확인 사항을 구현 전 확인한다.
 
 ## 1. 서비스가 소유해야 할 전문성
 

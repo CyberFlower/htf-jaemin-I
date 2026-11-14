@@ -37,7 +37,7 @@ JavaScript 구문과 jsdom 기반 상호작용 검증을 통과했습니다. 추
 
 모든 장소·속성·이동 시간·날씨는 가상 예시입니다. 실제 위치·지도·예약·내비·차량·사용자 계정과 연동되지 않습니다. 데모 상태는 현재 브라우저의 localStorage에 저장하며 서버로 전송하지 않습니다. ‘시연 상황 설정 → 데모 데이터 초기화’로 초기화할 수 있습니다. 파일 URL에서 저장이 제한되는 브라우저는 현재 세션만 사용하거나 정적 호스팅 환경에서 열 수 있습니다.
 
-프로젝트 자료와 함께 관리하도록 `projects/grandma/mockup/`에 둡니다. ADR-0002가 Proposed인 동안 사용자 흐름과 지식 모델을 검토하기 위한 실험 목업입니다. 사이트 배포나 차량 앱 구현은 포함하지 않습니다. UC와 전문성 방향은 Draft 제안이며 기존 Decisions의 확정 사항을 변경하지 않습니다.
+AGENTS.md의 실험 코드 배치 규칙에 따라 `spikes/grandma-journey-context/`에 둡니다. ADR-0002가 Proposed인 동안 사용자 흐름과 지식 모델을 검토하기 위한 실험 목업입니다. 사이트 배포나 차량 앱 구현은 포함하지 않습니다. UC와 전문성 방향은 Draft 제안이며 기존 Decisions의 확정 사항을 변경하지 않습니다.
 
 ## 선택·음성 UI 개정 (2026-11-14)
 
@@ -52,7 +52,7 @@ JavaScript 구문과 jsdom 기반 상호작용 검증을 통과했습니다. 추
 - 목적: 목적지·취향·동행·과거 방문을 연결하는 추천 경험과 14.6인치 차량 화면의 선택 입력 흐름을 검토한다.
 - 현재 결론: 홈의 지금 카드에서 여정 준비 → 두 후보 비교 → 내비 적용 시연 → 방문 기록까지 연결했다. 지도·설정·근거는 분리했다. 방문 기록은 키보드 없이 선택과 음성 시연으로 완료한다. 기능 흐름은 DOM 테스트로 확인했다.
 - 미확인: 실제 화면 렌더링·터치 사용성·음성 인식·Pleos SDK 연동. 이 실험으로 제품 구현 방식이나 요구사항의 Confirmed 상태를 확정하지 않는다.
-- 연결: [기존 UC](../USE_CASES.md), [ADR-0002](../../../docs/decisions/0002-mockup-implementation.md).
+- 연결: [기존 UC](../../projects/grandma/USE_CASES.md), [ADR-0002](../../docs/decisions/0002-mockup-implementation.md).
 
 ## 수정 및 재생성
 
@@ -60,7 +60,7 @@ JavaScript 구문과 jsdom 기반 상호작용 검증을 통과했습니다. 추
 
 ## 시나리오와 API 검토
 
-[시나리오 설명·시연 순서](../SCENARIOS.md) · [Pleos API 채용안](../API-ADOPTION.md) · [100×100·외부 장소 연계안](../PLACE-INTEGRATION.md). SDK·외부 API 연계는 설계 제안이며 이 HTML의 실제 연결 기능이 아닙니다.
+[시나리오 설명·시연 순서](../../projects/grandma/SCENARIOS.md) · [Pleos API 채용안](../../projects/grandma/API-ADOPTION.md) · [100×100·외부 장소 연계안](../../projects/grandma/PLACE-INTEGRATION.md). SDK·외부 API 연계는 설계 제안이며 이 HTML의 실제 연결 기능이 아닙니다.
 
 ## 시나리오 통합 개정 (2026-11-14)
 
@@ -75,4 +75,4 @@ JavaScript 구문과 jsdom 기반 상호작용 검증을 통과했습니다. 추
 
 ## 제출용 틀 연결
 
-[SCENARIO.md](../SCENARIO.md)의 SC-08에서 이 HTML을 연결합니다. `journey-demo.html?embed=1`은 차량 화면만 표시하며 시연 도구·테두리를 숨깁니다. 초기화와 실패 상태 변경은 독립 HTML에서 수행합니다. SC-01~07 첫 방문을 이 목업으로 대체 구현했다고 설명하지 않습니다.
+[SCENARIO.md](../../projects/grandma/SCENARIO.md)의 SC-08에서 이 HTML을 연결합니다. `journey-demo.html?embed=1`은 차량 화면만 표시하며 시연 도구·테두리를 숨깁니다. 초기화와 실패 상태 변경은 독립 HTML에서 수행합니다. SC-01~07 첫 방문을 이 목업으로 대체 구현했다고 설명하지 않습니다.

@@ -61,7 +61,7 @@ window.MOCKUP_DATA["grandma"] = {
       "id": "SC-08",
       "title": "다시 가는 여정",
       "state": "정차",
-      "src": "../../projects/grandma/mockup/journey-demo.html?embed=1",
+      "src": "../grandma-journey-context/journey-demo.html?embed=1",
       "kind": "html"
     }
   ]
