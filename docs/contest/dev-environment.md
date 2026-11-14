@@ -146,7 +146,7 @@ dependencyResolutionManagement {
 | Steeringwheel | 핸들 상태, 열선 | 퍼미션 표에 없음 | GAM: 음성 차량 제어 (범위 검토 중) |
 | Tire | 저압 기준값(kPa)과 휠 영역만. 현재 공기압과 경고 여부는 없습니다(4.2.1절) | `CAR_SAFETY` | GAM: 공기압 경고에는 쓸 수 없음 |
 | Toll | 하이패스 음성 안내 음량 | `CAR_TOLL` | |
-| TurnSignal | 방향 지시등 | `CAR_LIGHTS` | |
+| TurnSignal | 방향 지시등. `checkTurnSignalStateCapabilities`, `getCurrentTurnSignalState`, `registerTurnSignalState`/`unregisterTurnSignalState`(2026-11-14 API Reference 확인) | `CAR_LIGHTS` | GAM: 방향 지시등 일일 항목 |
 | Window | 창문 제어·상태 | `CAR_WINDOWS` | |
 | Wiper | 와이퍼 제어·상태 | `CAR_WINDOWS` | |
 
