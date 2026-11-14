@@ -884,24 +884,31 @@ function drawFacility(c, type, x, y, key, o) {
   if (R.born[key] != null) { const e = (R.t - R.born[key]) / .6; if (e < 1) sx = sy = Math.max(.02, easeOutBack(Math.max(0, e))); else delete R.born[key]; }
   if (R.bump[key] != null) { const e = (R.t - R.bump[key]) / .4; if (e < 1) { const w = Math.sin(e * Math.PI * 2) * (1 - e); sy *= 1 - .14 * w; sx *= 1 + .09 * w; } else delete R.bump[key]; }
   c.save(); c.translate(cx, base); c.scale(sx, sy); c.translate(-cx, -base);
-  DRAW[type](c, x, y); c.restore();
+  DRAW[type](c, x, y);
+  const tier = FAC[type].rate && state.home ? tierOf(state.lv[key] || 1) : 0;   // 단계 돌파 외형 (GAM-041)
+  if (tier) {
+    const top = iso(x + .5, y + .5, (HGT[type] || 90) + 8);
+    c.fillStyle = 'rgba(255,255,255,.9)'; c.beginPath(); c.roundRect(top[0] - 22 * tier - 10, top[1] - 22, 44 * tier + 20, 44, 22); c.fill();
+    for (let i = 0; i < tier; i++) drawIcon(c, 'star', top[0] - 22 * (tier - 1) + 44 * i, top[1], 38);
+  }
+  c.restore();
   R.hits.push({ kind: 'fac', type, x, y, key, test: (px, py) => Math.abs(px - cx) < TW * .46 && py > cy - (HGT[type] || 90) && py < cy + TH * .45 });
 }
 
 /* 섬 위 표시: 택배, 완성품, 하트, 정비 알림. 밤에도 어두워지지 않게 마지막에 그린다. */
 function drawMarkers(c) {
-  producers().forEach((p, i) => {
-    const n = Math.floor(state.stock[p.id] || 0);
-    if (n < CFG.STOCK_SHOW || R.born[p.id] != null) return;
-    const s = iso(p.x + .5, p.y + .5, HGT[p.type] + 34), full = n >= stockCap(p.type);
-    bubble(c, s[0], s[1], FAC[p.type].icon, { phase: i * 1.700, badge: full ? 'MAX' : n, badgeBg: full ? '#f0604d' : '#f2a516', hit: { kind: 'stock', id: p.id, sx: s[0], sy: s[1] } });
+  if (state.home) producers().forEach((p, i) => {
+    const site = homeSite(p.id), n = Math.floor(state.stock[p.id] || 0);
+    if (!site || n < rateOf(site) * CFG.STOCK_SHOW_SEC || R.born[p.id] != null) return;
+    const s = iso(p.x + .5, p.y + .5, HGT[p.type] + (tierOf(lvOf(site)) ? 84 : 34)), full = n >= capOf(site) - 1;
+    bubble(c, s[0], s[1], FAC[p.type].icon, { phase: i * 1.700, badge: full ? 'MAX' : fmtShort(n), badgeBg: full ? '#f0604d' : '#f2a516', hit: { kind: 'stock', id: p.id, sx: s[0], sy: s[1] } });
   });
   PETS.forEach((p, i) => {
     const n = state.pets[p.id].n, s = iso(p.x, p.y, 92 + Math.sin(R.t * 3 + i) * 4);
     for (let k = 0; k < CFG.PET.max; k++) disc(c, s[0] - 14 + k * 14, s[1] + 26, 4.500, k < n ? '#ff5d7a' : 'rgba(255,255,255,.75)', 'rgba(74,59,42,.25)', 1);
     if (n > 0) drawIcon(c, 'heart', s[0], s[1], 34);
   });
-  if (state.oil.quest) {
+  if (careDue()) {                                   // 정비 시기(GAM-007)와 차량이 확인한 부족(GAM-048)
     const s = iso(CAT_POS.x, CAT_POS.y, 128);
     bubble(c, s[0], s[1], 'wrench', { bg: '#ffb02e', color: '#ffffff', pulse: true, badge: '!', hit: { kind: 'cat' } });
   }

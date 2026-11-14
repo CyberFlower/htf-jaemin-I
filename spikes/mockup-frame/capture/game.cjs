@@ -47,8 +47,8 @@ const outDir = path.join(root, 'projects/game/assets/scenes');
     await page.mouse.click(r.x + sx, r.y + sy);
   };
 
-  // SC-01 낮의 섬: 처음 상태 (소리 끔)
-  await page.evaluate(() => { resetState(); state.sound = false; save(); refresh(); });
+  // SC-01 낮의 섬: 처음 상태 (소리 끔). 본거지는 시뮬레이터의 지금 위치로 바로 정해 고르기 창을 건너뜀
+  await page.evaluate(() => { resetState(); pickHome(state.loc); state.sound = false; save(); refresh(); });
   await wait(2500);
   await shot('SC-01');
 
@@ -89,8 +89,8 @@ const outDir = path.join(root, 'projects/game/assets/scenes');
     const w = iso(p.x + .5, p.y + .5, HGT[p.type] + 20);
     doCollect('bakery', w[0], w[1] + 50);
   });
-  const dog = await page.evaluate(() => { const d = PETS.find(p => p.id === 'dog'); return scr(iso(d.x, d.y)); });
-  await tapStage(dog[0], dog[1] - 30);
+  // 주민은 돌아다니므로 좌표로 누르면 옆의 장식이 눌릴 수 있습니다. 쓰다듬기를 직접 부릅니다
+  await page.evaluate(() => { const d = PETS.find(p => p.id === 'dog'), s = iso(d.x, d.y); onHit({ kind: 'pet', id: 'dog', sx: s[0], sy: s[1] }); });
   await wait(450);
   await shot('SC-05');
   await wait(1500);
