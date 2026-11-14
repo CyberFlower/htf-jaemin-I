@@ -17,6 +17,8 @@ const CFG = {
   OIL: { km: 10000, days: 365, mat: 30 },     // GAM-Q5: 주기 예시 데이터 (출처 미정). 기록형, 주기마다 한 번 (D-004)
   CHECK: { mat: 10, coolDays: 7 },            // GAM-048, GAM-Q40: 차량이 확인하는 항목의 자재와 같은 항목의 보상 간격(일)
   PET: { max: 3, cooldown: 240 },             // GAM-032: 쿨타임(분) (미정)
+  RESIDENTS_MAX: 6,                           // 섬을 돌아다니는 주민 수 상한 (기본 2명 + 생산 시설 수, GAM-032)
+  TILE: { prices: [2000, 8000, 24000], maxRing: 2 },     // 땅 넓히기: 둘레별 칸당 골드(원래 섬 안·첫째·둘째 둘레), 최대 둘레 (미정)
   STOCK_HOURS: 60,                            // GAM-031: 약 2.5일치까지 쌓임
   STOCK_SHOW_SEC: 300,                        // 이만큼(초) 생산하면 완성품 표시
   LV: {                                       // GAM-040, GAM-041, GAM-Q39
@@ -40,19 +42,41 @@ const FAC = {
   garage: { name: '정비소' },
   lighthouse: { name: '등대' },
   market: { name: '시장', cost: 8, rate: 1.5, icon: 'coin', combo: { near: 'stop', name: '야시장', icon: 'lantern' }, hint: '정류장 옆 · 야시장' },
-  park: { name: '공원', cost: 6, hint: '무대 옆 · 야외 공연' },
-  stage: { name: '무대', cost: 10, combo: { near: 'park', name: '야외 공연', icon: 'note' }, hint: '공원 옆 · 야외 공연' },
+  park: { name: '공원', gold: 1600, hint: '무대 옆 · 야외 공연' },     // 장식 건물: 골드, 개수 제한 없음 (GAM-004)
+  stage: { name: '무대', gold: 3000, combo: { near: 'park', name: '야외 공연', icon: 'note' }, hint: '공원 옆 · 야외 공연' },
   cafe: { name: '카페', cost: 12, rate: 2, icon: 'cup' },
   local: { name: '특산 건물', rate: 1.2, icon: 'star' },   // 다른 도시의 업그레이드 시설. 이름·모양은 권역마다 다름
 };
-const BUILDABLE = ['market', 'park', 'stage', 'cafe'];
+const BUILDABLE = ['market', 'cafe', 'park', 'stage'];   // 생산 시설은 섬에 종류별 하나, 장식 건물은 제한 없음
 
 const DECOR = {
   flowerbed: { name: '꽃밭', price: 600 },
   bench: { name: '벤치', price: 900 },
   lamp: { name: '가로등', price: 1500 },
   fountain: { name: '분수', price: 4000 },
+  tree_round: { name: '둥근 나무', price: 500 },
+  tree_pine: { name: '소나무', price: 500 },
+  tree_palm: { name: '야자수', price: 800 },
+  bush: { name: '덤불', price: 300 },
+  grass: { name: '풀숲', price: 200 },
 };
+const NATURE = ['tree_round', 'tree_pine', 'tree_palm', 'bush', 'grass'];
+/* 땅 종류. build: 건물·장식을 놓을 수 있음, walk: 주민이 걸어 다님 (GAM-047) */
+const TILE_TYPES = {
+  g: { name: '잔디', build: true, walk: true }, s: { name: '모래', build: true, walk: true },
+  p: { name: '돌길', build: true, walk: true }, f: { name: '꽃밭', build: true, walk: true },
+  w: { name: '연못', build: false, walk: false },
+};
+const GRID = { min: -2, max: 11 };          // 땅을 넓힐 수 있는 범위(원래 섬 10×10 + 바깥 두 둘레 = 최대 14×14)
+/* 처음부터 있는 나무·풀. 새로 시작할 때 이 자리에 장식으로 깔리고 옮기거나 보관함에 넣을 수 있습니다 */
+const TREES = [
+  [3.5, 0.6, 'pine'], [6.4, 0.6, 'pine'], [2.5, 1.5, 'round'], [7.5, 1.5, 'round'], [5.6, 1.4, 'bush'],
+  [1.4, 2.4, 'pine'], [8.5, 2.5, 'pine'], [4.6, 2.5, 'round'], [0.5, 3.5, 'round'], [9.5, 3.5, 'round'],
+  [1.4, 3.5, 'bush'], [7.6, 2.6, 'bush'], [0.5, 4.5, 'pine'], [0.5, 6.5, 'round'], [9.5, 6.4, 'bush'],
+  [6.4, 9.45, 'palm'], [2.5, 8.6, 'bush'], [9.5, 7.5, 'palm'], [3.5, 9.45, 'bush'], [8.4, 8.5, 'bush'],
+];
+const TREE_DECOR = { round: 'tree_round', pine: 'tree_pine', palm: 'tree_palm', bush: 'bush' };
+const naturalDecor = () => TREES.map(([x, y, kind]) => ({ type: TREE_DECOR[kind], x: Math.floor(x), y: Math.floor(y) }));
 
 const DAILY_ITEMS = [
   { id: 'time', name: '운전 시간', icon: 'clock', unit: '분' },
@@ -67,7 +91,7 @@ const CHECKS = {
 };
 
 const START_CLOCK = 14 * 60 + 32;        // 2026-11-14(토) 14:32 (SCREENS.md 6절)
-const SAVE_KEY = 'gam-mockup-v2';
+const SAVE_KEY = 'gam-mockup-v3';   // v3: 건물 id·땅 넓히기·장식 나무. 이전 저장은 읽지 않음
 
 const pad2 = n => String(n).padStart(2, '0');
 const dayOf = clock => Math.floor(clock / 1440);
@@ -88,7 +112,7 @@ const fmtRate = r => (r < 10 ? r.toFixed(1) : fmtShort(r));
 
 function freshState() {
   return {
-    v: 2,
+    v: 3,
     gear: 'P',
     clock: START_CLOCK,
     mat: 3, gold: 1000,                // 시작하자마자 장식 하나(벤치 900)를 살 수 있게
@@ -97,13 +121,18 @@ function freshState() {
     sim: { km: 11, min: 24, accel: 0, brake: 0, turn: 6 },
     home: null,                      // 본거지 도시 id. 처음 실행할 때 고름 (GAM-038)
     cities: {},                      // 보유 도시. id → { home } 또는 { lv: {type: 레벨}, stock: {type: 골드}, day }
-    built: {},                       // 본거지 섬: 'x,y' → { type }
+    built: {                         // 본거지 섬의 건물: id → { type, x, y }. 옮겨도 id가 같아 레벨·쌓인 골드가 따라감
+      bakery: { type: 'bakery', x: 5, y: 4 }, flower: { type: 'flower', x: 3, y: 4 },
+    },
+    seq: 0,                          // 새 건물 id 번호
+    extra: {},                       // 바꾼 땅·넓힌 땅: 'x,y' → 땅 종류 (GAM-047)
     stock: { bakery: 2400, flower: 1200 },
     lv: {},                          // 본거지 생산 시설의 레벨. 없으면 1
     away: 0,                         // 마지막으로 요약을 본 뒤 쌓인 골드 (GAM-044)
-    decor: [],                       // { type, x, y }
+    decor: naturalDecor(),           // { type, x, y }. 기본 나무·풀도 장식
     inv: {},                         // 보관함: type → 개수
-    pets: { dog: { n: 3, acc: 0 }, duck: { n: 2, acc: 0 } },
+    bought: {},                      // 상점에서 산 횟수: type → 개수 (가격 상승 기준)
+    pets: {},                        // 주민 id → { n: 남은 하트, acc: 충전 경과(분) }
     daily: { time: 0, accel: 0, brake: 0, turn: 0, done: {} },
     delivery: null,
     rest: null,                      // { state:'active'|'done', acc }
@@ -135,7 +164,7 @@ function save() { try { localStorage.setItem(SAVE_KEY, JSON.stringify(state)); }
 function load() {
   try {
     const s = JSON.parse(localStorage.getItem(SAVE_KEY) || 'null');
-    if (s && s.v === 2) state = Object.assign(freshState(), s);
+    if (s && s.v === 3) state = Object.assign(freshState(), s);
   } catch (e) { /* 손상된 저장은 버림 */ }
 }
 function resetState() { state = freshState(); save(); emit('reset'); }
@@ -147,16 +176,13 @@ const weekTier = d => (d < A() ? 1 : d < 2 * A() ? .5 : 0);
 
 /* ---- 본거지 섬의 시설 ---- */
 function producers() {
-  const list = [{ id: 'bakery', type: 'bakery', x: 5, y: 4 }, { id: 'flower', type: 'flower', x: 3, y: 4 }];
-  Object.keys(state.built).forEach(k => {
-    const t = state.built[k].type;
-    if (FAC[t].rate) { const [x, y] = k.split(',').map(Number); list.push({ id: k, type: t, x, y }); }
-  });
-  return list;
+  return Object.entries(state.built).filter(([, b]) => FAC[b.type].rate).map(([id, b]) => ({ id, type: b.type, x: b.x, y: b.y }));
 }
+const hasProducer = type => producers().some(p => p.type === type);
+function buildingAt(x, y) { return Object.entries(state.built).find(([, b]) => b.x === x && b.y === y) || null; }
 function typeAt(x, y) {
-  const b = state.built[x + ',' + y];
-  if (b) return b.type;
+  const b = buildingAt(x, y);
+  if (b) return b[1].type;
   const f = FIXED.find(o => o.x === x && o.y === y);
   return f ? f.type : null;
 }
@@ -166,9 +192,58 @@ function isNear(x, y, type) {
 /* 조합이 맞은 시설 좌표 목록 */
 function comboSites(type) {
   const c = FAC[type].combo; if (!c) return [];
-  return Object.keys(state.built).filter(k => state.built[k].type === type)
-    .map(k => k.split(',').map(Number)).filter(([x, y]) => isNear(x, y, c.near));
+  return Object.values(state.built).filter(b => b.type === type).map(b => [b.x, b.y]).filter(([x, y]) => isNear(x, y, c.near));
 }
+
+/* ---- 놓을 수 있는 칸, 땅 넓히기·바꾸기·없애기 (GAM-004, GAM-047) ---- */
+const onCat = (x, y) => Math.floor(CAT_POS.x) === x && Math.floor(CAT_POS.y) === y;
+function tileEmpty(x, y) { return !typeAt(x, y) && !state.decor.some(d => d.x === x && d.y === y) && !onCat(x, y); }
+/* 건물·장식을 놓을 수 있는 빈 땅인가: 놓을 수 있는 땅 종류이고 위에 아무것도 없음 */
+function canBuildAt(x, y) { return !!(TILE_TYPES[tileAt(x, y)] || {}).build && tileEmpty(x, y); }
+const baseTile = (x, y) => (MAP[y] && MAP[y][x]) || '.';
+const tileRing = (x, y) => Math.max(0, -x, -y, x - 9, y - 9);
+const isBridge = (x, y) => y === 5 && (x < 0 || x > 9);
+const tilePrice = (x, y) => CFG.TILE.prices[tileRing(x, y)];
+const inLandLimit = (x, y) => tileRing(x, y) <= CFG.TILE.maxRing && x >= GRID.min && y >= GRID.min && x <= GRID.max && y <= GRID.max;
+function canBuyTile(x, y) {
+  if (!inLandLimit(x, y) || isLand(x, y) || isBridge(x, y)) return false;
+  return [[1, 0], [-1, 0], [0, 1], [0, -1]].some(([dx, dy]) => isLand(x + dx, y + dy));
+}
+function landStats() {
+  let max = 0;
+  for (let y = GRID.min; y <= GRID.max; y++) for (let x = GRID.min; x <= GRID.max; x++) if (inLandLimit(x, y) && !isBridge(x, y) && baseTile(x, y) === '.') max++;
+  return { bought: Object.keys(state.extra).filter(k => { const [x, y] = k.split(',').map(Number); return baseTile(x, y) === '.'; }).length, max };
+}
+function buyTile(x, y, type = 'g') {
+  if (state.gear !== 'P' || !canBuyTile(x, y) || !TILE_TYPES[type]) return false;
+  const price = tilePrice(x, y); if (state.gold < price) return false;
+  state.gold -= price; state.extra[x + ',' + y] = type;
+  save(); emit('change');
+  return true;
+}
+/* 종류 바꾸기: 위에 아무것도 없는 땅만, 무료. 도로·주차 자리는 바꾸지 않음 */
+function canPaintTile(x, y, type) { const cur = tileAt(x, y); return !!TILE_TYPES[type] && !!TILE_TYPES[cur] && cur !== type && tileEmpty(x, y); }
+function paintTile(x, y, type) {
+  if (state.gear !== 'P' || !canPaintTile(x, y, type)) return false;
+  const key = x + ',' + y;
+  if (baseTile(x, y) === type) delete state.extra[key]; else state.extra[key] = type;
+  save(); emit('change');
+  return true;
+}
+/* 없애기: 골드로 산 빈 땅만 바다로 되돌림. 골드는 돌려주지 않음 */
+const canRemoveTile = (x, y) => baseTile(x, y) === '.' && isLand(x, y) && tileEmpty(x, y);
+function removeTile(x, y) {
+  if (state.gear !== 'P' || !canRemoveTile(x, y)) return false;
+  delete state.extra[x + ',' + y];
+  save(); emit('change');
+  return true;
+}
+
+/* ---- 섬을 돌아다니는 주민. 모두 쓰다듬을 수 있음 (GAM-032) ---- */
+const RESIDENT_KINDS = ['dog', 'duck', 'cat'];
+function residentIds() { const n = Math.min(CFG.RESIDENTS_MAX, 2 + producers().length); return Array.from({ length: n }, (_, i) => 'r' + i); }
+const residentKind = rid => RESIDENT_KINDS[+rid.slice(1) % RESIDENT_KINDS.length];
+function petState(rid) { return state.pets[rid] || (state.pets[rid] = { n: CFG.PET.max, acc: 0 }); }
 
 /* ---- 레벨·수익 (GAM-040~042) ---- */
 const tierOf = L => (L > 30 ? 3 : L > 20 ? 2 : L > 10 ? 1 : 0);
@@ -292,7 +367,7 @@ function advance(mins, quiet) {
     const before = stockOf(s), after = Math.min(capOf(s), before + rateOf(s) * mins * 60);
     if (after > before) { setStock(s, after); state.away += after - before; }
   }));
-  Object.values(state.pets).forEach(p => {
+  residentIds().map(petState).forEach(p => {
     if (p.n >= CFG.PET.max) { p.acc = 0; return; }
     p.acc += mins;
     while (p.acc >= CFG.PET.cooldown && p.n < CFG.PET.max) { p.n++; p.acc -= CFG.PET.cooldown; }
@@ -399,35 +474,57 @@ function claimDelivery() {
   return d;
 }
 
-/* ---- 건설·쓰다듬기·상점 ---- */
+/* ---- 건설·옮기기·쓰다듬기·상점 ---- */
+/* 생산 시설은 자재, 섬에 종류별 하나. 장식 건물(공원·무대)은 골드, 개수 제한 없음. 빈 땅 어디에나 짓습니다 (GAM-004) */
+const buildCost = type => ({ mat: FAC[type].cost || 0, gold: FAC[type].gold || 0 });
 function build(type, x, y) {
-  const cost = FAC[type].cost;
-  if (state.mat < cost || state.built[x + ',' + y]) return false;
-  state.mat -= cost;
-  state.built[x + ',' + y] = { type };
-  if (FAC[type].rate) { state.stock[x + ',' + y] = 0; state.lv[x + ',' + y] = 1; }
+  if (state.gear !== 'P' || !BUILDABLE.includes(type) || !canBuildAt(x, y)) return false;
+  if (FAC[type].rate && hasProducer(type)) return false;
+  const c = buildCost(type);
+  if (state.mat < c.mat || state.gold < c.gold) return false;
+  state.mat -= c.mat; state.gold -= c.gold;
+  const id = 'b' + (++state.seq);
+  state.built[id] = { type, x, y };
+  if (FAC[type].rate) { state.stock[id] = 0; state.lv[id] = 1; }
   save(); emit('change');
+  return id;
+}
+/* 건물 옮기기: 레벨·쌓인 골드는 id에 붙어 따라감. 고정 건물(등대·상점·정류장·정비소)은 옮기지 않음 (GAM-046) */
+function moveBuilding(id, x, y) {
+  const b = state.built[id];
+  if (state.gear !== 'P' || !b || !canBuildAt(x, y)) return false;
+  b.x = x; b.y = y; save(); emit('change');
   return true;
 }
 function pet(id) {
-  const p = state.pets[id];
-  if (!p || p.n <= 0) return false;
+  if (!residentIds().includes(id)) return false;
+  const p = petState(id);
+  if (p.n <= 0) return false;
   p.n--; save(); emit('change');
   return true;
 }
+/* 같은 종류를 살 때마다 값이 오름. 기본으로 깔린 나무·풀은 산 것으로 세지 않음 */
+const decorPrice = type => Math.round(DECOR[type].price * 1.25 ** (state.bought[type] || 0));
 function buyDecor(type) {
-  const price = DECOR[type].price;
+  const price = decorPrice(type);
   if (state.gold < price) return false;
   state.gold -= price;
+  state.bought[type] = (state.bought[type] || 0) + 1;
   state.inv[type] = (state.inv[type] || 0) + 1;
   save(); emit('change');
   return true;
 }
 function placeDecor(type, x, y) {
-  if (!state.inv[type]) return false;
+  if (!state.inv[type] || !canBuildAt(x, y)) return false;
   state.inv[type]--;
   state.decor.push({ type, x, y });
   save(); emit('change');
+  return true;
+}
+function moveDecor(fx, fy, x, y) {
+  const d = state.decor.find(o => o.x === fx && o.y === fy);
+  if (state.gear !== 'P' || !d || !canBuildAt(x, y)) return false;
+  d.x = x; d.y = y; save(); emit('change');
   return true;
 }
 function pickupDecor(x, y) {

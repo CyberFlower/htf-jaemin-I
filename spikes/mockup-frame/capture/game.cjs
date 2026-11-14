@@ -90,7 +90,7 @@ const outDir = path.join(root, 'projects/game/assets/scenes');
     doCollect('bakery', w[0], w[1] + 50);
   });
   // 주민은 돌아다니므로 좌표로 누르면 옆의 장식이 눌릴 수 있습니다. 쓰다듬기를 직접 부릅니다
-  await page.evaluate(() => { const d = PETS.find(p => p.id === 'dog'), s = iso(d.x, d.y); onHit({ kind: 'pet', id: 'dog', sx: s[0], sy: s[1] }); });
+  await page.evaluate(() => { const d = RES.list[0], s = iso(d.x, d.y); onHit({ kind: 'pet', id: d.id, sx: s[0], sy: s[1] }); });
   await wait(450);
   await shot('SC-05');
   await wait(1500);

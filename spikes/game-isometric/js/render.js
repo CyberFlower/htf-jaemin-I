@@ -5,6 +5,12 @@ const W = 1920, H = 1080, TW = 144, TH = 72, OX = 930, OY = 225, CLIFF = 36;
 const iso = (x, y, z) => [OX + (x - y) * TW / 2, OY + (x + y) * TH / 2 - (z || 0)];
 /* 화면 확대: 섬이 16:9 화면을 채우도록 월드 전체를 키웁니다. scr는 월드→화면, unScr는 화면→월드 */
 const VIEW = { z: 1.25, px: 930, py: 585, tx: 960, ty: 596 };
+/* 사용자 확대(uz)와 이동(px, py, 월드 좌표). 섬 크기에 맞춘 기본 배율(baseZ)에 곱합니다 (GAM-048) */
+const CAM = { uz: 1, px: 0, py: 0, baseZ: 1.25 };
+function applyCam() {
+  CAM.uz = Math.max(.75, Math.min(2.2, CAM.uz)); CAM.px = Math.max(-700, Math.min(700, CAM.px)); CAM.py = Math.max(-450, Math.min(450, CAM.py));
+  VIEW.z = CAM.baseZ * CAM.uz; VIEW.px = 930 + CAM.px; VIEW.py = 585 + CAM.py;
+}
 const scr = p => [(p[0] - VIEW.px) * VIEW.z + VIEW.tx, (p[1] - VIEW.py) * VIEW.z + VIEW.ty];
 const unScr = (x, y) => [(x - VIEW.tx) / VIEW.z + VIEW.px, (y - VIEW.ty) / VIEW.z + VIEW.py];
 function applyView(c) { c.setTransform(VIEW.z, 0, 0, VIEW.z, VIEW.tx - VIEW.px * VIEW.z, VIEW.ty - VIEW.py * VIEW.z); }
@@ -23,20 +29,14 @@ const MAP = [
   '..ggggsss.',
   '...ssss...',
 ];
-const tileAt = (x, y) => (MAP[y] && MAP[y][x]) || '.';
+/* 바꾼 땅·넓힌 땅(state.extra)이 원래 지형보다 먼저 (GAM-047) */
+const tileAt = (x, y) => (state.extra && state.extra[x + ',' + y]) || (MAP[y] && MAP[y][x]) || '.';
 const isLand = (x, y) => tileAt(x, y) !== '.';
 
+/* 옮길 수 없는 고정 건물. 빵집·꽃집은 state.built의 건물이라 옮길 수 있음. 나무·풀은 장식(state.decor) */
 const FIXED = [
-  { type: 'lighthouse', x: 4, y: 0 },
-  { type: 'shop', x: 1, y: 4 }, { type: 'flower', x: 3, y: 4 }, { type: 'bakery', x: 5, y: 4 },
+  { type: 'lighthouse', x: 4, y: 0 }, { type: 'shop', x: 1, y: 4 },
   { type: 'stop', x: 8, y: 4 }, { type: 'garage', x: 6, y: 6 },
-];
-const LOTS = [[7, 4], [2, 2], [6, 2], [4, 7], [5, 7]];
-const TREES = [
-  [3.5, 0.6, 'pine'], [6.4, 0.6, 'pine'], [2.5, 1.5, 'round'], [7.5, 1.5, 'round'], [5.6, 1.4, 'bush'],
-  [1.4, 2.4, 'pine'], [8.5, 2.5, 'pine'], [4.6, 2.5, 'round'], [0.5, 3.5, 'round'], [9.5, 3.5, 'round'],
-  [1.4, 3.5, 'bush'], [7.6, 2.6, 'bush'], [0.5, 4.5, 'pine'], [0.5, 6.5, 'round'], [9.5, 6.4, 'bush'],
-  [6.4, 9.45, 'palm'], [2.5, 8.6, 'bush'], [9.5, 7.5, 'palm'], [3.5, 9.45, 'bush'], [8.4, 8.5, 'bush'],
 ];
 const LAMPS = [[2.5, 4.86], [4.5, 4.86], [6.5, 4.86], [3.2, 6.2], [8.9, 6.2]];
 const CAT_POS = { x: 7.3, y: 7.35 };
@@ -95,10 +95,32 @@ const R = {
 /* ---------- 탈것·주민 ---------- */
 const car = { x: 7.5, y: 6.5, axis: 'y', dir: 1, path: [], visible: true, moving: false };
 const truck = { x: 19, y: 5.28, axis: 'x', dir: -1, path: [], visible: false, parked: false, moving: false };
-const PETS = [
-  { id: 'dog', x: 1.6, y: 6.6, tx: 1.6, ty: 6.6, wait: 1, dir: 1, jump: 0 },
-  { id: 'duck', x: 2.4, y: 7.3, tx: 2.4, ty: 7.3, wait: 2, dir: -1, jump: 0 },
-];
+/* 섬을 돌아다니는 주민. 건물 칸을 가로지르지 않고, 가끔 시설에 들렀다 물건을 들고 나옴(연출, 수익 없음) */
+const RES = { list: [] };
+function walkable(x, y) { return isLand(x, y) && (TILE_TYPES[tileAt(x, y)] || { walk: true }).walk && !typeAt(x, y) && !onCat(x, y); }
+function lineClear(ax, ay, bx, by) {
+  const n = Math.ceil(Math.hypot(bx - ax, by - ay) / .15);
+  for (let i = 1; i <= n; i++) { const t = i / n; if (!walkable(Math.floor(ax + (bx - ax) * t), Math.floor(ay + (by - ay) * t))) return false; }
+  return true;
+}
+function walkSpot(near) {
+  for (let i = 0; i < 80; i++) {
+    const x = GRID.min + Math.random() * (GRID.max - GRID.min + 1) | 0, y = GRID.min + Math.random() * (GRID.max - GRID.min + 1) | 0;
+    if (!walkable(x, y) || (near && Math.hypot(x - near.x, y - near.y) > 4)) continue;
+    const tx = x + .25 + Math.random() * .5, ty = y + .25 + Math.random() * .5;
+    if (near && !lineClear(near.x, near.y, tx, ty)) continue;
+    return [tx, ty];
+  }
+  return near ? [near.x, near.y] : [2.5, 6.6];
+}
+function syncResidents() {
+  const ids = residentIds();
+  while (RES.list.length > ids.length) RES.list.pop();
+  while (RES.list.length < ids.length) {
+    const id = ids[RES.list.length], [x, y] = walkSpot();
+    RES.list.push({ id, kind: residentKind(id), x, y, tx: x, ty: y, wait: Math.random() * 2, dir: 1, jump: 0, carry: null, going: null });
+  }
+}
 const catAnim = { jump: 0 };
 
 function stepVehicle(v, dt, speed) {
@@ -450,6 +472,17 @@ const DECOR_DRAW = {
     b.box(.24, .4, .76, .6, 9, 14, '#c98b4e'); b.box(.24, .4, .76, .45, 14, 28, '#c98b4e');
   },
   lamp(c, x, y) { const p = iso(x + .5, y + .5); drawLamp(c, p[0], p[1]); },
+  tree_round(c, x, y) { const p = iso(x + .5, y + .5); drawTree(c, p[0], p[1], 'round', x * 3 + y); },
+  tree_pine(c, x, y) { const p = iso(x + .5, y + .5); drawTree(c, p[0], p[1], 'pine', x * 3 + y); },
+  tree_palm(c, x, y) { const p = iso(x + .5, y + .5); drawTree(c, p[0], p[1], 'palm', x * 3 + y); },
+  bush(c, x, y) { const p = iso(x + .5, y + .5); drawTree(c, p[0], p[1], 'bush', x * 3 + y); },
+  grass(c, x, y) {
+    for (let i = 0; i < 5; i++) {
+      const p = iso(x + .25 + (i % 3) * .25, y + .3 + (i >> 1) * .2), h = 16 + (i % 2) * 8;
+      c.strokeStyle = ['#4f9a45', '#65b356', '#3f8a3a'][i % 3]; c.lineWidth = 4; c.lineCap = 'round';
+      [-7, 0, 7].forEach(dx => { c.beginPath(); c.moveTo(p[0], p[1]); c.quadraticCurveTo(p[0] + dx * .6, p[1] - h * .6, p[0] + dx, p[1] - h); c.stroke(); });
+    }
+  },
   fountain(c, x, y) {
     const b = mk(c, x, y);
     b.cyl(.5, .5, .36, 0, 12, '#d3dbe6', '#7fd4ea');
@@ -607,6 +640,16 @@ function drawTile(c, x, y) {
   } else if (ch === 's') {
     quad(c, T, '#f8e8b8');
     if (hash(x * 9 + y) < .6) { const p = iso(x + .3 + hash(x + y) * .4, y + .5); disc(c, p[0], p[1], 3, '#f0c9a0'); }
+  } else if (ch === 'f') {
+    quad(c, T, (x + y) & 1 ? '#a8de7a' : '#9fd670');
+    for (let i = 0; i < 9; i++) {
+      const p = iso(x + .12 + hash(x * 7 + y * 13 + i) * .76, y + .12 + hash(x * 11 + y * 5 + i * 3) * .76);
+      disc(c, p[0], p[1] + 2, 3, '#5aa455'); disc(c, p[0], p[1] - 2, 4.5, ['#ff6b8b', '#ffd24a', '#b58cff', '#ffffff', '#ff9d4d'][(i + x + y) % 5]);
+    }
+  } else if (ch === 'w') {
+    quad(c, T, '#f4e2b8');
+    quad(c, [iso(x + .12, y + .12), iso(x + .88, y + .12), iso(x + .88, y + .88), iso(x + .12, y + .88)], '#6cc6e4');
+    const sp = iso(x + .4 + .1 * Math.sin(R.t * 1.5 + x), y + .45); oval(c, sp[0], sp[1], 14, 4, 'rgba(255,255,255,.55)');
   } else if (ch === 'k') {
     quad(c, T, '#bcbfca');
     quad(c, [iso(x + .12, y + .12), iso(x + .88, y + .12), iso(x + .88, y + .88), iso(x + .12, y + .88)], null, '#ffffff', 3);
@@ -631,18 +674,6 @@ function bridgeRail(c, x, y, z) {
   c.beginPath(); c.moveTo(a[0], a[1]); c.lineTo(b[0], b[1]); c.stroke();
   [0, .5].forEach(f => { const p = iso(x + f, y, z); c.beginPath(); c.moveTo(p[0], p[1]); c.lineTo(p[0], p[1] - 14); c.stroke(); });
 }
-function drawLot(c, x, y) {
-  const active = place && place.kind === 'build';
-  const pulse = active ? .5 + .5 * Math.sin(R.t * 5) : 0;
-  const pts = [iso(x + .1, y + .1), iso(x + .9, y + .1), iso(x + .9, y + .9), iso(x + .1, y + .9)];
-  quad(c, pts, `rgba(255,255,255,${.2 + pulse * .25})`);
-  c.setLineDash([12, 9]); c.lineDashOffset = -R.t * 14; quad(c, pts, null, '#ffffff', 3.500); c.setLineDash([]);
-  if (active && place.x === x && place.y === y) return;
-  const p = iso(x + .5, y + .5, 14 + Math.sin(R.t * 2.500 + x) * 4);
-  disc(c, p[0], p[1], 20, '#ffffff'); drawIcon(c, 'plus', p[0], p[1], 26, '#58c46b');
-}
-
-/* ---------- 바다 ---------- */
 function drawSea(c, env) {
   const g = c.createLinearGradient(0, 0, 0, H); g.addColorStop(0, env.seaTop); g.addColorStop(1, env.seaBot);
   c.fillStyle = g; c.fillRect(0, 0, W, H);
@@ -669,7 +700,7 @@ function drawSea(c, env) {
   [[2.25, .1], [1.62, .2]].forEach(([k, al]) => {
     c.fillStyle = `rgba(200,250,245,${al * (1 - env.L * .55)})`;
     c.beginPath();
-    for (let y = 0; y < 10; y++) for (let x = 0; x < 10; x++) if (isLand(x, y)) {
+    for (let y = GRID.min; y <= GRID.max; y++) for (let x = GRID.min; x <= GRID.max; x++) if (isLand(x, y)) {
       const [cx, cy] = iso(x + .5, y + .5, -CLIFF), rw = TW / 2 * k * sh, rh = TH / 2 * k * sh;
       c.moveTo(cx, cy - rh); c.lineTo(cx + rw, cy); c.lineTo(cx, cy + rh); c.lineTo(cx - rw, cy); c.closePath();
     }
@@ -695,8 +726,11 @@ function drawBoat(c) {
 }
 
 /* ---------- 말풍선(섬 위 표시) ---------- */
+/* 섬 위 표시는 위치만 섬을 따라가고, 크기는 확대(CAM.uz)와 상관없이 일정 (GAM-048) */
+function markerScale(c, x, y) { const k = 1 / CAM.uz; c.translate(x, y); c.scale(k, k); c.translate(-x, -y); return k; }
 function bubble(c, x, y, icon, o) {
   o = o || {};
+  c.save(); const k = markerScale(c, x, y);
   const r = o.r || 38, bob = Math.sin(R.t * 3 + (o.phase || 0)) * 5; y += bob;
   if (o.pulse) { const k = (R.t * 1.2) % 1; disc(c, x, y, r + k * 26, null, `rgba(255,255,255,${.8 * (1 - k)})`, 5); }
   c.save(); c.shadowColor = 'rgba(40,30,20,.3)'; c.shadowBlur = 14; c.shadowOffsetY = 5;
@@ -708,7 +742,8 @@ function bubble(c, x, y, icon, o) {
     c.fillStyle = o.badgeBg || '#ff5d7a'; c.beginPath(); c.roundRect(x + r - 24, y - r - 8, Math.max(34, tw), 34, 17); c.fill();
     c.fillStyle = '#fff'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText(txt, x + r - 24 + Math.max(34, tw) / 2, y - r + 10);
   }
-  if (o.hit) R.hits.push(Object.assign({ test: (px, py) => Math.hypot(px - x, py - y) < r + 16 }, o.hit));
+  c.restore();
+  if (o.hit) R.hits.push(Object.assign({ test: (px, py) => Math.hypot(px - x, py - y) < (r + 16) * k }, o.hit));
 }
 
 /* ---------- 갱신 ---------- */
@@ -724,17 +759,32 @@ function update(dt) {
   if (car.moving && car.visible && every('cdust', .09, dt)) { const p = iso(car.x, car.y); part(R.parts, { kind: 'dust', x: p[0], y: p[1], vy: -20, max: .5, size: 9, color: '#f1ead8' }); }
   if (truck.moving && every('tdust', .09, dt)) { const p = iso(truck.x, truck.y); part(R.parts, { kind: 'dust', x: p[0], y: p[1], vy: -20, max: .5, size: 11, color: '#f1ead8' }); }
 
-  PETS.forEach(p => {
+  const ring = Object.keys(state.extra).reduce((m, k) => { const [x, y] = k.split(',').map(Number); return Math.max(m, tileRing(x, y)); }, 0);
+  CAM.baseZ += ([1.25, 1.08, .94][ring] - CAM.baseZ) * Math.min(1, dt * 3);
+  applyCam();
+  if (place) updatePlaceBar();
+  syncResidents();
+  const prods = producers();
+  RES.list.forEach(p => {
     if (p.jump > 0) p.jump = Math.max(0, p.jump - dt);
     if (p.wait > 0) { p.wait -= dt; p.moving = false; return; }
     const dx = p.tx - p.x, dy = p.ty - p.y, dist = Math.hypot(dx, dy);
-    if (dist < .03) { p.wait = 1 + Math.random() * 3; p.tx = 1.15 + Math.random() * 1.700; p.ty = 6.150 + Math.random() * 1.700; p.moving = false; return; }
+    if (dist < .03) {
+      p.wait = 1 + Math.random() * 3; p.moving = false;
+      p.carry = p.going; p.going = null;
+      let pr = prods.length && Math.random() < .35 ? prods[Math.random() * prods.length | 0] : null;
+      if (pr && !lineClear(p.x, p.y, pr.x + .5, pr.y + 1.12)) pr = null;
+      if (pr) { p.tx = pr.x + .5; p.ty = pr.y + 1.12; p.going = FAC[pr.type].icon; }
+      else [p.tx, p.ty] = walkSpot(p);
+      return;
+    }
     p.x += dx / dist * .55 * dt; p.y += dy / dist * .55 * dt; p.moving = true;
     const sdx = (dx - dy); if (Math.abs(sdx) > .01) p.dir = sdx > 0 ? 1 : -1;
   });
   if (catAnim.jump > 0) catAnim.jump = Math.max(0, catAnim.jump - dt);
 
-  if (every('smoke', .45, dt)) { const p = iso(5.26, 4.28, 120); part(R.parts, { kind: 'smoke', x: p[0], y: p[1], vx: 8, vy: -34, max: 2.200, size: 9, color: '#ffffff' }); }
+  const bk = state.built.bakery;
+  if (bk && every('smoke', .45, dt)) { const p = iso(bk.x + .26, bk.y + .28, 120); part(R.parts, { kind: 'smoke', x: p[0], y: p[1], vx: 8, vy: -34, max: 2.200, size: 9, color: '#ffffff' }); }
 
   const nm = comboSites('market').length > 0 && R.L > .4;
   if (nm && !R.nightMarket) emit('nightMarket');
@@ -792,36 +842,37 @@ function draw() {
   c.setTransform(1, 0, 0, 1, 0, 0); c.clearRect(0, 0, W, H); applyView(c);
   drawBoat(c);
   for (let x = -13; x < 0; x++) drawBridgeTile(c, x);
-  for (let d = 0; d < 19; d++) for (let x = 0; x < 10; x++) { const y = d - x; if (y >= 0 && y < 10 && isLand(x, y)) drawTile(c, x, y); }
+  for (let d = GRID.min * 2; d <= GRID.max * 2; d++) for (let x = GRID.min; x <= GRID.max; x++) { const y = d - x; if (y >= GRID.min && y <= GRID.max && isLand(x, y)) drawTile(c, x, y); }
   for (let x = 10; x < 20; x++) drawBridgeTile(c, x);
 
-  const freeLots = LOTS.filter(([x, y]) => !state.built[x + ',' + y]);
-  if (!driving) freeLots.forEach(([x, y]) => {
-    drawLot(c, x, y);
-    R.hits.push({ kind: 'lot', x, y, test: (px, py) => { const [u, v] = unIso(px, py); return u >= x && u < x + 1 && v >= y && v < y + 1; } });
-  });
-  if (place && place.kind === 'decor') {
-    for (let y = 0; y < 10; y++) for (let x = 0; x < 10; x++) if (canDecor(x, y)) {
-      quad(c, [iso(x + .08, y + .08), iso(x + .92, y + .08), iso(x + .92, y + .92), iso(x + .08, y + .92)], `rgba(255,255,255,${.22 + .12 * Math.sin(R.t * 5)})`);
+  /* 짓기·옮기기·장식: 놓을 수 있는 빈 땅을, 땅 모드: 고를 수 있는 칸을 강조 */
+  if (place) {
+    const a = .22 + .12 * Math.sin(R.t * 5);
+    for (let y = GRID.min; y <= GRID.max; y++) for (let x = GRID.min; x <= GRID.max; x++) {
+      if (place.kind === 'tile' ? !tileOk(x, y) : !canBuildAt(x, y)) continue;
+      const pts = [iso(x + .08, y + .08), iso(x + .92, y + .08), iso(x + .92, y + .92), iso(x + .08, y + .92)];
+      if (place.kind === 'tile' && place.act === 'remove') quad(c, pts, `rgba(240,96,77,${a})`, 'rgba(255,255,255,.9)', 3);
+      else if (place.kind === 'tile') { quad(c, pts, `rgba(170,230,140,${a + .1})`); quad(c, pts, null, 'rgba(255,255,255,.9)', 3); }
+      else quad(c, pts, `rgba(255,255,255,${a})`);
     }
   }
 
   const objs = [];
   const fac = (type, x, y, key, o) => objs.push({ d: x + y + 1, f: () => drawFacility(c, type, x, y, key, o) });
   FIXED.forEach(f => fac(f.type, f.x, f.y, f.type));
-  Object.keys(state.built).forEach(k => { const [x, y] = k.split(',').map(Number); fac(state.built[k].type, x, y, k); });
-  TREES.forEach(([x, y, kind], i) => objs.push({ d: x + y, f: () => { const p = iso(x, y); drawTree(c, p[0], p[1], kind, i * 1.700); } }));
+  Object.entries(state.built).forEach(([id, b]) => { if (!(place && place.kind === 'move' && place.id === id)) fac(b.type, b.x, b.y, id); });
   LAMPS.forEach(([x, y]) => objs.push({ d: x + y, f: () => { const p = iso(x, y); drawLamp(c, p[0], p[1]); } }));
-  state.decor.forEach(dc => objs.push({
+  state.decor.forEach(dc => !(place && place.kind === 'decorMove' && place.fx === dc.x && place.fy === dc.y) && objs.push({
     d: dc.x + dc.y + 1, f: () => {
       DECOR_DRAW[dc.type](c, dc.x, dc.y);
       const [cx, cy] = iso(dc.x + .5, dc.y + .5);
       R.hits.push({ kind: 'decor', x: dc.x, y: dc.y, test: (px, py) => Math.abs(px - cx) < 50 && py > cy - 60 && py < cy + 26 });
     },
   }));
-  PETS.forEach(p => objs.push({
+  RES.list.forEach(p => objs.push({
     d: p.x + p.y, f: () => {
-      const s = iso(p.x, p.y); drawPet(c, p.id, s[0], s[1], p);
+      const s = iso(p.x, p.y); drawPet(c, p.kind, s[0], s[1], p);
+      if (p.carry) drawIcon(c, p.carry, s[0] + 21, s[1] - 36, 25);
       R.hits.push({ kind: 'pet', id: p.id, sx: s[0], sy: s[1], test: (px, py) => Math.hypot(px - s[0], py - (s[1] - 30)) < 50 });
     },
   }));
@@ -843,11 +894,14 @@ function draw() {
     const fl = .62 + .12 * Math.sin(R.t * 6);
     objs.push({
       d: place.x + place.y + 1.010, f: () => {
-        const ok = place.kind === 'build' || canDecor(place.x, place.y);
+        const ok = place.kind === 'tile' ? tileOk(place.x, place.y) : canBuildAt(place.x, place.y);
         const pts = [iso(place.x + .04, place.y + .04), iso(place.x + .96, place.y + .04), iso(place.x + .96, place.y + .96), iso(place.x + .04, place.y + .96)];
         quad(c, pts, ok ? 'rgba(120,230,140,.4)' : 'rgba(255,90,80,.4)', ok ? '#58c46b' : '#f0604d', 4);
         c.save(); c.globalAlpha = fl; c.translate(0, -8 - Math.sin(R.t * 3) * 4);
-        (place.kind === 'build' ? DRAW : DECOR_DRAW)[place.type](c, place.x, place.y); c.restore();
+        const T4 = [iso(place.x, place.y), iso(place.x + 1, place.y), iso(place.x + 1, place.y + 1), iso(place.x, place.y + 1)];
+        if (place.kind === 'tile') quad(c, T4, place.act === 'remove' ? 'rgba(120,200,230,.85)' : { g: '#a8de7a', s: '#f8e8b8', p: '#f4e5c9', f: '#c8e88a', w: '#6cc6e4' }[place.tile || 'g']);
+        else (place.kind === 'decor' || place.kind === 'decorMove' ? DECOR_DRAW : DRAW)[place.type](c, place.x, place.y);
+        c.restore();
       },
     });
   }
@@ -912,16 +966,20 @@ function drawFacility(c, type, x, y, key, o) {
 
 /* 섬 위 표시: 택배, 완성품, 하트, 정비 알림. 밤에도 어두워지지 않게 마지막에 그린다. */
 function drawMarkers(c) {
+  const goal = state.home && typeof nextGoal === 'function' ? nextGoal().pid : null;
   if (state.home) producers().forEach((p, i) => {
+    if (p.id === goal) drawGoalBadge(c, p);
     const site = homeSite(p.id), n = Math.floor(state.stock[p.id] || 0);
     if (!site || n < rateOf(site) * CFG.STOCK_SHOW_SEC || R.born[p.id] != null) return;
     const s = iso(p.x + .5, p.y + .5, HGT[p.type] + (tierOf(lvOf(site)) ? 84 : 34)), full = n >= capOf(site) - 1;
     bubble(c, s[0], s[1], FAC[p.type].icon, { phase: i * 1.700, badge: full ? 'MAX' : fmtShort(n), badgeBg: full ? '#f0604d' : '#f2a516', hit: { kind: 'stock', id: p.id, sx: s[0], sy: s[1] } });
   });
-  PETS.forEach((p, i) => {
-    const n = state.pets[p.id].n, s = iso(p.x, p.y, 92 + Math.sin(R.t * 3 + i) * 4);
+  RES.list.forEach((p, i) => {
+    const n = petState(p.id).n, s = iso(p.x, p.y, 92 + Math.sin(R.t * 3 + i) * 4);
+    c.save(); markerScale(c, s[0], s[1] + 20);
     for (let k = 0; k < CFG.PET.max; k++) disc(c, s[0] - 14 + k * 14, s[1] + 26, 4.500, k < n ? '#ff5d7a' : 'rgba(255,255,255,.75)', 'rgba(74,59,42,.25)', 1);
     if (n > 0) drawIcon(c, 'heart', s[0], s[1], 34);
+    c.restore();
   });
   if (careDue()) {                                   // 정비 시기(GAM-007)와 차량이 확인한 부족(GAM-048)
     const s = iso(CAT_POS.x, CAT_POS.y, 128);
@@ -937,15 +995,16 @@ function drawMarkers(c) {
   }
 }
 
-/* 장식을 놓을 수 있는 자리인가 */
-function canDecor(x, y) {
-  const ch = tileAt(x, y);
-  if (ch !== 'p' && ch !== 'g') return false;
-  if (typeAt(x, y) || LOTS.some(l => l[0] === x && l[1] === y)) return false;
-  if (state.decor.some(d => d.x === x && d.y === y)) return false;
-  if (TREES.some(t => Math.floor(t[0]) === x && Math.floor(t[1]) === y)) return false;
-  if (Math.floor(CAT_POS.x) === x && Math.floor(CAT_POS.y) === y) return false;
-  return true;
+/* 장식을 놓을 수 있는 자리인가 (규칙은 state.js canBuildAt) */
+const canDecor = (x, y) => canBuildAt(x, y);
+/* 아래 줄 다음 목표가 가리키는 시설 하나에만 작은 표시: 레벨업은 초록 화살표, 돌파는 주황 별 (GAM-040) */
+function drawGoalBadge(c, p) {
+  const site = homeSite(p.id); if (!site) return;
+  const s = iso(p.x + .82, p.y + .82, (HGT[p.type] || 100) * .55), brk = breakMat(lvOf(site)) > 0, pulse = 1 + .1 * Math.sin(R.t * 5);
+  c.save(); markerScale(c, s[0], s[1]);
+  disc(c, s[0], s[1], 21 * pulse, brk ? '#ffb02e' : '#58c46b', '#ffffff', 4);
+  drawIcon(c, brk ? 'star' : 'up', s[0], s[1], 24, '#ffffff');
+  c.restore();
 }
 
 /* 짓기 창·상점에 쓰는 작은 그림 */
