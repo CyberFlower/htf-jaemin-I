@@ -23,6 +23,9 @@
 | game: 연료 사용 보상을 유지할지, 효율·안전 보상으로 바꿀지 | 11/13 | GAM-002, PROPOSAL 2·3번 | GAM-Q6 | | Open |
 | game: care 요소를 어디까지 넣을지 (특히 음성 차량 제어), 주 타깃을 누구로 할지 | 11/13 | GAM-013~016 우선순위, PROPOSAL 2·3·6번 | GAM-Q16, GAM-Q19 | | Open |
 | game: 도시 그래픽 자산을 만드는 방법 | 11/14 | 목업 화면 | GAM-Q12 | | Open |
+| game: 전국 지도 확장에서 폰 연동을 어느 단계에 넣을지 (재화 역할은 정함) | 11/15 | GAM-041~043, PROPOSAL 3·6번, 목업 범위 | GAM-Q33 | | Resolved ([D-004](projects/game/DECISIONS.md)). GAM-Q30도 Resolved ([D-003](projects/game/DECISIONS.md)) |
+| game: 경고 이상 현상에 쓸 신호(공기압·과열 경고등을 못 읽을 때), 정비 퀘스트를 두 갈래로 나눌지 | 11/15 | GAM-009, GAM-044, 시연 영상 7번 장면 | GAM-Q3, GAM-Q37 | | 정비 두 갈래는 Resolved ([D-004](projects/game/DECISIONS.md)). GAM-Q3은 기한 없이 검토 필요(3절 에뮬레이터 확인) |
+| game: 운행 자재 주간 상한 수식 제안 확인 | 11/15 | GAM-001, GAM-035, 목업 `CFG` | GAM-Q27 | | Open (제안 확인 대기) |
 | 저장소 공개 시 개인정보 처리 (저장소 이름, 계정, 커밋 author) | 11/15 | 11/16 공개 전환 | Q5 | | Open |
 
 ## 2. 주최측 문의 (메일 한 통으로)
@@ -46,7 +49,8 @@
 - [ ] 화면 규격 (`adb shell wm size`, `adb shell wm density`) → Q4, README 제출 정보
 - [ ] 주행/정차, 주차를 판단할 신호 → Q8, GAM-Q1
 - [ ] Virtual Console로 바꿀 수 있는 신호 (Odometer, Fuel, Safety, Tire, Door) → GAM-Q2
-- [ ] Safety 경고 종류와 Tire 공기압 항목 → GAM-Q3
+- [ ] Safety 경고 종류와 Tire 공기압 항목 → GAM-Q3 (API Reference는 2026-11-14 확인. 남은 것: `PRIVATE_CAR_SAFETY`가 에뮬레이터에서 허용되는지)
+- [ ] 엔진오일·브레이크액 레벨, 워셔액 경고 값이 들어오는지와 바꾸는 방법 → GAM-Q37
 - [ ] Seat 점유 정보 → GRD-Q2
 - [ ] NaviHelper 경유지 추가 → GRD-Q3
 - [ ] STT 한국어 인식, ON_DEVICE 모드 → GRD-Q6
