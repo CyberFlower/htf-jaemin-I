@@ -82,7 +82,7 @@
 - 상황: 할머니 댁 앞에 정차. 도어가 열렸다 닫힌 것을 관측했습니다.
 - 사용자 행동: 홈의 탑승 후보 카드 "할머니와 함께 출발하시나요?"에 [네]를 누르고, 2구간(할머니 댁 → 바다 카페) 경로 적용을 승인합니다(GRD-UC-006 B1~B2, GRD-UC-005 B2).
 - 앱 응답: 관측 근거(도어 열림·닫힘)와 함께 동행을 묻고(S08), 사용자가 확인한 동행자를 이번 여정에 설정한 뒤 2구간 경로를 적용합니다. 공조 적용은 지원할 때만, 따로 승인합니다(GRD-UC-007, P2).
-- 차량 신호·SDK: Vehicle Door (CAR_DOORS) — 문서 확인, Seat 점유 (CAR_SEATS) — 확인 필요 (GRD-Q2), NaviHelper (NAVI_ROUTE_SEARCH) — 문서 확인
+- 차량 신호·SDK: Vehicle Door (CAR_DOORS) — 문서 확인, Seat 좌석 점유 `getCurrentSeatOccupancy`·`registerSeatOccupancy` (CAR_SEATS) — API 이름 문서 확인, 값의 의미·에뮬레이터 동작 확인 필요 (GRD-Q2), NaviHelper `requestRouteWithWaypoints()` (NAVI_ROUTE_SEARCH) — 문서 확인
 - 오판 방지·대체 동작: 문만 열고 닫았거나 좌석에 짐을 놓은 것을 탑승이나 신원으로 확정하지 않습니다(E1, GRD-N02). 좌석 신호를 쓸 수 없으면 사용자가 동행자를 직접 고릅니다(A1). 답하지 않으면 미확인으로 둡니다.
 - 시연 방법: TODO (첫 방문 화면 미구현, GRD-Q26)
 - 캡처·영상: TODO
@@ -112,7 +112,7 @@
 - 상황: 과거 어머니와 방문한 가상 장소 ‘파도 서가’를 다시 선택합니다. 첫 방문의 할머니 사례와 구분한 재방문 변형입니다.
 - 사용자 행동: 홈 ‘여정 준비’ → 이번 동행 선택 → 추천 두 곳 비교 → 경유 후보 최대 두 곳 담기 → 내비 적용 승인 시연 → 여정 마치기 → 실제 방문 기록.
 - 앱 응답: 내부 장소 ID가 같은 최근 활용 가능 방문을 찾습니다. 답에 따라 명시한 동행 선호를 적용하며 기록은 최종 저장 후 생성합니다.
-- 차량 신호·SDK: 현재는 로컬 시연입니다. 실제 NaviHelper·STT·차량 제한 상태를 읽지 않습니다. 채용·검증 계획은 [API-ADOPTION.md](API-ADOPTION.md)를 따릅니다.
+- 차량 신호·SDK: 현재는 로컬 시연입니다. 실제 NaviHelper·STT·차량 제한 상태를 읽지 않습니다. 실제 앱에서 쓸 API는 [SDK.md](SDK.md) 2절 SC-08 행(NaviHelper `getDestinationInfo()` → `onDestinationInfo`, FusedLocation, SpeechToText, 경로 적용)이고, 검증 계획은 [API-ADOPTION.md](API-ADOPTION.md)를 따릅니다.
 - 오판 방지·대체 동작: 다른 장소의 동행 기억을 질문하지 않습니다. 예정 동행과 실제 방문 동행을 분리합니다. 담기·내비 성공 시연·여정 종료로 스탬프를 만들지 않습니다. 검색 실패·내비 실패/취소·상태 미확인 입력 제한을 시연 설정에서 비교합니다.
 - 시연 방법: [HTML](../../spikes/grandma-journey-context/journey-demo.html)을 열고 [시연 순서](SCENARIOS.md#5-현재-html로-따라-하는-시연)를 따릅니다. 틀에서는 `embed=1`로 외부 도구·테두리를 숨깁니다. 초기화·예외 설정은 독립 HTML의 시연 패널에서 합니다.
 - 캡처·영상: TODO (미녹화. 관리형 미리보기 오류로 실제 화면 배치 확인도 남아 있음)
@@ -134,5 +134,5 @@
 |---|---|---|
 | 차량특화성 | SC-01, SC-03, SC-05 | 약속이 생기는 정차의 순간과 실행하는 출발·동행의 순간이 모두 차 안에 있습니다. 폰 앱이면 정차 중 한마디로 남기는 순간, 차량 상태로 준비하고 승인한 경유지를 내비에 바로 넣는 단계, 도어 관측을 계기로 동행을 묻는 시점이 사라집니다 |
 | 창의성 | SC-08 | 동일 장소라도 확인된 이번 동행에 따라 추천 이유가 달라짐(GRD-013, GRD-014). 운전자 조건부 지식 모델·모바일 연계는 [내부 제안](../../spikes/grandma-journey-context/docs/PRODUCT-AND-KNOWLEDGE.md)이며 구현 전 |
-| 기술 활용성 | SC-01, SC-03, SC-05, SC-04·06 | SC-01 SpeechToText와 FusedLocation, SC-03 Vehicle Fuel/EvBattery와 NaviHelper 경로·경유지 적용, SC-05 Vehicle Door, SC-04·06 TextToSpeech. 모두 문서 확인 단계이고 에뮬레이터 검증 전입니다([API-ADOPTION.md](API-ADOPTION.md)) |
+| 기술 활용성 | SC-01, SC-03, SC-05, SC-04·06 | SC-01 SpeechToText와 FusedLocation, SC-03 Vehicle Fuel/EvBattery와 NaviHelper 경로·경유지 적용, SC-05 Vehicle Door, SC-04·06 TextToSpeech. 모두 문서 확인 단계이고 에뮬레이터 검증 전입니다. 장면별 API와 퍼미션은 [SDK.md](SDK.md)(Pleos SDK 활용 맵) |
 | 사업성 | SC-07, SC-08 | 다녀온 기억이 다음 약속(SC-07)과 다음 방문의 질문(SC-08)이 되어 다시 쓸 이유가 생깁니다. 타깃 규모와 지표의 근거는 GRD-Q7 |
