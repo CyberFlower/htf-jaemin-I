@@ -20,7 +20,7 @@
 
 ```text
 GOAL.md 대표 시나리오 ─┐
-USE_CASES.md 흐름     ─┼─▶ SCENARIO.md 2절 장면 표 ─┬─▶ (생성) 목업 틀의 장면 목록과 설명 줄
+USE_CASES.md 흐름     ─┼─▶ SCENARIO.md 2절 장면 표 ─┬─▶ (생성) 목업 틀의 장면 순서
 REQUIREMENTS.md P0    ─┘        (장면의 원본)        ├─▶ SCENARIO.md 3절 장면별 상세
                                                      └─▶ PROPOSAL.md 4번 (요약)
 ```
@@ -82,6 +82,7 @@ node spikes/mockup-frame/build.mjs
 ## 6. 목업을 틀에 넣는 조건
 
 - 틀은 장면마다 HTML 목업(iframe) 또는 캡처 이미지를 화면 규격 그대로 띄우고 창 크기에 맞게 줄입니다.
+- 틀에 보이는 글자는 앱 이름, 장면 번호, 장면 이름, 차량 상태뿐입니다. 장면 설명, 요구사항, 심사 태그는 틀에 넣지 않고 `SCENARIO.md`에 씁니다. 장면 이름은 짧게 씁니다.
 - 틀에 넣는 목업은 **차량 화면 영역만** 그립니다. 목업 안에 따로 둔 테두리나 시연 도구는 숨길 수 있어야 합니다(예: `?embed=1`).
 - 캡처는 `projects/<p>/assets/scenes/SC-01.png`에 둡니다. 화면 규격과 같은 비율로 찍습니다.
 - 화면 규격은 `SCENARIO.md` 1절의 "화면 규격" 줄을 따릅니다. 에뮬레이터 실측값이 나오면 그 줄을 고칩니다([open-questions.md](../open-questions.md) Q4).

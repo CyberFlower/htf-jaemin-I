@@ -95,16 +95,16 @@ for (const p of projects) {
     seen.add(id);
     if (!lines.some((l) => l.startsWith(`### ${id} `))) problems.push(`${file}: 3절에 "### ${id} …" 상세가 없습니다`);
     const frame = frameSource(r['틀'], dir, file, id);
+    // 틀에는 장면 번호, 이름, 차량 상태만 보입니다. 나머지 열은 SCENARIO.md에서 읽습니다.
     return {
-      id, title: plain(r['장면']), state: filled(r['차량 상태']), screens: filled(r['화면']),
+      id, title: plain(r['장면']), state: filled(r['차량 상태']),
       src: frame ? frame.src : null, kind: frame ? frame.kind : null,
-      caption: filled(r['한 줄 설명']), reqs: filled(r['요구사항']), tags: filled(r['심사']),
     };
   });
 
   const data = {
-    code, name: title ? title[1] : p, scenario: meta('시나리오 이름'),
-    width: size ? Number(size[1]) : 1920, height: size ? Number(size[2]) : 1080, spec,
+    code, name: title ? title[1] : p,
+    width: size ? Number(size[1]) : 1920, height: size ? Number(size[2]) : 1080,
     source: file, scenes,
   };
   const js = '// 생성된 파일입니다. 손으로 고치지 않습니다.\n'
