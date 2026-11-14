@@ -102,6 +102,7 @@
 - TODO (GAM-Q3): 장면 7의 경고 종류(공기압)는 SDK에서 받을 수 있는지 확인이 필요합니다.
 - TODO (GAM-Q19): "누가"는 [GOAL.md](GOAL.md)의 타깃 가설 중 첫째(도시 꾸미기를 즐기는 차주)로 썼습니다. 주 타깃이 정해지면 맞춥니다.
 - TODO (GAM-Q26): 쉬어 가기 퀘스트의 연속 운전 기준 시간과 휴식 인정 시간은 정해지지 않아 수치를 쓰지 않았습니다.
+- TODO (GAM-Q29): 장면 2의 "저절로 움직이는 섬"은 [SCREENS.md](SCREENS.md) S02를 따른 것입니다. Android 차량용 게임 안내는 게임을 주차 중에만 쓰는 앱으로 분류하고 주행 중 사용을 막으라고 합니다. 주행 중 섬 표시를 유지할지 정해지면 장면 2 문장을 고칩니다.
 
 ## 5. 개발 계획 `[기술]`
 
@@ -117,7 +118,7 @@
 
 **단계**
 
-1. 1차 접수(2026-11-15)까지: 대표 시나리오 일곱 장면의 목업과 시연 영상. 차량 신호는 가상 값으로 넣고, 가상 값임을 표시합니다.
+1. 1차 접수(2026-11-15)까지: 대표 시나리오 일곱 장면을 직접 조작해 볼 수 있는 HTML 목업을 만들었습니다. 차량 신호는 화면 밖 시뮬레이터로 넣는 가상 값이고, Pleos SDK와 에뮬레이터에는 아직 연결하지 않았습니다.
 2. 2차 PT(2026-12-03~04) 전까지: 에뮬레이터에서 동작하는 앱. 운행 택배, 시설 짓기, 정비 퀘스트, 차량 경고 표시, 주행 중 조작 차단을 먼저 만들고, 안전운전 일일 퀘스트와 섬 돌보기를 이어서 만듭니다.
 
 **설계 원칙**
@@ -146,8 +147,9 @@ Pleos Connect SDK의 Vehicle 도메인에는 차량 속도, 기어, 주차 브�
 
 ### 확인할 것
 
-- TODO ([ADR-0002](../../docs/decisions/0002-mockup-implementation.md)): 목업 구현 방식이 Proposed입니다. 1단계의 "목업"을 웹 목업, Android 앱, 디자인 도구 중 무엇으로 만들지 정해지면 한 줄을 더합니다. "공식 샘플 앱 구성을 기준으로 시작"은 [dev-environment.md](../../docs/contest/dev-environment.md) 2절의 참고 구성이고 확정된 결정이 아닙니다.
+- TODO ([ADR-0002](../../docs/decisions/0002-mockup-implementation.md)): 목업 구현 방식이 Proposed입니다. 1단계의 HTML 목업([spikes/game-isometric](../../spikes/game-isometric/README.md))은 실험 코드이고 구현 방식을 정한 것이 아닙니다. 2단계를 무엇으로 만들지 정해지면 한 줄을 더합니다. "공식 샘플 앱 구성을 기준으로 시작"은 [dev-environment.md](../../docs/contest/dev-environment.md) 2절의 참고 구성이고 확정된 결정이 아닙니다.
 - TODO (Q11): AAOS 표준 API의 공모전 사용 가능 여부는 주최측 답변 대기 중입니다. 답이 오면 표의 "주최측에 확인 중"을 고칩니다.
+- TODO: HTML 목업의 숫자(1km당 자재 1, 하루 상한 40, 일일 기준과 골드, 정비 주기 10,000km 또는 12개월, 시설 비용)는 [목업 README](../../spikes/game-isometric/README.md) 5절의 가정값이고 근거가 없습니다. 원고의 수치로 옮기지 않습니다(GAM-Q5, GAM-Q21~Q27).
 - TODO (GAM-Q1, Q8): 주차 판단에 쓸 신호 조합이 정해지지 않았습니다. `CarUxRestrictionsManager`의 권한도 확인되지 않았습니다.
 - TODO (GAM-Q2, GAM-Q23): Virtual Console로 바꿀 수 있는 신호는 가이드 문서로만 확인했습니다. 속도 항목은 가이드에 없습니다. 에뮬레이터에서 직접 확인해야 합니다.
 - TODO (GAM-Q25): 앱이 화면에 없을 때 운행 중 신호 콜백을 받을 수 있는지 확인되지 않았습니다. 받을 수 없으면 일일 퀘스트 판정과 쉬어 가기 퀘스트의 설계가 바뀝니다.
@@ -226,8 +228,8 @@ Pleos Connect가 탑재된 차를 출퇴근, 장보기, 주말 외출에 쓰는 
 
 ### 확인할 것
 
-- TODO: 화면 시안. 목업 화면을 [SCENARIO.md](SCENARIO.md) 장면 표의 "틀" 칸에 연결한 뒤 캡처를 넣습니다. 지금은 연결된 장면이 없습니다.
-- TODO: 시연 영상 링크와 공개 범위(링크가 있는 사람만 볼 수 있게 하는 등).
+- TODO (Q12): 화면 시안. 장면 일곱 개의 캡처가 있습니다([assets/scenes](assets/scenes/), `node spikes/mockup-frame/capture/game.cjs`로 다시 만듦). 양식에 파일로 붙일지 링크로 적을지는 Q12에서 정합니다. 캡처의 숫자는 목업 가정값입니다.
+- TODO: 시연 영상 링크와 공개 범위(링크가 있는 사람만 볼 수 있게 하는 등). 영상은 [HTML 목업](../../spikes/game-isometric/README.md)을 [SCENARIO.md](SCENARIO.md) 4절 순서대로 조작해 녹화할 수 있습니다. 아직 녹화하지 않았습니다.
 - TODO: 저장소 주소와 최종 커밋 hash. 두 출품작의 메일에 같은 hash를 적습니다([submission.md](../../docs/contest/submission.md) 5절).
 - TODO: 루트 README의 "내 차로 짓는 도시 (GAM)" 절 링크와 APK 경로(`apk/팀명_내차로짓는도시_release.apk` 또는 Release 주소). APK를 낼지는 ADR-0002에 달려 있습니다.
 - TODO (Q12): 코어 시나리오 가이드와 화면 시안을 별지로 붙일지, 링크로만 적을지 정합니다.

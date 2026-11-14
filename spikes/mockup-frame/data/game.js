@@ -12,50 +12,50 @@ window.MOCKUP_DATA["game"] = {
       "id": "SC-01",
       "title": "낮의 섬",
       "state": "주차",
-      "src": null,
-      "kind": null
+      "src": "../../projects/game/assets/scenes/SC-01.png",
+      "kind": "image"
     },
     {
       "id": "SC-02",
       "title": "출발하면 주행 모드",
       "state": "주행",
-      "src": null,
-      "kind": null
+      "src": "../../projects/game/assets/scenes/SC-02.png",
+      "kind": "image"
     },
     {
       "id": "SC-03",
       "title": "주차하면 택배가 온다",
       "state": "주차",
-      "src": null,
-      "kind": null
+      "src": "../../projects/game/assets/scenes/SC-03.png",
+      "kind": "image"
     },
     {
       "id": "SC-04",
       "title": "시장을 짓고 야시장으로",
       "state": "주차",
-      "src": null,
-      "kind": null
+      "src": "../../projects/game/assets/scenes/SC-04.png",
+      "kind": "image"
     },
     {
       "id": "SC-05",
       "title": "거두고, 사고, 쓰다듬기",
       "state": "주차",
-      "src": null,
-      "kind": null
+      "src": "../../projects/game/assets/scenes/SC-05.png",
+      "kind": "image"
     },
     {
       "id": "SC-06",
       "title": "정비소 주민의 정비 알림",
       "state": "주차",
-      "src": null,
-      "kind": null
+      "src": "../../projects/game/assets/scenes/SC-06.png",
+      "kind": "image"
     },
     {
       "id": "SC-07",
       "title": "공기압 경고와 일렁이는 길",
       "state": "경고 (공기압)",
-      "src": null,
-      "kind": null
+      "src": "../../projects/game/assets/scenes/SC-07.png",
+      "kind": "image"
     }
   ]
 };
