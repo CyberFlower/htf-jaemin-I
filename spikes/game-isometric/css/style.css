@@ -401,3 +401,15 @@ button.chip.name { font-family: inherit; }
   #app.phone-on { grid-template-columns: 1fr; }
   #phone { position: fixed; inset: 0; z-index: 100; background: rgba(5, 8, 12, .7); }
 }
+
+/* ---- 권역별 특산 건물 (다른 도시 화면, 지도, 도시 카드) ---- */
+.city .fcards { grid-template-columns: repeat(4, 1fr); gap: 26px; }
+.city .fcard canvas { width: 260px; height: 216px; }
+.fc-local { font-style: normal; font-size: 24px; color: #a8641a; background: #fff1c8; border-radius: 16px; padding: 4px 14px; margin-top: -6px; }
+.rp-local { font-style: normal; display: flex; align-items: center; gap: 8px; font-size: 28px; color: var(--ink); background: #fff; border-radius: 26px; padding: 4px 16px 4px 6px; box-shadow: inset 0 0 0 3px var(--lc); align-self: center; }
+.rp-local u { text-decoration: none; width: 38px; height: 38px; border-radius: 50%; background: var(--lc); color: #fff; display: grid; place-items: center; font-size: 22px; }
+.cc-local { display: flex; align-items: center; justify-content: center; gap: 14px; margin: 4px 0 8px; }
+.cc-local .th canvas { width: 200px; height: 170px; display: block; }
+.cc-local span { display: flex; flex-direction: column; align-items: flex-start; }
+.cc-local small { font-size: 24px; color: var(--mute); } .cc-local b { font-size: 40px; font-weight: 400; }
+.fc-local.blank { visibility: hidden; }

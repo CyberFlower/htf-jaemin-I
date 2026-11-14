@@ -28,7 +28,7 @@ const CFG = {
   GRADES: [                                   // GAM-042: 시설 레벨 합으로 정함. 행정 구역 이름을 쓰지 않음(D-004)
     { name: '새싹', min: 0 }, { name: '잎새', min: 8 }, { name: '꽃', min: 20 }, { name: '열매', min: 40 }, { name: '나무', min: 70 },
   ],
-  CITY_FAC: ['bakery', 'market', 'cafe'],     // 새로 연 도시에 있는 생산 시설
+  CITY_FAC: ['local', 'bakery', 'market', 'cafe'],   // 새로 연 도시에 있는 생산 시설. local은 그 권역의 특산 건물(cities.js LOCAL)
 };
 
 /* 시설. rate는 1레벨의 초당 골드(목업용 가정값). cost는 짓는 데 드는 자재. */
@@ -43,6 +43,7 @@ const FAC = {
   park: { name: '공원', cost: 6, hint: '무대 옆 · 야외 공연' },
   stage: { name: '무대', cost: 10, combo: { near: 'park', name: '야외 공연', icon: 'note' }, hint: '공원 옆 · 야외 공연' },
   cafe: { name: '카페', cost: 12, rate: 2, icon: 'cup' },
+  local: { name: '특산 건물', rate: 1.2, icon: 'star' },   // 다른 도시의 업그레이드 시설. 이름·모양은 권역마다 다름
 };
 const BUILDABLE = ['market', 'park', 'stage', 'cafe'];
 

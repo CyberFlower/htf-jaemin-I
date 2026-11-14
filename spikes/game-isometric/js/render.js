@@ -40,7 +40,7 @@ const TREES = [
 ];
 const LAMPS = [[2.5, 4.86], [4.5, 4.86], [6.5, 4.86], [3.2, 6.2], [8.9, 6.2]];
 const CAT_POS = { x: 7.3, y: 7.35 };
-const HGT = { bakery: 130, flower: 125, shop: 130, stop: 100, garage: 115, lighthouse: 215, market: 105, park: 70, stage: 115, cafe: 125 };
+const HGT = { local: 120, bakery: 130, flower: 125, shop: 130, stop: 100, garage: 115, lighthouse: 215, market: 105, park: 70, stage: 115, cafe: 125 };
 
 /* ---------- 색 ---------- */
 const _hex = h => { h = h.replace('#', ''); return [parseInt(h.slice(0, 2), 16), parseInt(h.slice(2, 4), 16), parseInt(h.slice(4, 6), 16)]; };
@@ -252,6 +252,21 @@ function mk(c, tx, ty) {
 
 /* ---------- 시설 ---------- */
 const DRAW = {
+  /* 특산 건물: 앞밭(작물 색)과 작은 창고, 글자 간판. 권역마다 색과 글자가 다릅니다 */
+  local(c, x, y, regionId) {
+    const L = localOf(regionId) || { mark: '특', color: '#58c46b' }, b = mk(c, x, y); b.base('rgba(90,70,30,.18)');
+    for (let i = 0; i < 4; i++) {
+      b.top(.06, .5 + i * .115, .5, .57 + i * .115, 2, '#a5794a');
+      for (let j = 0; j < 4; j++) { const p = b.P(.12 + j * .11, .535 + i * .115, 8); disc(c, p[0], p[1] + 3, 5, '#5aa455'); disc(c, p[0], p[1] - 3, 6.5, L.color); }
+    }
+    b.box(.54, .12, .92, .56, 0, 50, '#fff3dc');
+    b.L(.64, .8, .56, 0, 34, shade(L.color, -.25));
+    b.winR(.92, .22, .44, 18, 38);
+    b.gableU(.5, .08, .96, .6, 50, 30, L.color, '#fff3dc');
+    const s = b.P(.3, .26, 50); c.strokeStyle = '#7a5a3a'; c.lineWidth = 4; c.beginPath(); c.moveTo(s[0], s[1] + 46); c.lineTo(s[0], s[1]); c.stroke();
+    disc(c, s[0], s[1], 23, '#fff8ea', L.color, 5);
+    c.save(); c.font = '26px Jua, sans-serif'; c.fillStyle = '#4a3b2a'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText(L.mark, s[0], s[1] + 2); c.restore();
+  },
   bakery(c, x, y) {
     const b = mk(c, x, y); b.base();
     b.box(.12, .14, .88, .86, 0, 66, '#ffe9c6');
@@ -934,13 +949,13 @@ function canDecor(x, y) {
 }
 
 /* 짓기 창·상점에 쓰는 작은 그림 */
-function thumb(kind, type, w, h) {
+function thumb(kind, type, w, h, regionId) {
   const el = document.createElement('canvas'); el.width = w; el.height = h;
   const c = el.getContext('2d'), s = w / (kind === 'decor' ? 165 : 215);
   c.translate(w / 2, h * .74); c.scale(s, s); c.translate(-OX, -(OY + TH / 2));
   const keepL = R.L; R.L = 0;
   quad(c, [iso(0, 0), iso(1, 0), iso(1, 1), iso(0, 1)], kind === 'decor' ? '#f4e5c9' : '#a8de7a');
-  (kind === 'decor' ? DECOR_DRAW : DRAW)[type](c, 0, 0);
+  (kind === 'decor' ? DECOR_DRAW : DRAW)[type](c, 0, 0, regionId);
   R.L = keepL; R.em.quads.length = 0; R.em.glows.length = 0;
   return el;
 }

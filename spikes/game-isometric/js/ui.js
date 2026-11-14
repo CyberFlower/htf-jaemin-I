@@ -341,14 +341,14 @@ function tryUpgrade(site, btn, o) {
       floatText(c.x, c.y - 80, parts.join(' ') + ' 부족', 'bad');
       return;
     }
-    if (r.broke) { sfx.build(); banner('star', `${FAC[site.type].name} 한 단계 커졌어요`); }
+    if (r.broke) { sfx.build(); banner('star', `${facName(site.type, site.city)} 한 단계 커졌어요`); }
     else { sfx.coin(3); sfx.pop(); }
     if (r.grade[1] > r.grade[0]) setTimeout(() => { banner('star', `${CITIES[site.city].name} · ${CFG.GRADES[r.grade[1]].name} 등급`); sfx.good(); }, r.broke ? 1400 : 300);
     if (o.after) o.after(r);
   };
   if (!m) { go(); return; }
   confirmBox(`${ic('star', 50)} 단계 돌파`, `
-      <p>${FAC[site.type].name} Lv ${L} → ${L + 1} · 건물이 한 단계 커져요</p>
+      <p>${facName(site.type, site.city)} Lv ${L} → ${L + 1} · 건물이 한 단계 커져요</p>
       <div class="cf-cost"><span>${ic('crate', 50)}${m}</span><span>${ic('coin', 50)}${fmtShort(upCost(site.type, L))}</span></div>
       <p class="sub">자재는 차에서만 모을 수 있어요 · 지금 ${ic('crate', 30)}${state.mat}</p>`, go);
 }
@@ -561,7 +561,7 @@ function paintMap() {
     <div class="map-body">
       <div class="kmap"><div class="sea"></div>${tiles}</div>
       <div class="rpanel">
-        <div class="rp-head"><b>${r.name}</b><span>${pick ? '도시를 누르면 본거지로 정해요' : `보유 ${st.own} / ${st.ids.length}`}</span>
+        <div class="rp-head"><b>${r.name}</b><i class="rp-local" style="--lc:${localOf(r.id).color}"><u>${localOf(r.id).mark}</u>${localOf(r.id).name}</i><span>${pick ? '도시를 누르면 본거지로 정해요' : `보유 ${st.own} / ${st.ids.length}`}</span>
           ${!pick && st.own < st.ids.length ? `<em>다음 도시 ${ic('crate', 30)}${price}</em>` : ''}</div>
         <div class="ctiles">${cards}</div>
       </div>
@@ -601,6 +601,7 @@ function openCityCard(id) {
     <div class="card citycard">
       <h3>${ic('map', 50)}${cityLabel(id)}</h3>
       ${f != null ? `<p class="foot">${ic('foot', 30)}지나간 곳 · 첫 관측 ${fmtDate(f)}</p>` : ''}
+      <div class="cc-local"><div class="th"></div><span><small>${REGIONS.find(r => r.id === CITIES[id].region).name} 특산</small><b>${facName('local', id)}</b></span></div>
       <div class="cc-price"><span>여는 가격</span><b>${ic('crate', 64)}${price}</b></div>
       <div class="cc-rows">
         <div><span>내 자재</span><b class="${lack > 0 ? 'bad' : ''}">${ic('crate', 34)}${state.mat}</b></div>
@@ -610,6 +611,7 @@ function openCityCard(id) {
       <div class="actions"><button class="btn ghost" data-no>취소</button><button class="btn primary big ${lack > 0 ? 'lack' : ''}" data-ok>열기</button></div>
     </div>`;
   overlay.appendChild(el); sfx.open();
+  el.querySelector('.cc-local .th').appendChild(thumb('fac', 'local', 200, 170, CITIES[id].region));
   el.querySelector('[data-no]').addEventListener('click', () => { el.remove(); sfx.tap(); });
   el.querySelector('[data-ok]').addEventListener('click', e => {
     const btn = e.currentTarget;
@@ -640,8 +642,8 @@ function paintCity(id) {
   const cards = sitesOf(id).map(st => {
     const L = lvOf(st), u = upLabel(st);
     return `<div class="fcard" data-k="${st.key}">
-      <div class="th" data-th="${st.type}"></div>
-      <div class="fc-name"><b>${FAC[st.type].name}</b><i class="lv">Lv ${L}</i>${starsHtml(L, 34)}</div>
+      <div class="th" data-th="${st.type}"></div>${st.type === 'local' ? `<i class="fc-local">${REGIONS.find(r => r.id === CITIES[id].region).name} 특산</i>` : '<i class="fc-local blank">&nbsp;</i>'}
+      <div class="fc-name"><b>${facName(st.type, id)}</b><i class="lv">Lv ${L}</i>${starsHtml(L, 34)}</div>
       <div class="fc-rate">초당 ${fmtRate(rateOf(st))}${L < CFG.LV.max ? ` → ${fmtRate(incomeAt(st.type, L + 1))}` : ''}</div>
       <button class="btn up ${u.lack ? 'lack' : ''} ${u.brk ? 'brk' : ''}" ${u.off ? 'disabled' : ''}>${u.html}</button>
     </div>`;
@@ -655,7 +657,7 @@ function paintCity(id) {
     <div class="gradebar">${next ? `<span>다음 등급 <b>${next.name}</b>까지 시설 레벨 ${next.min - sum}</span><div class="track"><i style="width:${clamp((sum - CFG.GRADES[g].min) / (next.min - CFG.GRADES[g].min) * 100, 0, 100)}%"></i></div>` : '<span>가장 높은 등급이에요</span>'}</div>
     <div class="fcards">${cards}</div>`;
   hydrateIcons(box);
-  box.querySelectorAll('[data-th]').forEach(el => el.appendChild(thumb('fac', el.dataset.th, 300, 250)));
+  box.querySelectorAll('[data-th]').forEach(el => el.appendChild(thumb('fac', el.dataset.th, 300, 250, CITIES[id].region)));
   box.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', closeOverlay));
   $('#toMap').addEventListener('click', () => openMap(CITIES[id].region));
   $('#takeCity').addEventListener('click', e => {
@@ -703,7 +705,7 @@ function renderPhone() {
       const act = L >= CFG.LV.max ? '<button disabled>MAX</button>'
         : m ? `<button class="lockd" data-k="${st.key}">${ic('lock', 16)}돌파는 차에서</button>`
           : `<button data-k="${st.key}">${ic('coin', 16)}${fmtShort(g)}</button>`;
-      return `<li><div><b>${FAC[st.type].name}</b><small>Lv ${L} · 초당 ${fmtRate(rateOf(st))}</small></div>${act}</li>`;
+      return `<li><div><b>${facName(st.type, phCity)}</b><small>Lv ${L} · 초당 ${fmtRate(rateOf(st))}</small></div>${act}</li>`;
     }).join('');
     body.innerHTML = `
       <div class="ph-top"><button id="phBack">‹</button><b>${cityLabel(phCity)}</b><span>${CFG.GRADES[gradeOf(phCity)].name}</span></div>
@@ -716,7 +718,7 @@ function renderPhone() {
       const st = sitesOf(phCity).find(x => x.key === b.dataset.k);
       if (b.classList.contains('lockd')) { phMsg(`단계 돌파에는 자재 ${breakMat(lvOf(st))}개가 들어요 · 차에서 할 수 있어요`); return; }
       const r = upgrade(st);
-      phMsg(r.ok ? `${FAC[st.type].name} Lv ${r.L}` : `골드 ${fmtShort(r.gold || 0)} 부족`);
+      phMsg(r.ok ? `${facName(st.type, phCity)} Lv ${r.L}` : `골드 ${fmtShort(r.gold || 0)} 부족`);
     }));
     return;
   }
