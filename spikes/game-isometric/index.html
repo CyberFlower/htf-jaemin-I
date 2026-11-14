@@ -30,6 +30,7 @@
             <button class="chip alert" id="careChip" hidden><span class="i" data-ic="wrench"></span><span>엔진오일 점검 권장</span></button>
             <div class="chip gear"><i>P</i><span id="clock">14:32</span></div>
             <button class="rbtn" id="btnMap" aria-label="전국 지도"><span class="i" data-ic="map"></span><em hidden>0</em></button>
+            <button class="rbtn" id="btnLand" aria-label="땅 넓히기"><span class="i" data-ic="land"></span></button>
             <button class="rbtn" id="btnShop" aria-label="상점"><span class="i" data-ic="cart"></span></button>
             <button class="rbtn" id="btnQuest" aria-label="퀘스트"><span class="i" data-ic="clipboard"></span><em hidden>0</em></button>
             <button class="rbtn" id="btnSound" aria-label="소리"><span class="i" data-ic="speaker"></span></button>
@@ -42,7 +43,9 @@
           <div class="cost" id="placeCost"></div>
           <button class="round yes" id="placeYes" aria-label="확정"><span class="i" data-ic="check"></span></button>
         </div>
+        <div id="landBar" hidden></div>
         <div id="pop" hidden></div>
+        <button id="goalBtn"><span class="i" data-ic="up"></span><span><small>다음 목표</small><b id="goalText"></b></span><span class="dock-arrow">›</span></button>
 
         <div id="overlay" hidden></div>
 

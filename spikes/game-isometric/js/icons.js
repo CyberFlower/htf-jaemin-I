@@ -140,6 +140,11 @@ const ICONS = {
     ['M10.500 18.500h3', null, 'currentColor', 2.100],
   ],
   up: [['M12 20V5M5.500 11.500L12 5l6.500 6.500', null, 'currentColor', 2.800]],
+  move: [['M12 3v18M3 12h18M9 6l3-3 3 3M9 18l3 3 3-3M6 9l-3 3 3 3M18 9l3 3-3 3', null, 'currentColor', 2.4]],
+  land: [
+    ['M12 4.5l8.5 4.6-8.5 4.6-8.5-4.6z', null, 'currentColor', 2.2],
+    ['M3.5 9.1v4.3l8.5 4.6 8.5-4.6V9.1', null, 'currentColor', 2.2],
+  ],
   star: [['M12 2.800l2.800 5.800 6.300.900-4.600 4.400 1.100 6.300L12 17.200l-5.600 3 1.100-6.300L2.900 9.500l6.300-.900z', '#ffc93c', '#e09a10', 1.200]],
   lock: [
     ['M6 11h12v9.500H6z', 'currentColor'],

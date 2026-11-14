@@ -22,6 +22,22 @@ const REGIONS = [
   { id: 'jn', name: '전남', cells: [0, 5, 2, 1], cities: ['목포', '여수', '순천', '나주', '광양', '담양', '곡성', '구례', '고흥', '보성', '화순', '장흥', '강진', '해남', '영암', '무안', '함평', '영광', '장성', '완도', '진도', '신안'] },
   { id: 'jj', name: '제주', cells: [0, 6, 1, 1], cities: ['제주', '서귀포'] },
 ];
+/* 권역별 특산 건물. 그 권역 도시의 업그레이드 시설로 들어갑니다(팀 리뷰 의견, 2026-11-14).
+   이름은 널리 알려진 지역 먹거리·특산물에서 고른 목업 예시이며 확정이 아닙니다. mark는 간판 글자, color는 지붕·작물 색 */
+const LOCAL = {
+  ic: { name: '짜장면집', mark: '면', color: '#6b5440' }, se: { name: '분식 포차', mark: '떡', color: '#f05a5a' },
+  gw: { name: '감자밭', mark: '감', color: '#c89a5b' }, gg: { name: '쌀 방앗간', mark: '쌀', color: '#e2cf8f' },
+  cb: { name: '포도밭', mark: '포', color: '#8e5bd6' }, gb: { name: '사과 과수원', mark: '과', color: '#e5484d' },
+  cn: { name: '인삼밭', mark: '삼', color: '#d98b5f' }, sj: { name: '복숭아밭', mark: '복', color: '#ff9fb2' },
+  dj: { name: '칼국수집', mark: '국', color: '#e8c27a' }, jb: { name: '비빔밥집', mark: '밥', color: '#f08a3c' },
+  dg: { name: '막창집', mark: '창', color: '#b5523b' }, us: { name: '옹기 공방', mark: '옹', color: '#8a5a3c' },
+  gj: { name: '떡갈비집', mark: '갈', color: '#a8432f' }, gn: { name: '굴 작업장', mark: '굴', color: '#8aa3b8' },
+  bs: { name: '어묵 가게', mark: '묵', color: '#f2b134' }, jn: { name: '녹차밭', mark: '차', color: '#4fa35c' },
+  jj: { name: '감귤밭', mark: '귤', color: '#ff9a1f' },
+};
+const localOf = regionId => LOCAL[regionId];
+/* 시설 이름. 특산 건물은 그 도시가 속한 권역의 이름을 씁니다 */
+const facName = (type, city) => (type === 'local' && city && CITIES[city]) ? LOCAL[CITIES[city].region].name : FAC[type].name;
 const MAP_SOURCE = '2024년 행정구역 기준 목업 데이터 · 2026-07 개편 미반영 · 도식 지도(실제 경계 아님)';
 
 /* 도시 id는 '권역:이름'. 고성(강원·경남), 광주(광역시·경기)처럼 이름이 겹쳐도 구분됩니다. */

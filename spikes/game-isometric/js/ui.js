@@ -1,6 +1,6 @@
 'use strict';
 /* 게임 화면 안의 조작과 창. 화면 ID(S##)는 projects/game/SCREENS.md 7절을 따릅니다. */
-let place = null;            // 놓는 중인 것: { kind:'build'|'decor', type, x, y }
+let place = null;            // 놓는 중인 것: { kind:'build'|'move'|'decor'|'decorMove'|'tile', type, x, y, ... }
 let scaleK = 1;
 let hudDelay = 0;
 
@@ -111,7 +111,8 @@ function refresh() {
   countTo($('#resMat b'), 'mat', state.mat);
   countTo($('#resGold b'), 'gold', state.gold);
   $('#homeName').textContent = state.home ? CITIES[state.home].name : '본거지';
-  stage.className = 'gear-' + state.gear;
+  stage.className = 'gear-' + state.gear + (place ? ' placing' : '');
+  updateGoal();
   const n = questBadge(), em = $('#btnQuest em'); em.hidden = n === 0; em.textContent = n;
   const chk = Object.keys(CHECKS).find(k => state.check[k].active);
   $('#careChip').hidden = !careDue();
@@ -164,6 +165,18 @@ function showOverlay(html, cls) {
 function closeOverlay() { overlay.hidden = true; overlay.innerHTML = ''; }
 overlay.addEventListener('pointerdown', e => { if (e.target === overlay) closeOverlay(); });
 function hidePop() { pop.hidden = true; pop.innerHTML = ''; }
+/* 말풍선은 아래쪽 꼭짓점이 (x, y)에 오도록 위로 펼쳐집니다. 실제 높이를 재서 위 줄·화면 밖으로 잘리지 않게 둡니다 */
+function placePop(x, y, yBelow) {
+  pop.hidden = false; pop.classList.remove('below');
+  const h = pop.offsetHeight, w2 = pop.offsetWidth / 2 + 20;
+  pop.style.left = clamp(x, w2, W - w2) + 'px';
+  if (y - h < 130 && yBelow != null) {            // 위쪽 공간이 모자라면 건물 아래에 띄워 건물을 가리지 않음
+    pop.classList.add('below');
+    pop.style.top = clamp(yBelow + 16, 130, H - h - 20) + 'px';
+    return;
+  }
+  pop.style.top = clamp(y, h + 130, H - 40) + 'px';
+}
 
 /* ---------- S03 택배 ---------- */
 function weekRow(wk) {
@@ -229,52 +242,111 @@ function openDelivery() {
 }
 
 /* ---------- S04 짓기 ---------- */
-function openBuild(x, y) {
-  showOverlay(`
-    <div class="sheet"><div class="cards">${BUILDABLE.map(t => {
-      const f = FAC[t], lack = f.cost - state.mat;
-      return `<button class="bcard ${lack > 0 ? 'lack' : ''}" data-t="${t}">
-        <div class="th" data-th="${t}"></div><b>${f.name}</b>
-        <span class="cost">${ic('crate', 40)}${f.cost}</span>
-        ${f.hint ? `<small>${f.hint}</small>` : '<small>&nbsp;</small>'}
-      </button>`;
-    }).join('')}</div></div>`, 'bottom');
-  overlay.querySelectorAll('[data-th]').forEach(el => el.appendChild(thumb('fac', el.dataset.th, 260, 220)));
-  overlay.querySelectorAll('.bcard').forEach(btn => btn.addEventListener('click', () => {
-    const t = btn.dataset.t, lack = FAC[t].cost - state.mat;
-    if (lack > 0) {                                   // GAM-UC-003 E1: 모자란 양을 보여줌
-      shakeEl(btn); sfx.deny();
-      const c = centerOf(btn); floatText(c.x, c.y - 150, ic('crate', 44) + ` ${lack} 부족`, 'bad');
-      return;
-    }
-    place = { kind: 'build', type: t, x, y }; closeOverlay(); showPlaceBar(); sfx.tap();
+/* 짓기는 상점의 시설·장식 탭에서 고르고 섬 위에서 자리를 정합니다 (GAM-004). 빈 땅을 눌러도 짓기 창은 열지 않음 */
+function freeSpot() {
+  let best = null, bd = 1e9;
+  for (let y = GRID.min; y <= GRID.max; y++) for (let x = GRID.min; x <= GRID.max; x++) {
+    if (!canBuildAt(x, y)) continue;
+    const d = Math.hypot(x - 4.5, y - 5.5); if (d < bd) { bd = d; best = [x, y]; }
+  }
+  return best;
+}
+/* 땅 모드: 넓히기(buy) / 바꾸기(paint) / 없애기(remove) (GAM-047) */
+let landType = 'g';
+const TILE_SWATCH = { g: '#a8de7a', s: '#f8e8b8', p: '#e9d6b0', f: '#c8e88a', w: '#6cc6e4' };
+function tileOk(x, y, act = place.act, type = place.tile) {
+  return act === 'paint' ? canPaintTile(x, y, type) : act === 'remove' ? canRemoveTile(x, y) : canBuyTile(x, y);
+}
+function tileSpot(act, type) {
+  let best = null, bd = 1e9;
+  for (let y = GRID.min; y <= GRID.max; y++) for (let x = GRID.min; x <= GRID.max; x++) {
+    if (!tileOk(x, y, act, type)) continue;
+    const d = Math.hypot(x - 4.5, y - 4.5); if (d < bd) { bd = d; best = [x, y]; }
+  }
+  return best;
+}
+function startLand(act = 'buy') {
+  const type = (place && place.tile) || landType, s = tileSpot(act, type), st = landStats();
+  if (!s) {
+    sfx.deny();
+    banner('land', act === 'buy' ? (st.bought >= st.max ? `최대 크기 · ${st.max}칸` : '넓힐 수 있는 땅이 없어요') : act === 'remove' ? '없앨 수 있는 빈 땅이 없어요' : '바꿀 수 있는 빈 땅이 없어요');
+    return;
+  }
+  hidePop(); place = { kind: 'tile', act, x: s[0], y: s[1], tile: type }; showPlaceBar(); sfx.tap();
+}
+function renderLandBar() {
+  const bar = $('#landBar');
+  if (!place || place.kind !== 'tile') { bar.hidden = true; return; }
+  const st = landStats(), ring = tileRing(place.x, place.y), act = place.act;
+  const info = act === 'buy' ? `<span>${['섬 안', '첫째 둘레', '둘째 둘레'][ring]} · 칸당 ${ic('coin', 30)}${fmtShort(tilePrice(place.x, place.y))}</span>`
+    : act === 'paint' ? '<span>빈 땅만 · 무료</span>' : '<span>산 빈 땅만 · 골드는 돌려받지 않아요</span>';
+  bar.innerHTML = `<div class="lb-acts">${[['buy', '넓히기'], ['paint', '바꾸기'], ['remove', '없애기']].map(([k, l]) => `<button data-act="${k}" aria-pressed="${act === k}">${l}</button>`).join('')}</div>
+    <div class="lb-types" ${act === 'remove' ? 'hidden' : ''}>${Object.entries(TILE_TYPES).map(([k, t]) => `<button data-tile="${k}" aria-pressed="${place.tile === k}"><i style="background:${TILE_SWATCH[k]}"></i>${t.name}</button>`).join('')}</div>
+    <div class="lb-info">${info}<span>넓힌 땅 <b>${st.bought}</b> / ${st.max}칸</span></div>`;
+  bar.hidden = false;
+  bar.querySelectorAll('[data-tile]').forEach(b => b.addEventListener('click', () => {
+    place.tile = landType = b.dataset.tile; sfx.tap();
+    if (place.act === 'paint' && !tileOk(place.x, place.y)) { const sp = tileSpot('paint', place.tile); if (sp) { place.x = sp[0]; place.y = sp[1]; } }
+    showPlaceBar();
   }));
+  bar.querySelectorAll('[data-act]').forEach(b => b.addEventListener('click', () => { if (b.dataset.act !== place.act) startLand(b.dataset.act); }));
+}
+function startMove(id) {
+  const b = state.built[id]; if (!b) return;
+  hidePop(); place = { kind: 'move', id, type: b.type, x: b.x, y: b.y }; showPlaceBar(); sfx.tap();
 }
 
 /* ---------- S05 미리보기·확정 ---------- */
 function showPlaceBar() {
-  const bar = $('#placeBar'); bar.hidden = false;
+  const bar = $('#placeBar'); bar.hidden = false; stage.classList.add('placing');
   const cost = $('#placeCost');
-  if (place.kind === 'build') { cost.hidden = false; cost.innerHTML = ic('crate', 40) + FAC[place.type].cost; }
+  if (place.kind === 'build') { const c = buildCost(place.type); cost.hidden = false; cost.innerHTML = c.mat ? ic('crate', 40) + c.mat : ic('coin', 40) + fmtShort(c.gold); }
+  else if (place.kind === 'tile') { cost.hidden = false; cost.innerHTML = place.act === 'buy' ? ic('coin', 40) + fmtShort(tilePrice(place.x, place.y)) : place.act === 'paint' ? TILE_TYPES[place.tile].name : '없애기'; }
   else cost.hidden = true;
+  renderLandBar();
   updatePlaceBar();
 }
 function updatePlaceBar() {
   if (!place) return;
   const p = scr(iso(place.x + .5, place.y + .5)), bar = $('#placeBar');
   bar.style.left = clamp(p[0], 240, W - 240) + 'px'; bar.style.top = clamp(p[1] + 100, 200, H - 70) + 'px';
-  $('#placeYes').classList.toggle('off', place.kind === 'decor' && !canDecor(place.x, place.y));
+  $('#placeYes').classList.toggle('off', place.kind === 'tile' ? !tileOk(place.x, place.y) : !canBuildAt(place.x, place.y));
 }
-function cancelPlace() { place = null; $('#placeBar').hidden = true; }
+function cancelPlace() { place = null; $('#placeBar').hidden = true; $('#landBar').hidden = true; stage.classList.remove('placing'); }
 $('#placeNo').addEventListener('click', () => { cancelPlace(); sfx.tap(); });
 $('#placeYes').addEventListener('click', () => {
   if (!place) return;
   const { kind, type, x, y } = place, p = iso(x + .5, y + .5), ps = scr(p);
+  if (kind === 'tile') {
+    const act = place.act;
+    if (act === 'buy') {
+      const price = tilePrice(x, y);
+      if (!buyTile(x, y, place.tile)) { shakeEl($('#placeBar')); sfx.deny(); if (state.gold < price) floatText(ps[0], ps[1] - 120, ic('coin', 44) + ` ${fmtShort(price - state.gold)} 부족`, 'bad'); return; }
+      floatText(ps[0], ps[1] - 120, ic('coin', 44) + ` −${fmtShort(price)}`, '');
+      sfx.build();
+    } else {
+      if (!(act === 'paint' ? paintTile(x, y, place.tile) : removeTile(x, y))) { shakeEl($('#placeBar')); sfx.deny(); return; }
+      sfx.pop();
+    }
+    burst('star', p[0], p[1], 10, { speed: 220, up: 140, g: 480, life: .8, size: 9, colors: ['#a8de7a', '#fff', '#ffd24a'] });
+    const next = tileSpot(act, place.tile);                       // 이어서 고를 수 있게 모드 유지
+    if (next) { place.x = next[0]; place.y = next[1]; showPlaceBar(); }
+    else { cancelPlace(); if (act === 'buy') banner('land', `최대 크기 · ${landStats().max}칸`); }
+    return;
+  }
+  if (kind === 'move') {
+    if (!moveBuilding(place.id, x, y)) { shakeEl($('#placeBar')); sfx.deny(); return; }
+    R.born[place.id] = R.t; sfx.pop(); cancelPlace(); return;
+  }
+  if (kind === 'decorMove') {
+    if (!moveDecor(place.fx, place.fy, x, y)) { shakeEl($('#placeBar')); sfx.deny(); return; }
+    burst('star', p[0], p[1] - 20, 8, { speed: 200, up: 120, g: 480, life: .7, size: 9, colors: ['#a8de7a', '#fff', '#ffd24a'] }); sfx.pop(); cancelPlace(); return;
+  }
   if (kind === 'build') {
-    const stageBefore = comboSites('stage').length;
-    if (!build(type, x, y)) { shakeEl($('#placeBar')); sfx.deny(); return; }
-    R.born[x + ',' + y] = R.t; fxBuild(x, y); sfx.build();
-    floatText(ps[0], ps[1] - 170, ic('crate', 44) + ` −${FAC[type].cost}`, '');
+    const stageBefore = comboSites('stage').length, c = buildCost(type), id = build(type, x, y);
+    if (!id) { shakeEl($('#placeBar')); sfx.deny(); return; }
+    R.born[id] = R.t; fxBuild(x, y); sfx.build();
+    floatText(ps[0], ps[1] - 170, c.mat ? ic('crate', 44) + ` −${c.mat}` : ic('coin', 44) + ` −${fmtShort(c.gold)}`, '');
     cancelPlace();
     if (type === 'market' && isNear(x, y, 'stop') && R.L <= .4) setTimeout(() => banner('moon', '야시장 · 저녁에 열려요'), 700);
     if (comboSites('stage').length > stageBefore) setTimeout(() => { banner('note', '야외 공연'); sfx.good(); }, 700);
@@ -311,7 +383,7 @@ function openFacPop(p) {
     <div class="fp-sub">초당 ${fmtRate(r0)}${L < CFG.LV.max ? ` → ${fmtRate(r1)}` : ''} · ${n >= cap - 1 ? '가득 참' : ic('clock', 28) + ` ${hrs}시간`}</div>
     <div class="fp-btns"><button class="btn primary" id="fpTake" ${n > 0 ? '' : 'disabled'}>거두기</button>
       <button class="btn up ${u.lack ? 'lack' : ''} ${u.brk ? 'brk' : ''}" id="fpUp" ${u.off ? 'disabled' : ''}>${u.html}</button></div>`;
-  pop.style.left = clamp(s[0], 230, W - 230) + 'px'; pop.style.top = clamp(s[1], 430, H - 40) + 'px'; pop.hidden = false;
+  placePop(s[0], s[1], scr(iso(p.x + .5, p.y + .5, -12))[1]);
   $('#fpTake').addEventListener('click', () => { hidePop(); doCollect(p.id, w[0], w[1] + 50); });
   $('#fpUp').addEventListener('click', e => tryUpgrade(site, e.currentTarget, {
     after: r => { R.bump[p.id] = R.t; if (r.broke) fxBuild(p.x, p.y); openFacPop(p); },
@@ -341,14 +413,14 @@ function tryUpgrade(site, btn, o) {
       floatText(c.x, c.y - 80, parts.join(' ') + ' 부족', 'bad');
       return;
     }
-    if (r.broke) { sfx.build(); banner('star', `${FAC[site.type].name} 한 단계 커졌어요`); }
+    if (r.broke) { sfx.build(); banner('star', `${facName(site.type, site.city)} 한 단계 커졌어요`); }
     else { sfx.coin(3); sfx.pop(); }
     if (r.grade[1] > r.grade[0]) setTimeout(() => { banner('star', `${CITIES[site.city].name} · ${CFG.GRADES[r.grade[1]].name} 등급`); sfx.good(); }, r.broke ? 1400 : 300);
     if (o.after) o.after(r);
   };
   if (!m) { go(); return; }
   confirmBox(`${ic('star', 50)} 단계 돌파`, `
-      <p>${FAC[site.type].name} Lv ${L} → ${L + 1} · 건물이 한 단계 커져요</p>
+      <p>${facName(site.type, site.city)} Lv ${L} → ${L + 1} · 건물이 한 단계 커져요</p>
       <div class="cf-cost"><span>${ic('crate', 50)}${m}</span><span>${ic('coin', 50)}${fmtShort(upCost(site.type, L))}</span></div>
       <p class="sub">자재는 차에서만 모을 수 있어요 · 지금 ${ic('crate', 30)}${state.mat}</p>`, go);
 }
@@ -365,35 +437,60 @@ function confirmBox(title, body, onOk) {
 }
 
 /* ---------- S11 상점 · S12 보관함 ---------- */
-function openShop() {
-  const cards = Object.keys(DECOR).map(t => {
-    const d = DECOR[t], have = state.inv[t] || 0;
+/* 상점 탭: 시설(생산 시설, 자재, 섬에 종류별 하나) / 장식(장식 건물·소품, 골드, 제한 없음) / 자연(나무·풀) (GAM-033) */
+const SHOP_TABS = [['fac', '시설'], ['deco', '장식'], ['nature', '자연']];
+let shopTab = 'fac';
+function openShop(tab = shopTab) {
+  shopTab = tab;
+  const buildings = BUILDABLE.filter(t => tab === 'fac' ? FAC[t].rate : tab === 'deco' && !FAC[t].rate);
+  const items = tab === 'fac' ? [] : Object.keys(DECOR).filter(t => (tab === 'nature') === NATURE.includes(t));
+  const cards = buildings.map(t => {
+    const f = FAC[t], c = buildCost(t), existing = f.rate && hasProducer(t), lack = c.mat ? c.mat > state.mat : c.gold > state.gold;
+    return `<div class="scard" data-b="${t}">
+      <div class="th" data-thb="${t}"></div><b>${f.name}</b><small class="shint">${f.rate ? '섬에 하나' : (f.hint || '&nbsp;')}</small>
+      <button class="btn buy ${lack ? 'lack' : ''}" ${existing ? 'disabled' : ''}>${existing ? '완공' : c.mat ? ic('crate', 38) + c.mat : ic('coin', 38) + fmtShort(c.gold)}</button>
+    </div>`;
+  }).join('') + items.map(t => {
+    const d = DECOR[t], have = state.inv[t] || 0, price = decorPrice(t);
     return `<div class="scard" data-t="${t}">
       <div class="th" data-th="${t}"></div><b>${d.name}</b>
-      <button class="btn buy ${state.gold < d.price ? 'lack' : ''}">${ic('coin', 38)}${d.price}</button>
+      <button class="btn buy ${state.gold < price ? 'lack' : ''}">${ic('coin', 38)}${fmtShort(price)}</button>
       <button class="btn putbtn" ${have ? '' : 'hidden'}>놓기<i>${have}</i></button>
     </div>`;
   }).join('');
   showOverlay(`
     <div class="screen shop">
       <header><span class="hi">${ic('cart', 56)}</span><h2>상점</h2>
-        <div class="chip res" id="shopGold">${ic('coin', 48)}<b>${fmtNum(state.gold)}</b></div>
+        <nav class="shop-tabs">${SHOP_TABS.map(([id, label]) => `<button data-tab="${id}" aria-pressed="${tab === id}">${label}</button>`).join('')}</nav>
+        <div class="chip res">${ic('crate', 48)}<b>${fmtNum(state.mat)}</b></div>
+        <div class="chip res" id="shopGold">${ic('coin', 48)}<b>${fmtShort(state.gold)}</b></div>
         <button class="round close" data-close>${ic('x', 44)}</button></header>
       <div class="grid">${cards}</div>
     </div>`, 'full');
+  overlay.querySelectorAll('[data-tab]').forEach(b => b.addEventListener('click', () => { sfx.tap(); openShop(b.dataset.tab); }));
   overlay.querySelectorAll('[data-th]').forEach(el => el.appendChild(thumb('decor', el.dataset.th, 360, 300)));
-  overlay.querySelectorAll('.scard').forEach(card => {
+  overlay.querySelectorAll('[data-thb]').forEach(el => el.appendChild(thumb('fac', el.dataset.thb, 360, 300)));
+  overlay.querySelectorAll('[data-b]').forEach(card => {
+    const t = card.dataset.b;
+    card.querySelector('.buy').addEventListener('click', e => {
+      const c = buildCost(t), lack = c.mat ? c.mat - state.mat : c.gold - state.gold;
+      if (lack > 0) { shakeEl(card); sfx.deny(); const cc = centerOf(e.currentTarget); floatText(cc.x, cc.y - 90, ic(c.mat ? 'crate' : 'coin', 44) + ` ${fmtShort(lack)} 부족`, 'bad'); return; }
+      const spot = freeSpot();
+      if (!spot) { shakeEl(card); sfx.deny(); banner('land', '빈 땅이 없어요 · 땅 넓히기'); return; }
+      closeOverlay(); place = { kind: 'build', type: t, x: spot[0], y: spot[1] }; showPlaceBar(); sfx.tap();
+    });
+  });
+  overlay.querySelectorAll('[data-t]').forEach(card => {
     const t = card.dataset.t;
     card.querySelector('.buy').addEventListener('click', e => {
-      const lack = DECOR[t].price - state.gold;
-      if (lack > 0) { shakeEl(card); sfx.deny(); const c = centerOf(e.currentTarget); floatText(c.x, c.y - 90, ic('coin', 44) + ` ${lack} 부족`, 'bad'); return; }
+      const lack = decorPrice(t) - state.gold;
+      if (lack > 0) { shakeEl(card); sfx.deny(); const c = centerOf(e.currentTarget); floatText(c.x, c.y - 90, ic('coin', 44) + ` ${fmtShort(lack)} 부족`, 'bad'); return; }
       buyDecor(t); sfx.coin(2); sfx.pop();
       openShop(); bumpEl(overlay.querySelector(`.scard[data-t="${t}"]`));
     });
     card.querySelector('.putbtn').addEventListener('click', () => {
       closeOverlay();
-      let spot = [2, 6];
-      outer: for (const [x0, y0] of [[2, 6], [1, 6], [2, 7], [1, 7]]) if (canDecor(x0, y0)) { spot = [x0, y0]; break outer; }
+      const spot = freeSpot() || [2, 6];
       place = { kind: 'decor', type: t, x: spot[0], y: spot[1] }; showPlaceBar(); sfx.tap();
     });
   });
@@ -561,7 +658,7 @@ function paintMap() {
     <div class="map-body">
       <div class="kmap"><div class="sea"></div>${tiles}</div>
       <div class="rpanel">
-        <div class="rp-head"><b>${r.name}</b><span>${pick ? '도시를 누르면 본거지로 정해요' : `보유 ${st.own} / ${st.ids.length}`}</span>
+        <div class="rp-head"><b>${r.name}</b><i class="rp-local" style="--lc:${localOf(r.id).color}"><u>${localOf(r.id).mark}</u>${localOf(r.id).name}</i><span>${pick ? '도시를 누르면 본거지로 정해요' : `보유 ${st.own} / ${st.ids.length}`}</span>
           ${!pick && st.own < st.ids.length ? `<em>다음 도시 ${ic('crate', 30)}${price}</em>` : ''}</div>
         <div class="ctiles">${cards}</div>
       </div>
@@ -601,6 +698,7 @@ function openCityCard(id) {
     <div class="card citycard">
       <h3>${ic('map', 50)}${cityLabel(id)}</h3>
       ${f != null ? `<p class="foot">${ic('foot', 30)}지나간 곳 · 첫 관측 ${fmtDate(f)}</p>` : ''}
+      <div class="cc-local"><div class="th"></div><span><small>${REGIONS.find(r => r.id === CITIES[id].region).name} 특산</small><b>${facName('local', id)}</b></span></div>
       <div class="cc-price"><span>여는 가격</span><b>${ic('crate', 64)}${price}</b></div>
       <div class="cc-rows">
         <div><span>내 자재</span><b class="${lack > 0 ? 'bad' : ''}">${ic('crate', 34)}${state.mat}</b></div>
@@ -610,6 +708,7 @@ function openCityCard(id) {
       <div class="actions"><button class="btn ghost" data-no>취소</button><button class="btn primary big ${lack > 0 ? 'lack' : ''}" data-ok>열기</button></div>
     </div>`;
   overlay.appendChild(el); sfx.open();
+  el.querySelector('.cc-local .th').appendChild(thumb('fac', 'local', 200, 170, CITIES[id].region));
   el.querySelector('[data-no]').addEventListener('click', () => { el.remove(); sfx.tap(); });
   el.querySelector('[data-ok]').addEventListener('click', e => {
     const btn = e.currentTarget;
@@ -640,8 +739,8 @@ function paintCity(id) {
   const cards = sitesOf(id).map(st => {
     const L = lvOf(st), u = upLabel(st);
     return `<div class="fcard" data-k="${st.key}">
-      <div class="th" data-th="${st.type}"></div>
-      <div class="fc-name"><b>${FAC[st.type].name}</b><i class="lv">Lv ${L}</i>${starsHtml(L, 34)}</div>
+      <div class="th" data-th="${st.type}"></div>${st.type === 'local' ? `<i class="fc-local">${REGIONS.find(r => r.id === CITIES[id].region).name} 특산</i>` : '<i class="fc-local blank">&nbsp;</i>'}
+      <div class="fc-name"><b>${facName(st.type, id)}</b><i class="lv">Lv ${L}</i>${starsHtml(L, 34)}</div>
       <div class="fc-rate">초당 ${fmtRate(rateOf(st))}${L < CFG.LV.max ? ` → ${fmtRate(incomeAt(st.type, L + 1))}` : ''}</div>
       <button class="btn up ${u.lack ? 'lack' : ''} ${u.brk ? 'brk' : ''}" ${u.off ? 'disabled' : ''}>${u.html}</button>
     </div>`;
@@ -655,7 +754,7 @@ function paintCity(id) {
     <div class="gradebar">${next ? `<span>다음 등급 <b>${next.name}</b>까지 시설 레벨 ${next.min - sum}</span><div class="track"><i style="width:${clamp((sum - CFG.GRADES[g].min) / (next.min - CFG.GRADES[g].min) * 100, 0, 100)}%"></i></div>` : '<span>가장 높은 등급이에요</span>'}</div>
     <div class="fcards">${cards}</div>`;
   hydrateIcons(box);
-  box.querySelectorAll('[data-th]').forEach(el => el.appendChild(thumb('fac', el.dataset.th, 300, 250)));
+  box.querySelectorAll('[data-th]').forEach(el => el.appendChild(thumb('fac', el.dataset.th, 300, 250, CITIES[id].region)));
   box.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', closeOverlay));
   $('#toMap').addEventListener('click', () => openMap(CITIES[id].region));
   $('#takeCity').addEventListener('click', e => {
@@ -703,7 +802,7 @@ function renderPhone() {
       const act = L >= CFG.LV.max ? '<button disabled>MAX</button>'
         : m ? `<button class="lockd" data-k="${st.key}">${ic('lock', 16)}돌파는 차에서</button>`
           : `<button data-k="${st.key}">${ic('coin', 16)}${fmtShort(g)}</button>`;
-      return `<li><div><b>${FAC[st.type].name}</b><small>Lv ${L} · 초당 ${fmtRate(rateOf(st))}</small></div>${act}</li>`;
+      return `<li><div><b>${facName(st.type, phCity)}</b><small>Lv ${L} · 초당 ${fmtRate(rateOf(st))}</small></div>${act}</li>`;
     }).join('');
     body.innerHTML = `
       <div class="ph-top"><button id="phBack">‹</button><b>${cityLabel(phCity)}</b><span>${CFG.GRADES[gradeOf(phCity)].name}</span></div>
@@ -716,7 +815,7 @@ function renderPhone() {
       const st = sitesOf(phCity).find(x => x.key === b.dataset.k);
       if (b.classList.contains('lockd')) { phMsg(`단계 돌파에는 자재 ${breakMat(lvOf(st))}개가 들어요 · 차에서 할 수 있어요`); return; }
       const r = upgrade(st);
-      phMsg(r.ok ? `${FAC[st.type].name} Lv ${r.L}` : `골드 ${fmtShort(r.gold || 0)} 부족`);
+      phMsg(r.ok ? `${facName(st.type, phCity)} Lv ${r.L}` : `골드 ${fmtShort(r.gold || 0)} 부족`);
     }));
     return;
   }
@@ -736,38 +835,96 @@ function setPhone(open) { phone.hidden = !open; document.getElementById('app').c
 $('#phClose').addEventListener('click', () => setPhone(false));
 
 /* ---------- 섬 누르기 ---------- */
+/* 누르기는 손을 뗄 때 처리합니다. 끌면 섬을 옮기고, 두 손가락·휠로 확대합니다 (GAM-048) */
+const touches = new Map(); let drag = null, pinch = null;
+function zoomAt(uz, sx, sy) {
+  const before = unScr(sx, sy);
+  CAM.uz = uz; applyCam();
+  const after = unScr(sx, sy);
+  CAM.px += before[0] - after[0]; CAM.py += before[1] - after[1]; applyCam();
+}
 cv.addEventListener('pointerdown', e => {
+  if (state.gear === 'D') { bumpEl($('#drivePill')); return; }       // GAM-N01: 주행 중에는 조작 없음
+  try { cv.setPointerCapture(e.pointerId); } catch (err) { /* 캡처 불가 환경 */ }
+  touches.set(e.pointerId, stagePt(e));
+  if (touches.size === 2) { const [a, b] = [...touches.values()]; pinch = { d: Math.hypot(a[0] - b[0], a[1] - b[1]) || 1, uz: CAM.uz }; drag = null; hidePop(); }
+  else if (touches.size === 1) {
+    drag = { start: stagePt(e), last: stagePt(e), moved: false, long: false };
+    const d = drag;
+    clearTimeout(longT); longT = setTimeout(() => longPress(d), 450);
+  }
+  if (touches.size !== 1) clearTimeout(longT);
+});
+/* 길게 누르기: 건물(고정 건물 제외)·장식이면 바로 옮기기 모드 (GAM-050, GAM-033) */
+let longT = 0;
+function longPress(d) {
+  if (drag !== d || d.moved || pinch || place || state.gear === 'D' || !overlay.hidden) return;
+  const [x, y] = unScr(...d.start);
+  for (let i = R.hits.length - 1; i >= 0; i--) {
+    const h = R.hits[i]; if (!h.test(x, y)) continue;
+    if (h.kind === 'fac' && state.built[h.key]) { d.long = true; R.bump[h.key] = R.t; startMove(h.key); if (navigator.vibrate) navigator.vibrate(20); return; }
+    if (h.kind === 'decor') {
+      const dc = state.decor.find(o => o.x === h.x && o.y === h.y); if (!dc) return;
+      d.long = true; hidePop(); place = { kind: 'decorMove', type: dc.type, fx: dc.x, fy: dc.y, x: dc.x, y: dc.y }; showPlaceBar(); sfx.tap();
+      if (navigator.vibrate) navigator.vibrate(20); return;
+    }
+    return;                                                             // 맨 위가 주민·말풍선 등이면 길게 누르기로 보지 않음
+  }
+}
+cv.addEventListener('pointermove', e => {
+  if (!touches.has(e.pointerId)) return;
+  const pt = stagePt(e); touches.set(e.pointerId, pt);
+  if (pinch && touches.size >= 2) { const [a, b] = [...touches.values()]; zoomAt(pinch.uz * Math.hypot(a[0] - b[0], a[1] - b[1]) / pinch.d, (a[0] + b[0]) / 2, (a[1] + b[1]) / 2); return; }
+  if (!drag) return;
+  if (!drag.moved && !drag.long && Math.hypot(pt[0] - drag.start[0], pt[1] - drag.start[1]) > 14) { drag.moved = true; clearTimeout(longT); hidePop(); }
+  if (drag.moved) { CAM.px -= (pt[0] - drag.last[0]) / VIEW.z; CAM.py -= (pt[1] - drag.last[1]) / VIEW.z; applyCam(); }
+  drag.last = pt;
+});
+function endPointer(e) {
+  if (!touches.has(e.pointerId)) return;
+  touches.delete(e.pointerId);
+  if (pinch) { if (touches.size < 2) pinch = null; drag = null; return; }   // 확대한 뒤에는 누르기로 보지 않음
+  clearTimeout(longT);
+  if (drag && !drag.moved && !drag.long && e.type === 'pointerup') tapAt(e);
+  drag = null;
+}
+cv.addEventListener('pointerup', endPointer);
+cv.addEventListener('pointercancel', endPointer);
+cv.addEventListener('wheel', e => {
+  e.preventDefault(); if (state.gear === 'D') return;
+  const pt = stagePt(e); zoomAt(CAM.uz * (e.deltaY < 0 ? 1.12 : 1 / 1.12), pt[0], pt[1]);
+}, { passive: false });
+function tapAt(e) {
   const [x, y] = unScr(...stagePt(e));
   hidePop();
-  if (state.gear === 'D') { bumpEl($('#drivePill')); return; }       // GAM-N01: 주행 중에는 조작 없음
+  if (state.gear === 'D') return;
   if (place) {
     const [u, v] = unIso(x, y), tx = Math.floor(u), ty = Math.floor(v);
-    if (place.kind === 'build') { if (LOTS.some(l => l[0] === tx && l[1] === ty) && !state.built[tx + ',' + ty]) { place.x = tx; place.y = ty; sfx.tap(); } }
-    else if (isLand(tx, ty)) { place.x = tx; place.y = ty; sfx.tap(); }
+    if (place.kind === 'tile' ? tileOk(tx, ty) : canBuildAt(tx, ty)) { place.x = tx; place.y = ty; sfx.tap(); if (place.kind === 'tile') showPlaceBar(); }
     updatePlaceBar(); return;
   }
   for (let i = R.hits.length - 1; i >= 0; i--) if (R.hits[i].test(x, y)) { onHit(R.hits[i]); return; }
-});
+}
 function onHit(h) {
   if (h.kind === 'truck') { openDelivery(); return; }
   if (h.kind === 'stock') { doCollect(h.id, h.sx, h.sy); return; }
   if (h.kind === 'rest') { openQuests(); return; }
   if (h.kind === 'cat') { catAnim.jump = .45; sfx.tap(); openCare(); return; }
-  if (h.kind === 'lot') { sfx.tap(); openBuild(h.x, h.y); return; }
   if (h.kind === 'pet') {
-    const ent = PETS.find(p => p.id === h.id);
-    if (pet(h.id)) { ent.jump = .45; ent.wait = 1.200; fxHearts(h.sx, h.sy - 50); sfx.heart(); }
+    const ent = RES.list.find(p => p.id === h.id);
+    if (pet(h.id)) { if (ent) { ent.jump = .45; ent.wait = 1.200; } fxHearts(h.sx, h.sy - 50); sfx.heart(); }
     else {                                                            // GAM-032: 다음 충전까지 남은 시간
-      const m = CFG.PET.cooldown - state.pets[h.id].acc;
+      const m = CFG.PET.cooldown - petState(h.id).acc;
       const q = scr([h.sx, h.sy]); floatText(q[0], q[1] - 110, ic('clock', 40) + ` ${Math.floor(m / 60)}시간 ${Math.round(m % 60)}분`, ''); sfx.deny();
     }
     return;
   }
-  if (h.kind === 'decor') {
+  if (h.kind === 'decor') {                                         // 장식(기본 나무·풀 포함): 옮기기, 보관함에 넣기
+    const d = state.decor.find(o => o.x === h.x && o.y === h.y); if (!d) return;
     const s = scr(iso(h.x + .5, h.y + .5, 70));
-    pop.innerHTML = '<button class="btn ghost">보관함에 넣기</button>';
-    pop.style.left = s[0] + 'px'; pop.style.top = s[1] + 'px'; pop.hidden = false;
-    pop.querySelector('button').addEventListener('click', () => { pickupDecor(h.x, h.y); hidePop(); sfx.pop(); });
+    pop.innerHTML = `<b class="pop-title">${DECOR[d.type].name}</b><button class="btn ghost" id="decKeep">보관함에</button>`;
+    placePop(s[0], s[1]);
+    $('#decKeep').addEventListener('click', () => { pickupDecor(h.x, h.y); hidePop(); sfx.pop(); });
     return;
   }
   if (h.kind === 'fac') {
@@ -780,7 +937,27 @@ function onHit(h) {
 }
 
 /* ---------- 위 줄 버튼 ---------- */
-$('#btnShop').addEventListener('click', openShop);
+$('#btnShop').addEventListener('click', () => openShop());
+$('#btnLand').addEventListener('click', () => startLand('buy'));
+$('#goalBtn').addEventListener('click', () => { sfx.tap(); nextGoal().act(); });
+
+/* ---------- 아래 줄: 다음 목표 하나와 그 시설에만 붙는 표시 ---------- */
+function nextGoal() {
+  if (!state.home) return { icon: 'star', text: '본거지 고르기', act: openHomePick };
+  if (state.delivery) return { icon: 'truck', text: '운행 택배 도착', act: openDelivery };
+  const list = producers().map(p => { const st = homeSite(p.id), L = lvOf(st); return { p, L, g: upCost(st.type, L), m: breakMat(L) }; }).filter(x => x.L < CFG.LV.max);
+  const brk = list.find(x => x.m && state.mat >= x.m && state.gold >= x.g);
+  if (brk) return { icon: 'star', text: `${FAC[brk.p.type].name} 돌파`, act: () => openFacPop(brk.p), pid: brk.p.id };
+  const price = cityPrice();
+  if (state.mat >= price) return { icon: 'map', text: `새 도시 열기 · 자재 ${price}`, act: () => openMap() };
+  const up = list.filter(x => !x.m && state.gold >= x.g).sort((a, b) => a.g - b.g)[0];
+  if (up) return { icon: 'up', text: `${FAC[up.p.type].name} Lv ${up.L + 1}`, act: () => openFacPop(up.p), pid: up.p.id };
+  return { icon: 'map', text: `다음 도시 · 자재 ${state.mat} / ${price}`, act: () => openMap() };
+}
+function updateGoal() {
+  const g = nextGoal(), el = $('#goalText'); if (!el) return;
+  if (el.textContent !== g.text) { el.textContent = g.text; $('#goalBtn .i').innerHTML = ic(g.icon); }
+}
 $('#btnMap').addEventListener('click', () => openMap());
 $('#homeName').addEventListener('click', () => openMap());
 $('#btnQuest').addEventListener('click', openQuests);
@@ -791,7 +968,7 @@ $('#btnSound').addEventListener('click', () => { state.sound = !state.sound; sav
 on('change', refresh);
 on('change', renderPhone);
 on('change', () => { if ($('#mapScr') && overlay.querySelector('.modal') == null) paintMap(); });
-on('tick', () => { tickHud(); if (!phone.hidden) updateLive(phone); });
+on('tick', () => { tickHud(); updateGoal(); if (!phone.hidden) updateLive(phone); });
 on('warn', renderWarns);
 on('gear', () => {
   if (state.gear === 'D') {                // 주행 시작: 열린 창을 닫고 확정하지 않은 조작은 취소 (SCREENS 8절)
@@ -804,7 +981,7 @@ on('gear', () => {
 });
 on('truckParked', () => sfx.horn());
 on('carParked', () => {
-  PETS.forEach((p, i) => setTimeout(() => { p.jump = .45; }, i * 140));
+  RES.list.forEach((p, i) => setTimeout(() => { p.jump = .45; }, i * 140));
   if (careDue()) { catAnim.jump = .45; sfx.open(); }
   if (state.newFoot.length) setTimeout(() => banner('foot', `새로 지나간 곳 ${state.newFoot.length}곳 · 지도에서 보기`), 600);
 });
@@ -827,7 +1004,7 @@ on('restDone', () => {
 on('nightMarket', () => { banner('lantern', '야시장'); sfx.good(); });
 on('newDay', () => banner('clipboard', '오늘의 퀘스트'));
 on('newWeek', () => setTimeout(() => banner('road', '새로운 주 · 거리 자재 다시 1km당 1개'), 1500));
-on('reset', () => { cancelPlace(); closeOverlay(); hidePop(); placeVehicles(); R.clock = state.clock; Object.keys(shown).forEach(k => delete shown[k]); refresh(); renderWarns(); phCity = null; renderPhone(); setTimeout(openHomePick, 300); });
+on('reset', () => { RES.list = []; CAM.uz = 1; CAM.px = CAM.py = 0; cancelPlace(); closeOverlay(); hidePop(); placeVehicles(); R.clock = state.clock; Object.keys(shown).forEach(k => delete shown[k]); refresh(); renderWarns(); phCity = null; renderPhone(); setTimeout(openHomePick, 300); });
 
 /* ---------- 시작 ---------- */
 load();
