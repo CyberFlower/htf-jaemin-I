@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/city.css">
 </head>
 <body>
 <div id="app">
@@ -21,13 +22,15 @@
 
         <header id="hud">
           <div class="hud-l">
-            <div class="chip name">초록섬</div>
+            <button class="chip name" id="cityChip" aria-label="전국 지도"><span class="i" data-ic="home"></span><b>서울</b><small>새싹</small></button>
             <div class="chip res" id="resMat"><span class="i" data-ic="crate"></span><b>0</b></div>
             <div class="chip res" id="resGold"><span class="i" data-ic="coin"></span><b>0</b></div>
           </div>
           <div class="hud-r">
             <button class="chip alert" id="careChip" hidden><span class="i" data-ic="wrench"></span><span>엔진오일 점검 권장</span></button>
             <div class="chip gear"><i>P</i><span id="clock">14:32</span></div>
+            <button class="rbtn" id="btnMap" aria-label="전국 지도"><span class="i" data-ic="map"></span><em hidden>0</em></button>
+            <button class="rbtn" id="btnLand" aria-label="땅 넓히기"><span class="i" data-ic="land"></span></button>
             <button class="rbtn" id="btnShop" aria-label="상점"><span class="i" data-ic="cart"></span></button>
             <button class="rbtn" id="btnQuest" aria-label="퀘스트"><span class="i" data-ic="clipboard"></span><em hidden>0</em></button>
             <button class="rbtn" id="btnSound" aria-label="소리"><span class="i" data-ic="speaker"></span></button>
@@ -35,17 +38,23 @@
         </header>
 
         <div id="banner"></div>
+        <div id="townDock">
+          <button id="btnTown"><span class="i" data-ic="crate"></span><span><small>다음 목표</small><b id="townGoal">운행 택배</b></span><span class="dock-arrow">›</span></button>
+          <button id="btnHome" hidden><span class="i" data-ic="home"></span><span>본거지</span></button>
+          <button id="btnCollectAll"><span class="i" data-ic="coin"></span><span>모두 거두기 <b>0</b></span></button>
+        </div>
         <div id="placeBar" hidden>
           <button class="round no" id="placeNo" aria-label="취소"><span class="i" data-ic="x"></span></button>
           <div class="cost" id="placeCost"></div>
           <button class="round yes" id="placeYes" aria-label="확정"><span class="i" data-ic="check"></span></button>
         </div>
+        <div id="landBar" hidden></div>
         <div id="pop" hidden></div>
 
         <div id="overlay" hidden></div>
 
         <div id="voice" hidden><span class="i" data-ic="speaker"></span><span id="voiceText"></span></div>
-        <div id="drivePill"><span class="i" data-ic="steering"></span><span>주행 중이에요</span></div>
+        <div id="drivePill"><span class="i" data-ic="steering"></span><span>운전에 집중해 주세요 · 주차 후 이어가요</span></div>
         <div id="warnStack"></div>
       </div>
     </div>
@@ -53,7 +62,7 @@
 
   <!-- 게임 밖: 실제 차량이 해 줄 일을 대신 조작하는 시뮬레이터 -->
   <aside id="sim">
-    <h1>차량 시뮬레이터<small>게임 화면 밖 · 차량 신호를 대신 넣습니다</small></h1>
+    <h1>차량 시뮬레이터<small>실험 목업 · 모든 차량 값은 가상 신호입니다</small></h1>
 
     <section>
       <h2>주행 상태</h2>
@@ -61,6 +70,7 @@
         <button data-v="P" class="on"><b>P</b> 주차</button>
         <button data-v="D"><b>D</b> 주행</button>
       </div>
+      <button id="simUnknown">주차 신호 없음</button>
       <p class="read">누적 주행거리 <b id="simOdo">0</b> km</p>
     </section>
 
@@ -75,6 +85,12 @@
         <div class="step" data-k="brake"><span>급제동</span><button data-d="-1">−</button><b>0</b><button data-d="1">+</button></div>
         <div class="step" data-k="turn"><span>방향 지시등</span><button data-d="-1">−</button><b>0</b><button data-d="1">+</button></div>
       </div>
+    </section>
+
+    <section>
+      <h2>위치 <small>FusedLocation 대신 · 운행 중 관측</small></h2>
+      <div class="locrow"><select id="simCity"></select><button id="simSeen">지나감</button></div>
+      <p class="read" id="simSeenList">관측 없음</p>
     </section>
 
     <section>
@@ -111,15 +127,26 @@
     </section>
 
     <section class="foot">
+      <button id="simPhone">폰 화면 <small>확대 계획 · 한 장면</small></button>
       <button id="simReset">처음 상태로</button>
     </section>
   </aside>
+
+  <!-- 확대 계획(P2) 폰 화면 한 장면. 실제 연동은 없습니다 (D-004) -->
+  <div id="phone" hidden>
+    <div class="ph-top"><b>내 차로 짓는 도시</b><small>연동 목업</small><button id="phoneClose" aria-label="닫기">×</button></div>
+    <div class="ph-body"></div>
+  </div>
 </div>
 
 <script src="js/icons.js"></script>
+<script src="js/cities.js"></script>
 <script src="js/state.js"></script>
+<script src="js/economy.js"></script>
+<script src="js/terrain.js"></script>
 <script src="js/render.js"></script>
 <script src="js/ui.js"></script>
+<script src="js/map-ui.js"></script>
 <script src="js/sim.js"></script>
 </body>
 </html>

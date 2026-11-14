@@ -1,0 +1,7 @@
+{
+  "private": true,
+  "scripts": {
+    "dev": "node spikes/game-isometric/dev-server.cjs",
+    "test:game": "node --test spikes/game-isometric/tests/economy.test.cjs"
+  }
+}

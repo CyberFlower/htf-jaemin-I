@@ -126,6 +126,37 @@ const ICONS = {
     ['M12 8.500a3.500 3.500 0 1 0 0 7a3.500 3.500 0 0 0 0-7z', null, 'currentColor', 2.200],
     ['M12 2.500v6M12 15.500v6M2.500 12h6M15.500 12h6', null, 'currentColor', 1.800],
   ],
+  map: [
+    ['M3 6.2l6-2.6 6 2.6 6-2.6v14.2l-6 2.6-6-2.6-6 2.6z', null, 'currentColor', 2.2],
+    ['M9 3.6v14.2M15 6.2v14.2', null, 'currentColor', 2],
+  ],
+  foot: [
+    ['M8.3 2.8c1.9 0 3 2.2 3 4.8s-1.1 4.3-3 4.3-3-1.7-3-4.3 1.1-4.8 3-4.8z', 'currentColor'],
+    ['M6.3 13.2h4l-.4 2.9a1.6 1.6 0 0 1-3.2 0z', 'currentColor'],
+    ['M15.7 7.6c1.9 0 3 2.2 3 4.8s-1.1 4.3-3 4.3-3-1.7-3-4.3 1.1-4.8 3-4.8z', 'currentColor'],
+    ['M13.7 18h4l-.4 2.6a1.6 1.6 0 0 1-3.2 0z', 'currentColor'],
+  ],
+  star: [['M12 2.8l2.8 5.8 6.3.9-4.6 4.4 1.1 6.3L12 17.2l-5.6 3 1.1-6.3-4.6-4.4 6.3-.9z', 'currentColor']],
+  home: [
+    ['M3.5 11.5L12 4l8.5 7.5', null, 'currentColor', 2.6],
+    ['M6 10v9.5h12V10', null, 'currentColor', 2.4],
+    ['M10 19.5v-5h4v5', null, 'currentColor', 2.2],
+  ],
+  phone: [
+    ['M8 2.5h8a2 2 0 0 1 2 2v15a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2v-15a2 2 0 0 1 2-2z', null, 'currentColor', 2.2],
+    ['M10.5 18.5h3', null, 'currentColor', 2.2],
+  ],
+  up: [['M12 19.5V6M6 11.5L12 5.5l6 6', null, 'currentColor', 3]],
+  move: [['M12 3v18M3 12h18M9 6l3-3 3 3M9 18l3 3 3-3M6 9l-3 3 3 3M18 9l3 3-3 3', null, 'currentColor', 2.4]],
+  land: [
+    ['M12 4.5l8.5 4.6-8.5 4.6-8.5-4.6z', null, 'currentColor', 2.2],
+    ['M3.5 9.1v4.3l8.5 4.6 8.5-4.6V9.1', null, 'currentColor', 2.2],
+  ],
+  hammer: [
+    ['M13.5 5.5l5 5-2.5 2.5-5-5z', 'currentColor'],
+    ['M12.8 9.2L4.5 17.5a1.6 1.6 0 0 0 2.3 2.3l8.3-8.3', null, 'currentColor', 2.6],
+    ['M11 4.5c2-1.6 4.6-1.6 6.5 0', null, 'currentColor', 2.2],
+  ],
 };
 
 /* HTML용 SVG 문자열 */

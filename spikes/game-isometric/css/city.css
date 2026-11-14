@@ -1,0 +1,214 @@
+/* 전국 지도·도시·업그레이드·아래 줄 (1920×1080 목업 좌표) */
+#stage { overflow: clip; }
+
+/* ---- 위 줄 도시 칩 ---- */
+#cityChip { cursor: pointer; padding: 0 30px 0 20px; }
+#cityChip b { font-weight: 400; }
+#cityChip small { font-size: 26px; background: #ffffff33; border-radius: 18px; padding: 4px 14px; }
+#cityChip .ic { width: 44px; height: 44px; }
+#cityChip:active { translate: 0 4px; }
+
+/* ---- 아래 줄 ---- */
+#townDock { position: absolute; bottom: 26px; left: 28px; right: 28px; z-index: 12; display: flex; gap: 14px; align-items: end; pointer-events: none; }
+#townDock button { pointer-events: auto; border: 3px solid #fff6d7; border-radius: 28px; min-height: 100px; padding: 14px 26px; background: #fff8ea; color: var(--ink); box-shadow: 0 7px 0 #bba67b66, 0 12px 26px #283c3c26; display: flex; align-items: center; gap: 14px; font-size: 32px; }
+#townDock .ic { width: 46px; height: 46px; }
+#btnTown { margin-right: auto; text-align: left; min-width: 540px; }
+#btnTown .i { color: var(--green-d); }
+#btnTown small { display: block; font-size: 24px; color: #738064; }
+#btnTown b { display: block; margin-top: 6px; font-size: 34px; font-weight: normal; }
+.dock-arrow { margin-left: auto; font-size: 54px; color: var(--green); }
+#townDock #btnHome { background: #3e845c; color: white; border-color: #82b483; }
+#townDock #btnCollectAll { background: #ffe4a2; border-color: #fff3d7; }
+#townDock button:active { translate: 0 4px; }
+#townDock button:disabled { opacity: .7; }
+#btnTown.bump { animation: bump .5s; }
+
+/* ---- 주행·주차 미확인: 게임 화면과 조작을 멈춤 (GAM-Q29 실험 대안) ---- */
+.gear-D #townDock, .gear-U #townDock { display: none; }
+.gear-D #world, .gear-U #world { visibility: hidden; }
+.gear-D, .gear-U { background: radial-gradient(ellipse at 50% 20%, #243a40, #101a24); }
+.gear-D #drivePill, .gear-U #drivePill { transform: translate(-50%,0); opacity: 1; bottom: 42%; white-space: nowrap; }
+.gear-D #hud, .gear-U #hud { display: none; }
+.gear-D #banner, .gear-U #banner, .gear-D #fx, .gear-U #fx { display: none; }
+
+/* ---- S15 시설 말풍선 ---- */
+#pop { min-width: 440px; }
+.fp-head { display: flex; align-items: baseline; gap: 12px; font-size: 44px; }
+.fp-head b { font-weight: 400; }
+.fp-head em { font-style: normal; font-size: 32px; color: #438459; }
+.fp-head .stg { font-size: 28px; color: #f2a516; letter-spacing: 2px; }
+.fp-rate { display: flex; align-items: center; gap: 8px; font-size: 40px; }
+.fp-rate b { font-weight: 400; } .fp-rate small { font-size: 24px; color: var(--mute); }
+.fp-rate .arrow { color: var(--mute); margin: 0 4px; }
+.fp-rate b.jump { color: #e08a00; }
+.fp-btns { display: grid; grid-template-columns: auto auto 1fr; gap: 12px; width: 100%; }
+.pop-title { font-size: 38px; font-weight: 400; }
+#pop .fp-btns .btn { font-size: 32px; padding: 0 20px; min-width: 0; gap: 6px; }
+#pop .fp-btns .btn .ic { width: 32px; height: 32px; }
+.btn.break { background: #ffb02e; color: #fff; box-shadow: 0 8px 0 #d98a12; }
+
+/* ---- 단계 돌파 확인 ---- */
+.breakc { width: 980px; text-align: center; }
+.breakc h2 { font-size: 56px; margin: 0 0 10px; font-weight: 400; }
+.bk-row { display: flex; align-items: center; justify-content: center; gap: 20px; }
+.bk-th { width: 300px; height: 260px; border-radius: 30px; background: #f0f1da; overflow: hidden; }
+.bk-th.next { background: #fff1c8; box-shadow: inset 0 0 0 5px #ffd36b; }
+.bk-arrow { font-size: 80px; color: #e08a00; }
+.bk-rate { display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 40px; margin: 22px 0 12px; }
+.bk-rate b { color: #e08a00; font-weight: 400; }
+.bk-cost { display: flex; justify-content: center; gap: 40px; font-size: 52px; margin: 8px 0 26px; }
+.bk-cost span { display: flex; align-items: center; gap: 10px; background: #fff; border-radius: 30px; padding: 8px 28px 8px 16px; box-shadow: inset 0 0 0 4px var(--line); }
+.bk-cost small { font-size: 28px; color: var(--mute); }
+.bk-cost .lack { color: var(--red); box-shadow: inset 0 0 0 4px #ffc9c0; }
+.breakc .actions, .citycard .actions, .offline-card .actions { display: flex; justify-content: center; gap: 24px; }
+
+/* ---- 택배: 자재 두 갈래와 주간 구간 ---- */
+.dl-gain { flex-direction: column; gap: 0; padding: 10px 34px 12px; font-size: 72px; }
+.dl-gain .ic { width: 64px; height: 64px; }
+.dl-gain small { font-size: 26px; color: var(--mute); }
+#dlSafe { box-shadow: inset 0 0 0 4px #bfe8c6; }
+.dl-week { display: flex; align-items: center; gap: 18px; font-size: 30px; color: #6b5a45; margin: -6px 0 22px; }
+.dl-week .wk { flex: 1; height: 18px; border-radius: 9px; background: #efe3cc; position: relative; overflow: hidden; }
+.dl-week .wk i { position: absolute; inset: 0 auto 0 0; background: var(--green); }
+.dl-week .wk em { position: absolute; top: 0; bottom: 0; width: 3px; background: #fff; }
+.dl-week .tier { font-weight: 400; border-radius: 16px; padding: 2px 16px; color: #fff; }
+.tier.t1 { background: var(--green); } .tier.t2 { background: #e8a93a; } .tier.t3 { background: #b9ab93; }
+
+/* ---- S13 전국 지도 ---- */
+.kmap-screen header .kstat { display: flex; align-items: center; gap: 8px; font-size: 44px; background: #fff; border-radius: 40px; padding: 8px 26px; box-shadow: inset 0 0 0 4px var(--line); }
+.kstat b { font-weight: 400; } .kstat small { font-size: 26px; color: var(--mute); }
+.btn.collect { background: #ffd24a; color: #6b4a10; box-shadow: 0 8px 0 #e0a516; min-width: 0; padding: 0 30px; font-size: 40px; }
+.kfootbtn { width: 84px; height: 84px; border-radius: 50%; border: 0; background: #e6dfd0; color: #a59a86; display: grid; place-items: center; }
+.kfootbtn.on { background: #8c5a3c; color: #fff; }
+.kmap-body { flex: 1; min-height: 0; display: grid; grid-template-columns: auto 1fr; gap: 36px; }
+.kmap { position: relative; align-self: start; background: radial-gradient(ellipse at 50% 40%, #d9f1f4, #bfe3ea); border-radius: 36px; outline: 14px solid #bfe3ea; }
+.ktile { position: absolute; border: 0; border-radius: 18px; background: color-mix(in srgb, #5fbf74 calc(var(--k) * 100%), #f5ecd8); color: var(--ink);
+  box-shadow: 0 5px 0 #c9b998; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 30px; padding: 0; overflow: visible; }
+.ktile.has { box-shadow: 0 5px 0 #3f9d50; }
+.ktile b { font-weight: 400; line-height: 1; }
+.ktile small { font-size: 22px; color: #6b5a45; margin-top: 4px; }
+.ktile.inset { border-radius: 50%; font-size: 24px; z-index: 2; box-shadow: 0 4px 0 #c9b998, 0 0 0 4px #fdf3df; }
+.ktile.inset.has { box-shadow: 0 4px 0 #3f9d50, 0 0 0 4px #fdf3df; }
+.ktile.sel { outline: 6px solid #2f7df6; outline-offset: 2px; z-index: 1; }
+.ktile.inset.sel { z-index: 4; }
+.ktile .khome { position: absolute; left: -10px; top: -12px; width: 40px; height: 40px; border-radius: 50%; background: #3e845c; color: #fff; display: grid; place-items: center; }
+.ktile .kfoot { position: absolute; right: -8px; bottom: -10px; height: 34px; border-radius: 17px; background: #8c5a3c; color: #fff; display: flex; align-items: center; gap: 2px; padding: 0 8px; font-style: normal; font-size: 20px; }
+.ktile .kfoot .ic, .ktile .khome .ic { width: 22px; height: 22px; }
+.ktile.fresh .kfoot { animation: pulse 1.2s infinite; }
+.kside { min-height: 0; overflow-y: auto; padding: 4px 8px 20px; }
+.kside-head { display: flex; align-items: center; gap: 18px; margin-bottom: 18px; }
+.kside-head h3 { margin: 0; font-size: 54px; font-weight: 400; }
+.kside-head span { font-size: 34px; color: var(--mute); }
+.kside-head .kf { display: flex; align-items: center; gap: 6px; color: #8c5a3c; }
+.kcities { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 14px; }
+.kcity { position: relative; border: 0; border-radius: 24px; background: #fffdf7; color: var(--ink); box-shadow: inset 0 0 0 3px #eadac0; padding: 16px 18px; text-align: left; min-height: 104px; }
+.kcity b { display: flex; align-items: center; gap: 6px; font-weight: 400; font-size: 34px; }
+.kcity b .ic { width: 28px; height: 28px; color: #3e845c; }
+.kcity small { display: flex; align-items: center; gap: 4px; font-size: 24px; color: var(--mute); margin-top: 6px; }
+.kcity small .ic { width: 24px; height: 24px; }
+.kcity.own { background: #e6f5df; box-shadow: inset 0 0 0 3px #9fd39a; }
+.kcity.own small { color: #4b7f52; }
+.kcity.cur { box-shadow: inset 0 0 0 5px #3f9d50; }
+.kcity.fresh { box-shadow: inset 0 0 0 4px #c48a5c; animation: pulse 1.2s infinite; }
+.kcity.born { animation: born .8s cubic-bezier(.3, 1.6, .5, 1); }
+.kbadge { position: absolute; right: 10px; top: -12px; display: flex; align-items: center; gap: 4px; font-style: normal; font-size: 22px; background: #ffd24a; color: #6b4a10; border-radius: 16px; padding: 3px 10px; }
+.kbadge.full { background: #f0604d; color: #fff; }
+.kbadge .ic { width: 22px; height: 22px; }
+.linkbtn { margin-top: 20px; border: 0; background: none; color: var(--mute); font-size: 26px; text-decoration: underline; }
+@keyframes born { 0% { scale: .6; background: #ffe48a; } 100% { scale: 1; } }
+
+/* ---- S14 도시 카드 ---- */
+.citycard { width: 760px; text-align: center; }
+.citycard h3 { font-size: 58px; font-weight: 400; margin: 0 0 8px; }
+.cc-foot { display: inline-flex; align-items: center; gap: 8px; font-size: 28px; color: #8c5a3c; background: #f4e6d8; border-radius: 20px; padding: 6px 18px; }
+.cc-starter { display: flex; align-items: center; justify-content: center; gap: 12px; font-size: 30px; color: var(--mute); margin: 8px 0; }
+.cc-starter .th { width: 220px; height: 190px; }
+.cc-price { display: flex; align-items: center; justify-content: center; gap: 22px; font-size: 76px; }
+.cc-price span { display: flex; align-items: center; gap: 10px; }
+.cc-price b { font-weight: 400; }
+.cc-price small { font-size: 30px; color: var(--mute); } .cc-price small.lack { color: var(--red); }
+.cc-next { display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 28px; color: var(--mute); margin: 4px 0 26px; }
+.btn.armed { background: #ffb02e; box-shadow: 0 8px 0 #d98a12; }
+
+/* ---- 복귀 요약 (GAM-040) ---- */
+.offline-card { width: 860px; text-align: center; }
+.offline-card h2 { display: flex; align-items: center; justify-content: center; gap: 12px; font-size: 50px; margin: 8px 0 10px; font-weight: 400; color: #7c715d; }
+.offline-card strong { display: flex; align-items: center; justify-content: center; gap: 14px; font-size: 92px; font-weight: 400; color: #bc8a24; margin: 18px 0; }
+.offline-card .full { font-size: 28px; color: var(--red); margin: 0 0 24px; }
+
+/* ---- 시뮬레이터 추가 ---- */
+.locrow { display: grid; grid-template-columns: 1fr auto; gap: 6px; }
+#simCity { font: inherit; background: #272d37; color: #dfe5ee; border: 1px solid #363e4a; border-radius: 8px; padding: 8px; min-width: 0; }
+#sim button:disabled { opacity: .45; cursor: default; }
+#simPhone { margin-bottom: 8px; }
+#simPhone small { display: block; color: #8b96a5; font-size: 11px; }
+
+/* ---- S16 폰 화면 한 장면 ---- */
+#phone { position: fixed; right: 350px; bottom: 24px; width: 300px; height: 600px; border-radius: 40px; background: #fdf3df; color: #4a3b2a; z-index: 100;
+  box-shadow: 0 0 0 9px #0b0d10, 0 0 0 11px #3a414c, 0 30px 70px rgba(0,0,0,.6); font-family: var(--game); overflow: hidden; display: flex; flex-direction: column; }
+.ph-top { display: flex; align-items: center; gap: 6px; padding: 26px 18px 10px; background: var(--green); color: #fff; }
+.ph-top b { font-weight: 400; font-size: 18px; flex: 1; }
+.ph-top small { font-size: 11px; background: #ffffff33; border-radius: 8px; padding: 2px 6px; }
+.ph-top button { border: 0; background: none; color: #fff; font-size: 24px; cursor: pointer; }
+.ph-body { flex: 1; padding: 14px; display: flex; flex-direction: column; gap: 12px; overflow: auto; }
+.ph-body .ic { width: 22px; height: 22px; }
+.ph-stat { display: flex; justify-content: space-between; font-size: 18px; }
+.ph-stat span { display: flex; align-items: center; gap: 4px; }
+.ph-collect { border: 0; border-radius: 16px; background: #ffd24a; color: #6b4a10; font: inherit; font-size: 18px; padding: 12px; display: flex; align-items: center; justify-content: center; gap: 6px; cursor: pointer; }
+.ph-collect:disabled { opacity: .5; }
+.ph-list { list-style: none; margin: 0; padding: 0; font-size: 16px; }
+.ph-list li { display: flex; justify-content: space-between; padding: 8px 4px; border-bottom: 1px solid #efe3cc; }
+.ph-list b { font-weight: 400; }
+.ph-car { display: flex; align-items: center; gap: 10px; background: #e3e6ee; color: #4f5868; border-radius: 16px; padding: 12px; font-size: 14px; margin-top: auto; }
+.ph-car b { font-weight: 400; font-size: 16px; color: #2f3642; }
+.ph-lock { margin: auto; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 8px; color: #4f5868; }
+.ph-lock .ic { width: 60px; height: 60px; }
+.ph-lock b { font-weight: 400; font-size: 20px; }
+
+/* ---- 지역 특산 건물 ---- */
+.kside-head .klocal { display: flex; align-items: center; gap: 10px; font-size: 30px; color: var(--ink); background: #fff; border-radius: 30px; padding: 6px 20px 6px 8px; box-shadow: inset 0 0 0 3px var(--lc); }
+.klocal i { font-style: normal; width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; background: var(--lc); color: #fff; font-size: 26px; }
+.bcard.local { box-shadow: inset 0 0 0 4px #ffd36b, 0 8px 0 rgba(74, 59, 42, .18); }
+.cc-starter span { display: flex; flex-direction: column; align-items: flex-start; font-size: 36px; color: var(--ink); }
+.cc-starter small { font-size: 24px; color: var(--mute); }
+
+/* ---- 땅 넓히기 막대 ---- */
+#landBar { position: absolute; left: 50%; top: 128px; transform: translateX(-50%); z-index: 24; background: var(--cream); border-radius: 34px; padding: 16px 22px; box-shadow: 0 8px 0 rgba(74,59,42,.18), 0 20px 50px rgba(20,20,30,.25); display: flex; flex-direction: column; gap: 10px; align-items: center; }
+.lb-types { display: flex; gap: 10px; }
+.lb-types button { border: 0; border-radius: 22px; background: #efe3cc; color: var(--ink); font-size: 30px; padding: 10px 20px 10px 12px; display: flex; align-items: center; gap: 10px; }
+.lb-types button i { width: 38px; height: 38px; border-radius: 10px; box-shadow: inset 0 0 0 3px rgba(74,59,42,.15); }
+.lb-types button[aria-pressed=true] { background: #3e845c; color: #fff; }
+.lb-info { display: flex; gap: 30px; font-size: 26px; color: var(--mute); }
+.lb-info span { display: flex; align-items: center; gap: 6px; }
+.lb-info .ic { width: 30px; height: 30px; }
+.lb-info b { color: var(--ink); font-weight: 400; }
+.gear-D #landBar, .gear-U #landBar { display: none; }
+
+/* ---- 상점: 장식이 늘어 5열·스크롤 ---- */
+.shop .grid { grid-template-columns: repeat(5, 1fr); gap: 18px; overflow-y: auto; align-content: start; padding: 4px 6px 20px; min-height: 0; }
+.shop .scard { padding: 14px 16px 18px; gap: 6px; }
+.shop .scard canvas { width: 230px; height: 190px; }
+.shop .scard b { font-size: 36px; }
+.shop .scard .btn { height: 72px; font-size: 32px; min-width: 0; }
+.shop .scard .btn .ic { width: 32px; height: 32px; }
+
+/* 배치·땅 넓히기 중에는 아래 줄을 숨겨 확정 막대와 겹치지 않게 */
+.placing #townDock { display: none; }
+
+/* ---- 확대·이동: 캔버스에서 브라우저 기본 확대를 막음 ---- */
+#world { touch-action: none; }
+/* ---- 상점 탭(건물·장식) ---- */
+.shop-tabs { display: flex; gap: 10px; margin-right: auto; }
+.shop-tabs button { border: 0; border-radius: 24px; background: #eadcc6; color: #73654b; font-size: 34px; padding: 14px 34px; }
+.shop-tabs button[aria-pressed=true] { background: #3e845c; color: #fff; }
+.shop header h2 { flex: none; }
+.shop .scard.local { box-shadow: inset 0 0 0 4px #ffd36b, 0 10px 0 rgba(74, 59, 42, .14); }
+.shop .shint { font-size: 22px; color: var(--mute); margin-top: -4px; }
+.shop .btn.buy[disabled] { background: #e6dfd0; color: #8a7f6c; box-shadow: 0 8px 0 #cfc6b3; opacity: 1; }
+
+.lb-acts { display: flex; gap: 8px; background: #efe3cc; border-radius: 24px; padding: 6px; }
+.lb-acts button { border: 0; border-radius: 18px; background: transparent; color: #73654b; font-size: 30px; padding: 8px 26px; }
+.lb-acts button[aria-pressed=true] { background: #fff8ea; color: var(--ink); box-shadow: 0 3px 0 rgba(74,59,42,.15); }
+
+.pop-row { display: flex; gap: 12px; }
+#pop .pop-row .btn { width: auto; min-width: 0; padding: 0 26px; font-size: 32px; }

@@ -32,6 +32,14 @@
 
   q('#simReset').addEventListener('click', resetState);
 
+  /* 위치: 운행 중 어느 도시 권역에서 관측됐는지만 넣습니다. 좌표·경로는 다루지 않습니다 (GAM-039) */
+  q('#simCity').innerHTML = REGIONS.map(r => `<optgroup label="${r.name}">${r.cityIds.map(id => `<option value="${id}">${cityName(id)}</option>`).join('')}</optgroup>`).join('');
+  q('#simCity').value = 'gyeonggi:수원시';
+  q('#simSeen').addEventListener('click', () => observeLocation(q('#simCity').value));
+  q('#simPhone').addEventListener('click', () => { const ph = q('#phone'); ph.hidden = !ph.hidden; renderPhone(); });
+  q('#phoneClose').addEventListener('click', () => { q('#phone').hidden = true; });
+  q('#simUnknown').addEventListener('click', setUnknownVehicleState);
+
   function sync() {
     document.querySelectorAll('#simGear button').forEach(b => b.classList.toggle('on', b.dataset.v === state.gear));
     q('#simOdo').textContent = fmtNum(state.odo);
@@ -44,6 +52,8 @@
     document.querySelectorAll('#simOil button').forEach(b => b.classList.toggle('on', b.dataset.v === oilState));
     q('#simTire').classList.toggle('on', state.warn.tire);
     q('#simHeat').classList.toggle('on', state.warn.heat);
+    q('#simSeen').disabled = state.gear !== 'D';
+    q('#simSeenList').textContent = state.sim.seen.length ? state.sim.seen.map(cityName).join(', ') : (state.gear === 'D' ? '관측 없음' : '주행 중에 넣습니다');
     q('#simDate').textContent = fmtDate(dayOf(state.clock)) + ' ' + fmtClock(state.clock);
   }
   on('change', sync); on('reset', sync);
