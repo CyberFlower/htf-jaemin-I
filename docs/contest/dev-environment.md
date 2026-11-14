@@ -27,6 +27,7 @@
 - [SDK 문서] (확인일 2026-11-14): [Overview](https://document.pleos.ai/docs/pleos-only/connect-sdk-pleos/) · [Vehicle SDK 소개](https://document.pleos.ai/docs/pleos-only/connect-sdk-pleos/Vehicle/intro) · [Vehicle 퍼미션](https://document.pleos.ai/docs/pleos-only/connect-sdk-pleos/Vehicle/vehicle-permission) · [FusedLocation 설정](https://document.pleos.ai/docs/pleos-only/connect-sdk-pleos/FusedLocation/project-setup) · [SpeechToText 소개](https://document.pleos.ai/docs/pleos-only/connect-sdk-pleos/SpeechToText/intro) · [TextToSpeech 소개](https://document.pleos.ai/docs/pleos-only/connect-sdk-pleos/TextToSpeech/intro) · [Vehicle API Reference: Safety](https://document.pleos.ai/docs/pleos-only/connect-sdk-pleos/Vehicle/vehicle/ai.pleos.playground.vehicle.api/safety/entry) · [Tire](https://document.pleos.ai/docs/pleos-only/connect-sdk-pleos/Vehicle/vehicle/ai.pleos.playground.vehicle.api/tire/entry) · [TelltaleType](https://document.pleos.ai/docs/pleos-only/connect-sdk-pleos/Vehicle/vehicle/ai.pleos.playground.vehicle.constant.telltale/telltale-type/entry)
 - 공모전 (확인일 2026-11-12): [공모전 개발 환경](https://appdevchallenge.auto-hmg.io/guide/development) · [Pleos Playground](https://pleos.ai/playground)
 - [Pleos 참고] (확인일 2026-11-12~14): [에뮬레이터 설정](https://document.pleos.ai/docs/connect/guide/getting-started/application-development/setup-connect-sdk-emulator) · [Virtual Console 가이드](https://document.pleos.ai/docs/pleos-only/app-test-guide/virtual-console-guide) · [차량 앱 FAQ](https://document.pleos.ai/docs/pleos-only/vehicle-app-developer-guide/vehicle-app-faq) · [주행 규제 개발 가이드](https://document.pleos.ai/docs/pleos-only/vehicle-app-developer-guide/driving-restriction-development-guide) · [SDK API 정책](https://document.pleos.ai/docs/pleos-only/vehicle-app-planning-guide/pleos-connect-sdk-api) · [API 호환성 및 가용성](https://document.pleos.ai/docs/pleos-only/vehicle-app-planning-guide/api-compatibility-availability) · [하드웨어 접근 정책](https://document.pleos.ai/docs/pleos-only/vehicle-app-planning-guide/platform-api-architecture) · [Gleo Interface 구현 가이드](https://document.pleos.ai/docs/pleos-only/app-integration-guide/guide/core-concepts) · [ADB Command FAQ](https://document.pleos.ai/docs/pleos-only/vehicle-app-developer-guide/adb-command-reference-guide)
+- [SDK 문서] (확인일 2026-11-14, 4.2절 Seat·Safety와 4.4.1절): [Vehicle API Reference](https://document.pleos.ai/docs/pleos-only/connect-sdk-pleos/Vehicle/entry) · [NaviHelper Event listeners](https://document.pleos.ai/docs/pleos-only/connect-sdk-pleos/NaviHelper/event-listeners) · NaviHelper API Reference의 `CautionPoint`, `CameraAlert`, `CautionPointType`, `CameraType`
 - [Android] (확인일 2026-11-13): [VehiclePropertyIds](https://developer.android.com/reference/android/car/VehiclePropertyIds)
 - 설명회 (1절 네트워크, 6절): 공모전 통합 온라인 설명회 영상의 개발 착수 안내(22:15~)와 기술 Q&A(37:10~). 영상 요약을 근거로 적었습니다. 설명회 날짜와 다시보기 링크는 추가가 필요하고, 해당 구간은 다시보기로 직접 확인해야 합니다.
 
@@ -139,8 +140,8 @@ dependencyResolutionManagement {
 | HVAC | 온도, 풍량, 습도 제어·조회 | `CAR_CLIMATE` | GRD: 동행자 공조 |
 | Light | 조명 상태, 앰비언트 라이트 제어 | `CAR_LIGHTS` | |
 | Odometer | 총 주행 거리, 트립 거리·시간, 거리 단위 | `CAR_DRIVE` | GAM: 건축 자재, 정비 퀘스트, 단거리 비율 |
-| Safety | 엔진오일·브레이크액·변속기 오일 레벨 상태, 워셔액 부족, power down 경고, 안전벨트, 에어백, 경고등(Telltales). 4.2.1절 | `CAR_SAFETY`. 경고등만 `PRIVATE_CAR_SAFETY` | GAM: 도시 이상 현상, 차량이 확인하는 관리 퀘스트 |
-| Seat | 위치, 각도, 기능 제어·조회 | `CAR_SEATS` | GRD: 탑승 후보 (점유 정보 확인 필요) |
+| Safety | 엔진오일·브레이크액·변속기 오일 레벨 상태, 워셔액 부족, power down 경고, 안전벨트 미체결 경고(`hasSeatBeltNotBuckledWarning`, `registerSeatBeltNotBuckledWarning`), 에어백, 경고등(Telltales). 4.2.1절 | `CAR_SAFETY`. 경고등만 `PRIVATE_CAR_SAFETY` | GAM: 도시 이상 현상, 차량이 확인하는 관리 퀘스트, 동승 안전벨트 퀘스트 |
+| Seat | 위치, 각도, 기능 제어·조회. **좌석 점유**: `checkSeatOccupancyCapabilities`, `getCurrentSeatOccupancy`, `registerSeatOccupancy`/`unregisterSeatOccupancy`. **안전벨트 체결**: `checkSeatBeltBuckledCapabilities`, `getCurrentSeatBeltBuckledState`, `registerSeatBeltBuckledState`(`SeatBeltBuckledStateListener.onSeatBeltBuckledStateUpdated`). 좌석은 `SeatArea`/`SeatValue`(`ROW_1_LEFT`~`ROW_3_RIGHT`)로 지정(2026-11-14 API Reference 확인). 반환 값의 의미와 에뮬레이터 동작은 미확인 | `CAR_SEATS` | GRD: 탑승 후보 · GAM: 동승 안전벨트 퀘스트 |
 | SideMirror | 사이드미러 열선 | `CAR_MIRRORS` | |
 | Steeringwheel | 핸들 상태, 열선 | 퍼미션 표에 없음 | GAM: 음성 차량 제어 (범위 검토 중) |
 | Tire | 저압 기준값(kPa)과 휠 영역만. 현재 공기압과 경고 여부는 없습니다(4.2.1절) | `CAR_SAFETY` | GAM: 공기압 경고에는 쓸 수 없음 |
@@ -168,7 +169,7 @@ dependencyResolutionManagement {
 
 - 메서드 이름 `registerLowWasherFluidWaringState`의 철자(`Waring`)는 문서 그대로입니다.
 - **공기압 경고(TPMS)와 과열 경고는 경고등 API로만 읽을 수 있고, 이 API는 `PRIVATE_CAR_SAFETY`가 필요합니다.** signature\|privileged 권한은 보통 일반 앱에 주어지지 않습니다(추론). 에뮬레이터에서 선언과 호출이 되는지 확인해야 합니다([GAM-Q3](../../projects/game/OPEN_QUESTIONS.md)).
-- Virtual Console 가이드의 Safety 항목은 Telltales뿐입니다(3절). 오일 레벨, 브레이크액, 워셔액 값을 바꾸는 항목은 가이드에 없습니다. 바꾸는 방법은 확인이 필요합니다([GAM-Q37](../../projects/game/OPEN_QUESTIONS.md)).
+- Virtual Console 가이드의 Safety 항목은 Telltales뿐입니다(3절). 오일 레벨, 브레이크액, 워셔액 값을 바꾸는 항목은 가이드에 없습니다. 바꾸는 방법은 확인이 필요합니다([GAM-Q40](../../projects/game/OPEN_QUESTIONS.md)).
 - **정비 이력, 교체 시기, 오일 수명을 주는 API는 없습니다.** Vehicle API Reference의 19개 도메인 메서드 458개를 이름 기준으로 확인했습니다. 엔진오일 레벨은 오일의 양이며, 교체 여부나 교체 시기를 알려 주지 않습니다.
 - [Android] `VehiclePropertyIds`(상수 250개)에도 정비 이력이나 오일 수명 프로퍼티는 없습니다. 관련 프로퍼티의 읽기 권한은 아래와 같습니다.
 
@@ -248,6 +249,27 @@ Q11의 답이 "불가"일 때 씁니다. 2026-11-14에 [SDK 문서] API Referenc
 
 요청은 Pleos Connect Navigation 앱으로 전달되고 결과는 `NaviHelperEventListener` 콜백으로 옵니다. 실제로 받는 이벤트는 Navigation 앱의 구현과 현재 상태에 따라 달라질 수 있습니다.
 
+#### 4.4.1 NaviHelperEventListener 이벤트와 주행 중 알림 데이터
+
+[SDK 문서] NaviHelper Programming Guide "Event listeners"와 API Reference(2026-11-14 확인). 문서는 "Navigation 앱의 구현 시나리오에 따라 전달되는 이벤트가 달라질 수 있다"고 합니다. 에뮬레이터에서 어떤 이벤트가 오는지는 확인하지 않았습니다.
+
+| 분류 | 콜백 |
+|---|---|
+| 경로 탐색 | `onRouteStarted()`, `onRoutingCompleted()`, `onRouteCancelled()`, `onReRouteEnded()`, `onRouteOptionChanged()` |
+| 목적지와 경유지 | `onDestinationChanged()`, `onDestinationArrived()`, `onWaypointChanged()`, `onWayPointArrived()` |
+| 정보 조회 | `onBookmarkInfo()`, `onBookMarkChanged()`, `onRecentDestinationInfo()`, `onCurrentLocationInfo()`, `onDestinationInfo()`, `onWayPointInfo()`, `onRouteStateInfo()`, `onTBTInfo()`, `onChargerOperatorInfo()`, `onTripInfo()`, `onNavigationStatus()`, `onDrivingInfo()`, `onCurrentRoadSpeedLimit()`, `onCameraAlert()`, `onCautionPointInfo()` |
+| 오류 | `onError()` |
+
+주의 구간과 단속 카메라 데이터 (API Reference의 필드·상수 이름):
+
+- `onCautionPointInfo(List<CautionPoint>)`: `CautionPoint`는 `id`, `type`(`CautionPointType`), `remainDistance`.
+  - `CautionPointType` 23종: `ACCIDENT_PRONE_AREA`, `BLOCK_INTERSECTION_ENFORCEMENT`, `BUS_LANE_AVAILABLE_NOTICE`, `BUS_LANE_UNAVAILABLE_NOTICE`, `BUS_LANE_VIOLATION_ENFORCEMENT`, `CUT_IN_VIOLATION_ENFORCEMENT`, `DOWNHILL_CAUTION_AREA`, `FALLING_ROCK_AREA`, `FOG_AREA`, `HIGHWAY_CONSTRUCTION`, `LANE_CHANGE_CAMERA_ALERT`, `NARROW_ROAD`, `NO_PARKING_ZONE`, `RAILROAD_CROSSING`, `ROAD_DAMAGE_ALERT`, `SCHOOL_ZONE`, `SIGN_MALFUNCION`(문서 표기 그대로), `SLIPPERY_ROAD_ALERT`, `SPEED_BUMP`, `TRAFFIC_INFO_COLLECTION`, `TRAFFIC_LIGHT_VIOLATION_ENFORCEMENT`, `WILDLIFE_CROSSING`, `WRONG_WAY_DRIVING_ALERT`
+  - `ACCIDENT_PRONE_AREA`는 사고 다발 구역입니다. **지금 사고가 났다는 정보가 아닙니다.**
+- `onCameraAlert(List<CameraAlert>)`: `CameraAlert`는 `id`, `type`(`CameraType`), `isOverSpeed`, `isOverSectionAvrSpeed`, `speedLimit`, `sectionAvrSpeed`, `remainDistance`, `status`.
+  - `CameraType` 10종: `SECTION_SPEED_ALERT`, `SPEED_CAMERA_FIX`, `SPEED_CAMERA_MOV`, `SPEED_CAMERA_REAR`, `SPEED_CAMERA_SCHOOL_ZONE`, `SPEED_CAMERA_SCHOOL_ZONE_TRAFFIC_LIGHT`, `SPEED_CAMERA_SECTION_END`, `SPEED_CAMERA_SECTION_START`, `SPEED_CAMERA_TRAFFIC_LIGHT`, `VARIABLE_SPEED_CAMERA`
+- 필드의 단위와 갱신 주기는 API Reference 페이지에 본문이 없어 확인하지 못했습니다.
+- **실시간 사고·통제 정보를 주는 NaviHelper API는 없습니다.** 실시간 돌발 정보는 외부 공공 API로만 얻을 수 있습니다([projects/game/ROAD-INFO.md](../../projects/game/ROAD-INFO.md)).
+
 ### 4.5 FusedLocation · STT · TTS
 
 - FusedLocation: `isSupported()`를 먼저 호출합니다. `getLastKnownLocation()`, `registerFusedLocationCallback()`, `addProximityAlert()`(지오펜스 진입·이탈)를 제공합니다. 콜백 값은 `null`일 수 있습니다.
@@ -265,9 +287,9 @@ Q11의 답이 "불가"일 때 씁니다. 2026-11-14에 [SDK 문서] API Referenc
 |---|---|---|
 | AAOS 차량 신호(속도·기어·주차 브레이크·시동)의 **실제 사용 가능 여부** | 주행 중/정차 중 판단 (두 프로젝트의 공통 원칙), GAM 급가속·급제동·공회전 판단 | 읽는 경로는 [Pleos 참고]와 [Android] 문서로 확인했습니다(4.3절). 남은 것: 공모전 범위에 드는지(Q11, 사용 가능으로 가정하고 문의 중), 에뮬레이터에서 값이 들어오는지, Dangerous 권한을 거부했을 때의 대체 동작 |
 | 에뮬레이터에서 **차량 속도를 바꾸는 방법** | GAM 급가속·급제동 시연 | Virtual Console 가이드에 속도 항목이 없습니다(3절). ADB Command FAQ에도 속도를 바꾸는 명령은 없습니다. 주행 중 UX 제한만 시연하려면 [Pleos 참고] ADB Command FAQ의 `adb shell cmd hmg_car_service --service drivingstate driving_regulation on`(해제는 `off`)을 쓸 수 있는지 확인합니다(문서 확인, 에뮬레이터 미검증) |
-| 좌석 점유(탑승) 감지 | GRD 동행 확인 | Seat 도메인 설명은 위치·각도·기능 위주입니다 |
+| 좌석 점유(탑승) 감지의 값과 동작 | GRD 동행 확인, GAM 동승 안전벨트 퀘스트 | API 이름은 확인했습니다(4.2절 Seat, 2026-11-14). 반환 값의 의미, 에뮬레이터·Virtual Console "좌석 점유"로 바꿀 때의 동작은 남았습니다(GAM-Q30, GRD-Q2) |
 | 공기압·과열 경고등을 일반 앱이 읽을 수 있는가 | GAM 이상 현상 | 경고 종류는 확인했습니다(4.2.1절). 경고등 API가 `PRIVATE_CAR_SAFETY`(signature\|privileged)를 요구합니다. 에뮬레이터에서 확인합니다(GAM-Q3) |
-| 오일·브레이크액 레벨, 워셔액 값을 에뮬레이터에서 바꾸는 방법 | GAM 차량이 확인하는 관리 퀘스트 시연 | Virtual Console 가이드에 항목이 없습니다(GAM-Q37) |
+| 오일·브레이크액 레벨, 워셔액 값을 에뮬레이터에서 바꾸는 방법 | GAM 차량이 확인하는 관리 퀘스트 시연 | Virtual Console 가이드에 항목이 없습니다(GAM-Q40) |
 | 에뮬레이터 화면 규격 | README 필수 항목, 레이아웃 | 실행해서 확인합니다 |
 | 12V 배터리 상태 | GAM 배터리 관리 퀘스트 | EvBattery 설명은 고전압 배터리·충전 위주입니다 |
 | Seat 열선, Steeringwheel 열선 제어의 정확한 API 이름 | GAM 음성 차량 제어 | care 원본의 `setHeatingLevel()` 등은 확인되지 않은 이름입니다 |

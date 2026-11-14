@@ -23,9 +23,11 @@
 | game: 연료 사용 보상을 유지할지, 효율·안전 보상으로 바꿀지 | 11/13 | GAM-002, PROPOSAL 2·3번 | GAM-Q6 | | Open |
 | game: care 요소를 어디까지 넣을지 (특히 음성 차량 제어), 주 타깃을 누구로 할지 | 11/13 | GAM-013~016 우선순위, PROPOSAL 2·3·6번 | GAM-Q16, GAM-Q19 | | Open |
 | game: 도시 그래픽 자산을 만드는 방법 | 11/14 | 목업 화면 | GAM-Q12 | | Open |
-| game: 전국 지도 확장에서 폰 연동을 어느 단계에 넣을지 (재화 역할은 정함) | 11/15 | GAM-041~043, PROPOSAL 3·6번, 목업 범위 | GAM-Q33 | | Resolved ([D-004](projects/game/DECISIONS.md)). GAM-Q30도 Resolved ([D-003](projects/game/DECISIONS.md)) |
-| game: 경고 이상 현상에 쓸 신호(공기압·과열 경고등을 못 읽을 때), 정비 퀘스트를 두 갈래로 나눌지 | 11/15 | GAM-009, GAM-044, 시연 영상 7번 장면 | GAM-Q3, GAM-Q37 | | 정비 두 갈래는 Resolved ([D-004](projects/game/DECISIONS.md)). GAM-Q3은 기한 없이 검토 필요(3절 에뮬레이터 확인) |
-| game: 운행 자재 주간 상한 수식 제안 확인 | 11/15 | GAM-001, GAM-035, 목업 `CFG` | GAM-Q27 | | Open (제안 확인 대기) |
+| 시나리오 가이드와 화면 시안을 양식에 붙이는 방법 (별지 또는 링크) | 11/15 | 양식 02의 7번, 양식에 옮기는 작업 | Q12 | | Open |
+| 목업을 둘 위치 (`spikes/` 규칙과 grandma `mockup/`의 차이) | 11/15 | 제출 저장소 구조, README 실행 방법 | Q13 | | Resolved: grandma 목업을 `spikes/`로 옮김 (PR #11) |
+| game: 전국 지도 확장에서 폰 연동을 어느 단계에 넣을지 (재화 역할은 정함) | 11/15 | GAM-045~047, PROPOSAL 3·6번, 목업 범위 | GAM-Q36 | | Resolved ([D-004](projects/game/DECISIONS.md)). GAM-Q33도 Resolved ([D-003](projects/game/DECISIONS.md)) |
+| game: 경고 이상 현상에 쓸 신호(공기압·과열 경고등을 못 읽을 때), 정비 퀘스트를 두 갈래로 나눌지 | 11/15 | GAM-009, GAM-048, 시연 영상 7번 장면 | GAM-Q3, GAM-Q40 | | 정비 두 갈래는 Resolved ([D-004](projects/game/DECISIONS.md)). GAM-Q3은 기한 없이 검토 필요(3절 에뮬레이터 확인) |
+| game: 운행 자재 주간 상한 수식 제안 확인 | 11/15 | GAM-001, GAM-039, 목업 `CFG` | GAM-Q27 | | Open (제안 확인 대기) |
 | 저장소 공개 시 개인정보 처리 (저장소 이름, 계정, 커밋 author) | 11/15 | 11/16 공개 전환 | Q5 | | Open |
 
 ## 2. 주최측 문의 (메일 한 통으로)
@@ -50,7 +52,7 @@
 - [ ] 주행/정차, 주차를 판단할 신호 → Q8, GAM-Q1
 - [ ] Virtual Console로 바꿀 수 있는 신호 (Odometer, Fuel, Safety, Tire, Door) → GAM-Q2
 - [ ] Safety 경고 종류와 Tire 공기압 항목 → GAM-Q3 (API Reference는 2026-11-14 확인. 남은 것: `PRIVATE_CAR_SAFETY`가 에뮬레이터에서 허용되는지)
-- [ ] 엔진오일·브레이크액 레벨, 워셔액 경고 값이 들어오는지와 바꾸는 방법 → GAM-Q37
+- [ ] 엔진오일·브레이크액 레벨, 워셔액 경고 값이 들어오는지와 바꾸는 방법 → GAM-Q40
 - [ ] Seat 점유 정보 → GRD-Q2
 - [ ] NaviHelper 경유지 추가 → GRD-Q3
 - [ ] STT 한국어 인식, ON_DEVICE 모드 → GRD-Q6
@@ -74,6 +76,9 @@
 
 ### 11/14(토)
 
+- [ ] 제출 패키지 세 가지를 채우기 시작 ([submission-package.md](docs/process/submission-package.md)). 남은 빈칸은 `node spikes/mockup-frame/build.mjs`로 확인
+  - [ ] 각 `SCENARIO.md` 2절 장면 표 검토 (순서, 장면 수)
+  - [ ] 목업 화면을 장면 표의 "틀" 칸에 연결
 - [ ] 목업 제작
 - [ ] 영상 콘티 (대표 시나리오를 처음부터 끝까지, 차량 신호가 바뀌는 장면 포함)
 - [ ] `PROPOSAL.md` 1~6번 초안. 특히 아래 TODO를 채웁니다
