@@ -28,7 +28,17 @@
   q('#simHeat').addEventListener('click', () => setWarn('heat', !state.warn.heat));
 
   document.querySelectorAll('[data-add]').forEach(b => b.addEventListener('click', () => advance(+b.dataset.add)));
-  document.querySelectorAll('[data-jump]').forEach(b => b.addEventListener('click', () => jumpTo(b.dataset.jump === 'next' ? 'next' : +b.dataset.jump)));
+  document.querySelectorAll('[data-jump]').forEach(b => b.addEventListener('click', () => { const j = b.dataset.jump; jumpTo(j === 'next' || j === 'week' ? j : +j); }));
+
+  /* 차량 위치: 권역 → 도시 */
+  const selR = q('#simRegion'), selC = q('#simCity');
+  selR.innerHTML = REGIONS.map(r => `<option value="${r.id}">${r.name}</option>`).join('');
+  const fillCities = rid => { const r = REGIONS.find(x => x.id === rid); selC.innerHTML = r.cities.map(n => `<option value="${rid}:${n}">${n}</option>`).join(''); };
+  selR.addEventListener('change', () => { fillCities(selR.value); setLoc(selC.value); });
+  selC.addEventListener('change', () => setLoc(selC.value));
+  document.querySelectorAll('#simPerm button').forEach(b => b.addEventListener('click', () => setLocPerm(b.dataset.v === '1')));
+  document.querySelectorAll('[data-sig]').forEach(seg => seg.querySelectorAll('button').forEach(b => b.addEventListener('click', () => setSig(seg.dataset.sig, b.dataset.v))));
+  q('#simPhone').addEventListener('click', () => setPhone(phone.hidden));
 
   q('#simReset').addEventListener('click', resetState);
 
@@ -45,7 +55,15 @@
     q('#simTire').classList.toggle('on', state.warn.tire);
     q('#simHeat').classList.toggle('on', state.warn.heat);
     q('#simDate').textContent = fmtDate(dayOf(state.clock)) + ' ' + fmtClock(state.clock);
+    q('#simWeek').textContent = fmtNum(state.week.km);
+    const rid = CITIES[state.loc].region;
+    if (selR.value !== rid) { selR.value = rid; fillCities(rid); }
+    selC.value = state.loc;
+    document.querySelectorAll('#simPerm button').forEach(b => b.classList.toggle('on', (b.dataset.v === '1') === state.locPerm));
+    document.querySelectorAll('[data-sig]').forEach(seg => seg.querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.v === state.sig[seg.dataset.sig])));
+    q('#simPhone').textContent = phone.hidden ? '폰 화면 열기' : '폰 화면 닫기';
   }
-  on('change', sync); on('reset', sync);
+  on('change', sync); on('reset', sync); on('phone', sync);
+  on('tick', () => { q('#simDate').textContent = fmtDate(dayOf(state.clock)) + ' ' + fmtClock(state.clock); });
   sync();
 })();

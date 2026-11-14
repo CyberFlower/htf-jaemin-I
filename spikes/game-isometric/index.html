@@ -21,13 +21,15 @@
 
         <header id="hud">
           <div class="hud-l">
-            <div class="chip name">초록섬</div>
+            <button class="chip name" id="homeName">본거지</button>
             <div class="chip res" id="resMat"><span class="i" data-ic="crate"></span><b>0</b></div>
             <div class="chip res" id="resGold"><span class="i" data-ic="coin"></span><b>0</b></div>
+            <div class="chip rate" id="resRate"></div>
           </div>
           <div class="hud-r">
             <button class="chip alert" id="careChip" hidden><span class="i" data-ic="wrench"></span><span>엔진오일 점검 권장</span></button>
             <div class="chip gear"><i>P</i><span id="clock">14:32</span></div>
+            <button class="rbtn" id="btnMap" aria-label="전국 지도"><span class="i" data-ic="map"></span><em hidden>0</em></button>
             <button class="rbtn" id="btnShop" aria-label="상점"><span class="i" data-ic="cart"></span></button>
             <button class="rbtn" id="btnQuest" aria-label="퀘스트"><span class="i" data-ic="clipboard"></span><em hidden>0</em></button>
             <button class="rbtn" id="btnSound" aria-label="소리"><span class="i" data-ic="speaker"></span></button>
@@ -51,6 +53,12 @@
     </div>
   </main>
 
+  <!-- 폰 화면 한 장면 (GAM-045~047, D-004). 차량 화면 밖. 실제 연동 없이 같은 상태를 보여줍니다 -->
+  <div id="phone" hidden>
+    <div class="ph-frame"><div class="ph-notch"></div><div class="ph-body" id="phBody"></div><div class="ph-toast" id="phToast" hidden></div></div>
+    <button id="phClose">폰 닫기</button>
+  </div>
+
   <!-- 게임 밖: 실제 차량이 해 줄 일을 대신 조작하는 시뮬레이터 -->
   <aside id="sim">
     <h1>차량 시뮬레이터<small>게임 화면 밖 · 차량 신호를 대신 넣습니다</small></h1>
@@ -67,7 +75,7 @@
     <section>
       <h2>이번 운행 <small>주차할 때 반영</small></h2>
       <label class="row">이동 거리 <output id="oKm"></output>
-        <input type="range" id="sKm" min="0" max="80" step="1"></label>
+        <input type="range" id="sKm" min="0" max="250" step="1"></label>
       <label class="row">운전 시간 <output id="oMin"></output>
         <input type="range" id="sMin" min="0" max="180" step="1"></label>
       <div class="steps">
@@ -75,6 +83,7 @@
         <div class="step" data-k="brake"><span>급제동</span><button data-d="-1">−</button><b>0</b><button data-d="1">+</button></div>
         <div class="step" data-k="turn"><span>방향 지시등</span><button data-d="-1">−</button><b>0</b><button data-d="1">+</button></div>
       </div>
+      <p class="read">이번 주 누적 <b id="simWeek">0</b> km <small>(A = 200 km, 400 km 넘으면 거리 자재 없음)</small></p>
     </section>
 
     <section>
@@ -88,7 +97,22 @@
     </section>
 
     <section>
-      <h2>차량 경고</h2>
+      <h2>차량 위치 <small>FusedLocation 대신 · 주행 중 관측</small></h2>
+      <div class="sel2"><select id="simRegion"></select><select id="simCity"></select></div>
+      <div class="seg" id="simPerm">
+        <button data-v="1">위치 권한 허용</button>
+        <button data-v="0">거부</button>
+      </div>
+    </section>
+
+    <section>
+      <h2>차량 관리 신호 <small>Safety · 차량이 확인</small></h2>
+      <div class="sigrow"><span>엔진오일 양</span><div class="seg three" data-sig="oil"><button data-v="normal">정상</button><button data-v="low">부족</button><button data-v="error">읽기 실패</button></div></div>
+      <div class="sigrow"><span>워셔액</span><div class="seg three" data-sig="washer"><button data-v="normal">정상</button><button data-v="low">부족</button><button data-v="error">읽기 실패</button></div></div>
+    </section>
+
+    <section>
+      <h2>차량 경고 <small>이상 현상은 검토 필요 (GAM-Q3)</small></h2>
       <div class="toggles">
         <button class="tog" id="simTire">타이어 공기압</button>
         <button class="tog" id="simHeat">엔진 과열</button>
@@ -107,7 +131,13 @@
         <button data-jump="18.7">저녁</button>
         <button data-jump="21.5">밤</button>
         <button data-jump="next">다음 날</button>
+        <button data-jump="week">다음 주</button>
       </div>
+    </section>
+
+    <section>
+      <h2>폰 <small>한 장면만 · 실제 연동 없음</small></h2>
+      <button class="wide" id="simPhone">폰 화면 열기</button>
     </section>
 
     <section class="foot">
@@ -117,6 +147,7 @@
 </div>
 
 <script src="js/icons.js"></script>
+<script src="js/cities.js"></script>
 <script src="js/state.js"></script>
 <script src="js/render.js"></script>
 <script src="js/ui.js"></script>

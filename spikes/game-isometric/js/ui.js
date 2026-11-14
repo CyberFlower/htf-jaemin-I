@@ -110,11 +110,31 @@ function withHudDelay(ms, fn) { hudDelay = ms; try { return fn(); } finally { hu
 function refresh() {
   countTo($('#resMat b'), 'mat', state.mat);
   countTo($('#resGold b'), 'gold', state.gold);
-  $('#clock').textContent = fmtClock(state.clock);
+  $('#homeName').textContent = state.home ? CITIES[state.home].name : '본거지';
   stage.className = 'gear-' + state.gear;
   const n = questBadge(), em = $('#btnQuest em'); em.hidden = n === 0; em.textContent = n;
-  $('#careChip').hidden = !state.oil.quest;
+  const chk = Object.keys(CHECKS).find(k => state.check[k].active);
+  $('#careChip').hidden = !careDue();
+  $('#careChip span:last-child').textContent = state.oil.quest ? '엔진오일 점검 권장' : chk ? CHECKS[chk].name + ' 부족' : '';
   $('#btnSound .i').innerHTML = ic(state.sound ? 'speaker' : 'mute');
+  const nf = state.newFoot.length, fe = $('#btnMap em'); fe.hidden = nf === 0; fe.textContent = nf;
+  tickHud();
+}
+/* 매초 바뀌는 것: 시계, 초당 수익, 열린 화면의 쌓인 골드 (GAM-040) */
+function tickHud() {
+  $('#clock').textContent = fmtClock(state.clock);
+  $('#resRate').innerHTML = `+${fmtRate(totalRate())}<small>/초</small>`;
+  updateLive(document);
+}
+function updateLive(root) {
+  root.querySelectorAll('[data-live]').forEach(el => {
+    const [k, id] = el.dataset.live.split('|');
+    if (k === 'stock') el.textContent = fmtShort(cityStock(id));
+    else if (k === 'rate') el.textContent = fmtRate(cityRate(id));
+    else if (k === 'allStock') el.textContent = fmtShort(ownedIds().reduce((a, c) => a + cityStock(c), 0));
+    else if (k === 'allRate') el.textContent = fmtRate(totalRate());
+    else if (k === 'site') { const [c, key] = id.split('^'); const st = sitesOf(c).find(x => x.key === key); if (st) el.textContent = fmtShort(stockOf(st)); }
+  });
 }
 
 /* ---------- S10 실제 경고 카드 ---------- */
@@ -146,11 +166,18 @@ overlay.addEventListener('pointerdown', e => { if (e.target === overlay) closeOv
 function hidePop() { pop.hidden = true; pop.innerHTML = ''; }
 
 /* ---------- S03 택배 ---------- */
+function weekRow(wk) {
+  const a = CFG.WEEK_A, t = weekTier(wk), pct = clamp(wk / (2 * a) * 100, 0, 100);
+  const label = t === 1 ? '1km당 1개' : t === .5 ? '2km당 1개' : '이번 주 거리 자재 가득 참';
+  return `<div class="dl-week ${t === 0 ? 'full' : ''}">${ic('road', 40)}<span>이번 주</span>
+    <div class="wtrack"><i style="width:${pct}%"></i><em style="left:50%"></em></div>
+    <b>${fmtNum(wk)} km</b><small>${label}</small></div>`;
+}
 function openDelivery() {
   const d = state.delivery; if (!d) return;
   const left = oilLeft();
   const mark = it => {
-    if (it.status === 'ok') return `<div class="st ok">${ic('check', 40)}</div><div class="rw">${ic('coin', 34)}+${CFG.DAILY_GOLD}</div>`;
+    if (it.status === 'ok') return `<div class="st ok">${ic('check', 40)}</div><div class="rw">${ic('crate', 34)}+${CFG.DAILY_MAT}</div>`;
     if (it.status === 'kept') return `<div class="st kept">${ic('check', 40)}</div><div class="rw dim">오늘 달성</div>`;
     if (it.status === 'skip') return `<div class="st no">${ic('dash', 40)}</div><div class="rw dim">운행 짧음</div>`;
     return `<div class="st no">${ic('dash', 40)}</div><div class="rw dim">&nbsp;</div>`;
@@ -161,21 +188,23 @@ function openDelivery() {
   }).join('');
   const crit = { time: `${CFG.DAILY.time.min}분 이상`, accel: `${CFG.DAILY.accel.max}회 이하`, brake: `${CFG.DAILY.brake.max}회 이하`, turn: `${CFG.DAILY.turn.min}회 이상` };
   const sig = { time: 'Odometer 트립 시간', accel: '차량 속도 변화', brake: '차량 속도 + 브레이크 페달', turn: 'TurnSignal 상태' };
+  const a = CFG.WEEK_A;
   const proof = `
     <table>
       <tr><th>누적 거리</th><td>${fmtNum(d.odo0)} → ${fmtNum(d.odo1)} km</td><td><i class="tag sig">차량 신호</i> Odometer</td></tr>
-      <tr><th>자재</th><td>${d.km} km × ${CFG.MAT_PER_KM} = ${d.mat}${d.capped ? ' (상한)' : ''}</td><td>오늘 ${state.matToday} / ${CFG.MAT_DAILY_CAP}</td></tr>
+      <tr><th>거리 자재</th><td>이번 주 ${fmtNum(d.wk0)} → ${fmtNum(d.wk1)} km · M(${fmtNum(d.wk1)}) − M(${fmtNum(d.wk0)}) = ${d.mat}</td><td>${a} km까지 1km당 1개, ${2 * a} km까지 2km당 1개</td></tr>
       ${DAILY_ITEMS.map(def => { const it = d.items.find(i => i.id === def.id); return `<tr><th>${def.name}</th><td>${it.value}${def.unit} · 기준 ${crit[def.id]}</td><td><i class="tag sig">차량 신호</i> ${sig[def.id]}</td></tr>`; }).join('')}
     </table>`;
   showOverlay(`
     <div class="card delivery">
       <div class="dl-top">
         <div class="dl-km"><b data-count="${d.km}">0</b><small>km</small></div>
-        <div class="dl-gain" id="dlMat">${ic('crate', 76)}<b>+<span data-count="${d.mat}">0</span></b></div>
-        <div class="dl-gain" id="dlGold">${ic('coin', 76)}<b>+<span data-count="${d.gold}">0</span></b></div>
+        <div class="dl-gain" id="dlMat">${ic('crate', 76)}<b>+<span data-count="${d.mat}">0</span></b><small>거리</small></div>
+        <div class="dl-gain safe" id="dlSafe">${ic('crate', 76)}<b>+<span data-count="${d.safe}">0</span></b><small>안전운전</small></div>
       </div>
       <div class="dl-items">${items}</div>
       ${d.allDoneBefore ? '<div class="dl-done">' + ic('check', 34) + '오늘 퀘스트 완료</div>' : ''}
+      ${weekRow(d.wk1)}
       <div class="dl-next">${ic('drop', 40)}<span>엔진오일</span><div class="track"><i style="width:${clamp(left.km / CFG.OIL.km * 100, 2, 100)}%"></i></div><b>${fmtNum(left.km)} km · ${left.days}일</b></div>
       <div class="dl-proof" hidden>${proof}</div>
       <div class="actions">
@@ -190,11 +219,11 @@ function openDelivery() {
   overlay.querySelectorAll('.dli.ok').forEach((el, i) => setTimeout(() => { if (el.isConnected) { el.classList.add('stamp'); sfx.coin(i); } }, 700 + i * 160));
   $('#dlProof').addEventListener('click', () => { const p = overlay.querySelector('.dl-proof'); p.hidden = !p.hidden; overlay.querySelector('.delivery').classList.toggle('proof', !p.hidden); sfx.tap(); });
   $('#dlTake').addEventListener('click', () => {
-    const a = centerOf($('#dlMat')), b = centerOf($('#dlGold'));
+    const a1 = centerOf($('#dlMat')), b1 = centerOf($('#dlSafe'));
     const got = withHudDelay(650, claimDelivery);
     closeOverlay(); sfx.pop();
-    if (got.mat) fly('crate', a, $('#resMat'), Math.min(10, got.mat));
-    if (got.gold) fly('coin', b, $('#resGold'), Math.min(8, Math.ceil(got.gold / 15)));
+    if (got.mat) fly('crate', a1, $('#resMat'), Math.min(10, got.mat));
+    if (got.safe) fly('crate', b1, $('#resMat'), Math.min(8, Math.ceil(got.safe / 4)));
     setTimeout(truckLeave, 500);
   });
 }
@@ -257,25 +286,82 @@ $('#placeYes').addEventListener('click', () => {
   }
 });
 
-/* ---------- S06 시설 말풍선 ---------- */
+/* ---------- S06·S15 시설 말풍선: 거두기와 업그레이드 ---------- */
+const starsHtml = (L, size) => { const t = tierOf(L); return t ? `<span class="stars">${Array(t).fill(ic('star', size || 30)).join('')}</span>` : ''; };
+function upLabel(s) {
+  const L = lvOf(s);
+  if (L >= CFG.LV.max) return { html: 'MAX', off: true };
+  const m = breakMat(L), g = upCost(s.type, L);
+  return {
+    html: m ? `${ic('star', 36)}돌파 <span class="pr">${ic('crate', 34)}${m}</span><span class="pr">${ic('coin', 34)}${fmtShort(g)}</span>`
+      : `${ic('up', 36)}<span class="pr">${ic('coin', 34)}${fmtShort(g)}</span>`,
+    lack: state.gold < g || state.mat < m, brk: m > 0,
+  };
+}
 function openFacPop(p) {
-  const n = Math.floor(state.stock[p.id] || 0), cap = stockCap(p.type), w = iso(p.x + .5, p.y + .5, HGT[p.type] + 20), s = scr(w);
-  const hrs = Math.ceil((cap - (state.stock[p.id] || 0)) / FAC[p.type].rate);
+  const site = homeSite(p.id); if (!site) return;
+  const st = stockOf(site), n = Math.floor(st), cap = capOf(site), L = lvOf(site), r0 = rateOf(site);
+  const w = iso(p.x + .5, p.y + .5, HGT[p.type] + 20), s = scr(w);
+  const hrs = Math.ceil((cap - st) / r0 / 3600), u = upLabel(site);
+  const r1 = L < CFG.LV.max ? incomeAt(p.type, L + 1) : r0;
   pop.innerHTML = `
-    <div class="fp-top">${ic(FAC[p.type].icon, 50)}<b>${n}</b><small>/ ${cap}</small></div>
-    <div class="track"><i style="width:${clamp(n / cap * 100, 0, 100)}%"></i></div>
-    <div class="fp-sub">${n >= cap ? '가득 참' : ic('clock', 28) + ` ${hrs}시간`}</div>
-    <button class="btn primary" ${n > 0 ? '' : 'disabled'}>거두기</button>`;
-  pop.style.left = clamp(s[0], 200, W - 200) + 'px'; pop.style.top = clamp(s[1], 330, H - 40) + 'px'; pop.hidden = false;
-  pop.querySelector('button').addEventListener('click', () => { hidePop(); doCollect(p.id, w[0], w[1] + 50); });
+    <div class="fp-head"><b>${FAC[p.type].name}</b><i class="lv">Lv ${L}</i>${starsHtml(L)}</div>
+    <div class="fp-top">${ic(FAC[p.type].icon, 50)}<b>${fmtShort(n)}</b><small>/ ${fmtShort(cap)}</small></div>
+    <div class="track"><i style="width:${clamp(st / cap * 100, 0, 100)}%"></i></div>
+    <div class="fp-sub">초당 ${fmtRate(r0)}${L < CFG.LV.max ? ` → ${fmtRate(r1)}` : ''} · ${n >= cap - 1 ? '가득 참' : ic('clock', 28) + ` ${hrs}시간`}</div>
+    <div class="fp-btns"><button class="btn primary" id="fpTake" ${n > 0 ? '' : 'disabled'}>거두기</button>
+      <button class="btn up ${u.lack ? 'lack' : ''} ${u.brk ? 'brk' : ''}" id="fpUp" ${u.off ? 'disabled' : ''}>${u.html}</button></div>`;
+  pop.style.left = clamp(s[0], 230, W - 230) + 'px'; pop.style.top = clamp(s[1], 430, H - 40) + 'px'; pop.hidden = false;
+  $('#fpTake').addEventListener('click', () => { hidePop(); doCollect(p.id, w[0], w[1] + 50); });
+  $('#fpUp').addEventListener('click', e => tryUpgrade(site, e.currentTarget, {
+    after: r => { R.bump[p.id] = R.t; if (r.broke) fxBuild(p.x, p.y); openFacPop(p); },
+  }));
 }
 function doCollect(id, wx, wy) {            // wx, wy는 월드 좌표
   const n = withHudDelay(600, () => collect(id));
   if (!n) return;
-  fxCoins(wx, wy, n); sfx.pop();
+  fxCoins(wx, wy, Math.min(14, Math.ceil(n / 200))); sfx.pop();
   const [sx, sy] = scr([wx, wy]);
-  fly('coin', { x: sx, y: sy }, $('#resGold'), Math.min(8, Math.ceil(n / 4)));
-  floatText(sx, sy - 60, ic('coin', 44) + ` +${n}`, 'good');
+  fly('coin', { x: sx, y: sy }, $('#resGold'), Math.min(8, Math.ceil(n / 300)));
+  floatText(sx, sy - 60, ic('coin', 44) + ` +${fmtShort(n)}`, 'good');
+}
+
+/* 레벨 올리기. 구간 레벨은 확인 창을 거친다(GAM-041). 폰에서는 단계 돌파를 막는다(GAM-046) */
+function tryUpgrade(site, btn, o) {
+  o = o || {};
+  const L = lvOf(site), m = breakMat(L);
+  if (L >= CFG.LV.max) { sfx.deny(); return; }
+  const go = () => {
+    const r = withHudDelay(300, () => upgrade(site));
+    if (r.err === 'lack') {
+      shakeEl(btn); sfx.deny();
+      const c = centerOf(btn), parts = [];
+      if (r.mat) parts.push(ic('crate', 40) + ` ${r.mat}`);
+      if (r.gold) parts.push(ic('coin', 40) + ` ${fmtShort(r.gold)}`);
+      floatText(c.x, c.y - 80, parts.join(' ') + ' 부족', 'bad');
+      return;
+    }
+    if (r.broke) { sfx.build(); banner('star', `${FAC[site.type].name} 한 단계 커졌어요`); }
+    else { sfx.coin(3); sfx.pop(); }
+    if (r.grade[1] > r.grade[0]) setTimeout(() => { banner('star', `${CITIES[site.city].name} · ${CFG.GRADES[r.grade[1]].name} 등급`); sfx.good(); }, r.broke ? 1400 : 300);
+    if (o.after) o.after(r);
+  };
+  if (!m) { go(); return; }
+  confirmBox(`${ic('star', 50)} 단계 돌파`, `
+      <p>${FAC[site.type].name} Lv ${L} → ${L + 1} · 건물이 한 단계 커져요</p>
+      <div class="cf-cost"><span>${ic('crate', 50)}${m}</span><span>${ic('coin', 50)}${fmtShort(upCost(site.type, L))}</span></div>
+      <p class="sub">자재는 차에서만 모을 수 있어요 · 지금 ${ic('crate', 30)}${state.mat}</p>`, go);
+}
+function confirmBox(title, body, onOk) {
+  const solo = overlay.hidden;
+  if (solo) showOverlay('', 'dim');
+  const el = document.createElement('div'); el.className = 'modal soft';
+  el.innerHTML = `<div class="card confirm"><h3>${title}</h3>${body}
+    <div class="actions"><button class="btn ghost" data-no>취소</button><button class="btn primary big" data-ok>확정</button></div></div>`;
+  overlay.appendChild(el); sfx.open();
+  const done = () => { el.remove(); if (solo) closeOverlay(); };
+  el.querySelector('[data-no]').addEventListener('click', () => { done(); sfx.tap(); });
+  el.querySelector('[data-ok]').addEventListener('click', () => { done(); onOk(); });
 }
 
 /* ---------- S11 상점 · S12 보관함 ---------- */
@@ -325,21 +411,28 @@ function openQuests() {
     <div class="qrow ${d.done[it.id] ? 'done' : ''}">
       <div class="qi">${ic(it.icon, 52)}</div>
       <div class="qt"><b>${it.name}</b><span>${prog(it)}</span>${CFG.DAILY[it.id].min != null ? `<div class="track"><i style="width:${pct(it)}%"></i></div>` : ''}</div>
-      <div class="qr">${ic('coin', 40)}${CFG.DAILY_GOLD}</div>
+      <div class="qr">${ic('crate', 40)}${CFG.DAILY_MAT}</div>
       <div class="qs">${d.done[it.id] ? ic('check', 44) : ''}</div>
     </div>`).join('');
   let sudden = '';
   if (state.oil.quest) sudden += `
     <button class="qcard oil" id="qOil"><div class="qi">${ic('wrench', 56)}</div>
       <div class="qt"><b>엔진오일 점검</b><span class="rec">점검 권장</span></div>
-      <div class="qr">${ic('coin', 40)}${CFG.OIL.gold}</div></button>`;
+      <div class="qr">${ic('crate', 40)}${CFG.OIL.mat}</div></button>`;
+  Object.keys(CHECKS).forEach(k => {
+    if (!state.check[k].active) return;
+    sudden += `
+    <button class="qcard oil qChk"><div class="qi">${ic(CHECKS[k].icon, 56)}</div>
+      <div class="qt"><b>${CHECKS[k].name} 확인</b><span><i class="tag sig">차량 신호</i>부족이 관측됨 · 정상으로 돌아오면 자동 완료</span></div>
+      <div class="qr">${ic('crate', 40)}${CFG.CHECK.mat}</div></button>`;
+  });
   if (state.rest) {
     const done = state.rest.state === 'done';
     sudden += `
     <div class="qcard rest ${done ? 'done' : ''}"><div class="qi">${ic('cup', 56)}</div>
       <div class="qt"><b>쉬어 가기</b><span>주차 ${Math.min(CFG.REST.rest, state.rest.acc)} / ${CFG.REST.rest}분</span>
         <div class="track"><i style="width:${clamp(state.rest.acc / CFG.REST.rest * 100, 0, 100)}%"></i></div></div>
-      <div class="qr">${ic('coin', 40)}${CFG.REST.gold}</div><div class="qs">${done ? ic('check', 44) : ''}</div></div>`;
+      <div class="qr">${ic('crate', 40)}${CFG.REST.mat}</div><div class="qs">${done ? ic('check', 44) : ''}</div></div>`;
   }
   if (!sudden) sudden = `<div class="qempty">${ic('check', 90)}</div>`;
   showOverlay(`
@@ -351,6 +444,7 @@ function openQuests() {
       </div>
     </div>`, 'full');
   const q = $('#qOil'); if (q) q.addEventListener('click', openCare);
+  overlay.querySelectorAll('.qChk').forEach(b => b.addEventListener('click', openCare));
 }
 
 /* ---------- S08 차량 관리 · S09 정비 기록 ---------- */
@@ -380,6 +474,10 @@ function openCare() {
           <button class="btn primary big" id="careRec">교체 기록</button>
         </div>
         <div class="cside-col">
+          ${Object.keys(CHECKS).map(k => {
+            const v = state.sig[k], txt = { normal: '정상', low: '부족', error: '읽기 실패' }[v];
+            return `<div class="cside sig ${v}">${ic(CHECKS[k].icon, 54)}<div><b>${CHECKS[k].name}</b><span><i class="tag sig">차량 신호</i>${txt}</span></div></div>`;
+          }).join('')}
           ${side('filter', '에어필터', state.care.filter)}
           ${side('wheel', '타이어 위치 교환', state.care.rotate)}
         </div>
@@ -409,13 +507,233 @@ function openRecord() {
   }));
   $('#recNo').addEventListener('click', () => { el.remove(); sfx.tap(); });
   $('#recOk').addEventListener('click', () => {
-    const gold = withHudDelay(1100, () => recordOil(rec.day, rec.odo));
+    const mat = withHudDelay(1100, () => recordOil(rec.day, rec.odo));
     closeOverlay();
     const cw = iso(CAT_POS.x, CAT_POS.y, 80), s = scr(cw);
     catAnim.jump = .45; fxHearts(cw[0], cw[1]); say(s[0], s[1] - 60, '고마워요!'); sfx.good();
-    if (gold) setTimeout(() => { fly('coin', { x: s[0], y: s[1] }, $('#resGold'), 8); floatText(s[0] + 90, s[1], ic('coin', 44) + ` +${gold}`, 'good'); }, 350);
+    if (mat) setTimeout(() => { fly('crate', { x: s[0], y: s[1] }, $('#resMat'), 8); floatText(s[0] + 90, s[1], ic('crate', 44) + ` +${mat}`, 'good'); }, 350);
   });
 }
+
+/* ---------- S13 전국 지도 (GAM-UC-007) ---------- */
+let mapRegion = null, mapMode = 'view';
+const CW = 236, CH = 110;
+function regionStat(r) {
+  const ids = r.cities.map(n => r.id + ':' + n);
+  return { ids, own: ids.filter(id => state.cities[id]).length, foot: ids.filter(id => state.foot[id] != null).length };
+}
+function openMap(region, mode) {
+  mapMode = mode || 'view';
+  mapRegion = region || (state.home ? CITIES[state.home].region : CITIES[state.loc].region);
+  showOverlay('<div class="screen map" id="mapScr"></div>', 'full');
+  paintMap();
+  if (mapMode === 'view') {
+    if (state.away >= 1) { const a = state.away; state.away = 0; save(); setTimeout(() => banner('coin', `자리를 비운 동안 +${fmtShort(a)}`), 250); }
+    if (state.newFoot.length) {
+      const n = state.newFoot.length; state.newFoot = []; save(); refresh();
+      setTimeout(() => banner('foot', `새로 지나간 곳 ${n}곳`), 1400);
+    }
+  }
+}
+function paintMap() {
+  const box = $('#mapScr'); if (!box) return;
+  const pick = mapMode === 'pick', N = CITY_IDS.length, own = ownedIds().length;
+  const tiles = REGIONS.map(r => {
+    const [c, rr, w, h] = r.cells, st = regionStat(r), k = st.own / st.ids.length;
+    return `<button class="rtile ${r.id === mapRegion ? 'sel' : ''} ${k >= .45 ? 'dark' : ''}" data-r="${r.id}"
+      style="left:${c * CW}px;top:${rr * CH}px;width:${w * CW - 12}px;height:${h * CH - 12}px;--k:${k}">
+      <b>${r.name}</b><span>${st.own} / ${st.ids.length}</span>${st.foot ? `<em>${ic('foot', 26)}${st.foot}</em>` : ''}</button>`;
+  }).join('');
+  const r = REGIONS.find(x => x.id === mapRegion), st = regionStat(r), price = cityPrice();
+  const cards = st.ids.map(id => {
+    const c = state.cities[id], f = state.foot[id] != null, nm = CITIES[id].name;
+    if (c && c.home) return `<button class="ctile own home" data-c="${id}"><b>${nm}</b><span>${ic('star', 26)}본거지 · ${CFG.GRADES[gradeOf(id)].name}</span><small>초당 <i data-live="rate|${id}">${fmtRate(cityRate(id))}</i></small>${f ? `<em>${ic('foot', 24)}</em>` : ''}</button>`;
+    if (c) return `<button class="ctile own" data-c="${id}"><b>${nm}</b><span>${CFG.GRADES[gradeOf(id)].name}</span><small>초당 <i data-live="rate|${id}">${fmtRate(cityRate(id))}</i> · ${ic('coin', 22)}<i data-live="stock|${id}">${fmtShort(cityStock(id))}</i></small>${f ? `<em>${ic('foot', 24)}</em>` : ''}</button>`;
+    return `<button class="ctile ${pick ? 'pickable' : ''}" data-c="${id}"><b>${nm}</b>${pick ? '<span>여기로</span>' : `<span class="pr">${ic('crate', 26)}${price}</span>`}${f ? `<em>${ic('foot', 24)}</em>` : ''}</button>`;
+  }).join('');
+  const allStock = ownedIds().reduce((a, c) => a + cityStock(c), 0);
+  box.innerHTML = `
+    <header><span class="hi">${ic('map', 56)}</span><h2>${pick ? '본거지 고르기' : '전국 지도'}</h2>
+      ${pick ? '' : `<div class="chip stat">${ic('flag', 44)}<b>${own}</b><small>/ ${N}</small></div>
+      <div class="chip stat">${ic('coin', 44)}<small>초당</small><b data-live="allRate|">${fmtRate(totalRate())}</b></div>
+      <button class="btn primary" id="takeAll" ${allStock ? '' : 'disabled'}>${ic('coin', 40)}<span data-live="allStock|">${fmtShort(allStock)}</span> 모두 거두기</button>`}
+      ${pick ? '' : `<button class="round close" data-close>${ic('x', 44)}</button>`}</header>
+    <div class="map-body">
+      <div class="kmap"><div class="sea"></div>${tiles}</div>
+      <div class="rpanel">
+        <div class="rp-head"><b>${r.name}</b><span>${pick ? '도시를 누르면 본거지로 정해요' : `보유 ${st.own} / ${st.ids.length}`}</span>
+          ${!pick && st.own < st.ids.length ? `<em>다음 도시 ${ic('crate', 30)}${price}</em>` : ''}</div>
+        <div class="ctiles">${cards}</div>
+      </div>
+    </div>
+    <footer class="map-foot"><span>${state.locPerm ? ic('foot', 28) + '발자국 기록 켜짐 · 도시와 날짜만 저장' : ic('lock', 28) + '발자국 기록 꺼짐 · 위치 권한 없음'}</span><small>${MAP_SOURCE}</small></footer>`;
+  hydrateIcons(box);
+  box.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', closeOverlay));
+  box.querySelectorAll('.rtile').forEach(b => b.addEventListener('click', () => { mapRegion = b.dataset.r; paintMap(); sfx.tap(); }));
+  box.querySelectorAll('.ctile').forEach(b => b.addEventListener('click', () => onCityTile(b.dataset.c)));
+  const ta = $('#takeAll');
+  if (ta) ta.addEventListener('click', () => {
+    const from = centerOf(ta), n = withHudDelay(600, collectAll);
+    if (!n) return;
+    sfx.pop(); fly('coin', from, $('#resGold'), 8); floatText(from.x, from.y - 70, ic('coin', 44) + ` +${fmtShort(n)}`, 'good');
+    paintMap();
+  });
+}
+function onCityTile(id) {
+  sfx.tap();
+  if (mapMode === 'pick') {
+    confirmBox(`${ic('star', 50)} 본거지`, `<p>${cityLabel(id)}을(를) 본거지로 정할까요?</p><p class="sub">본거지에는 정류장과 정비소가 있어요 · 값을 내지 않아요</p>`, () => {
+      pickHome(id); closeOverlay(); placeVehicles(); banner('star', `본거지 · ${CITIES[id].name}`); sfx.good();
+    });
+    return;
+  }
+  const c = state.cities[id];
+  if (c && c.home) { closeOverlay(); return; }
+  if (c) { openCityScreen(id); return; }
+  openCityCard(id);
+}
+
+/* ---------- S14 도시 카드: 새 도시 열기 (GAM-UC-008) ---------- */
+function openCityCard(id) {
+  const price = cityPrice(), lack = price - state.mat, f = state.foot[id];
+  const el = document.createElement('div'); el.className = 'modal soft';
+  el.innerHTML = `
+    <div class="card citycard">
+      <h3>${ic('map', 50)}${cityLabel(id)}</h3>
+      ${f != null ? `<p class="foot">${ic('foot', 30)}지나간 곳 · 첫 관측 ${fmtDate(f)}</p>` : ''}
+      <div class="cc-price"><span>여는 가격</span><b>${ic('crate', 64)}${price}</b></div>
+      <div class="cc-rows">
+        <div><span>내 자재</span><b class="${lack > 0 ? 'bad' : ''}">${ic('crate', 34)}${state.mat}</b></div>
+        <div><span>연 뒤 다음 도시</span><b>${ic('crate', 34)}${nextPrice()}</b></div>
+      </div>
+      <p class="sub">자재는 차에서 운행과 안전운전으로 모아요</p>
+      <div class="actions"><button class="btn ghost" data-no>취소</button><button class="btn primary big ${lack > 0 ? 'lack' : ''}" data-ok>열기</button></div>
+    </div>`;
+  overlay.appendChild(el); sfx.open();
+  el.querySelector('[data-no]').addEventListener('click', () => { el.remove(); sfx.tap(); });
+  el.querySelector('[data-ok]').addEventListener('click', e => {
+    const btn = e.currentTarget;
+    if (state.mat < price) {                         // GAM-UC-008 E1: 모자란 양. 골드로 대신 살 수 없음
+      shakeEl(btn); sfx.deny(); const cc = centerOf(btn); floatText(cc.x, cc.y - 80, ic('crate', 44) + ` ${price - state.mat} 부족`, 'bad'); return;
+    }
+    if (btn.dataset.step !== 'confirm') {             // B2: 가격과 남을 잔액을 확인
+      btn.dataset.step = 'confirm'; btn.textContent = '확정';
+      el.querySelector('.sub').innerHTML = `연 뒤 남는 자재 ${ic('crate', 30)}${state.mat - price}`;
+      hydrateIcons(el); sfx.tap(); return;
+    }
+    const r = withHudDelay(0, () => openCity(id));
+    if (!r.ok) { sfx.deny(); return; }
+    el.remove(); paintMap(); sfx.build(); banner('flag', `${CITIES[id].name}을(를) 열었어요`);
+    const t = overlay.querySelector(`.ctile[data-c="${id}"]`);
+    if (t) { t.classList.add('born'); const cc = centerOf(t); burst('star', cc.x, cc.y, 18, { speed: 320, up: 120, g: 520, life: 1, size: 12, colors: ['#ffd24a', '#fff', '#7fe0c3'] }); }
+  });
+}
+
+/* ---------- 다른 도시 화면: 시설 업그레이드 (GAM-UC-009) ---------- */
+function openCityScreen(id) {
+  showOverlay(`<div class="screen city" id="cityScr" data-id="${id}"></div>`, 'full');
+  paintCity(id);
+}
+function paintCity(id) {
+  const box = $('#cityScr'); if (!box) return;
+  const g = gradeOf(id), next = CFG.GRADES[g + 1], sum = lvSum(id), stock = cityStock(id);
+  const cards = sitesOf(id).map(st => {
+    const L = lvOf(st), u = upLabel(st);
+    return `<div class="fcard" data-k="${st.key}">
+      <div class="th" data-th="${st.type}"></div>
+      <div class="fc-name"><b>${FAC[st.type].name}</b><i class="lv">Lv ${L}</i>${starsHtml(L, 34)}</div>
+      <div class="fc-rate">초당 ${fmtRate(rateOf(st))}${L < CFG.LV.max ? ` → ${fmtRate(incomeAt(st.type, L + 1))}` : ''}</div>
+      <button class="btn up ${u.lack ? 'lack' : ''} ${u.brk ? 'brk' : ''}" ${u.off ? 'disabled' : ''}>${u.html}</button>
+    </div>`;
+  }).join('');
+  box.innerHTML = `
+    <header><button class="round close" id="toMap">${ic('map', 48)}</button>
+      <h2>${cityLabel(id)} <i class="grade">${ic('star', 40)}${CFG.GRADES[g].name}</i></h2>
+      <div class="chip stat">${ic('coin', 44)}<small>초당</small><b data-live="rate|${id}">${fmtRate(cityRate(id))}</b></div>
+      <button class="btn primary" id="takeCity" ${stock ? '' : 'disabled'}>${ic('coin', 40)}<span data-live="stock|${id}">${fmtShort(stock)}</span> 거두기</button>
+      <button class="round close" data-close>${ic('x', 44)}</button></header>
+    <div class="gradebar">${next ? `<span>다음 등급 <b>${next.name}</b>까지 시설 레벨 ${next.min - sum}</span><div class="track"><i style="width:${clamp((sum - CFG.GRADES[g].min) / (next.min - CFG.GRADES[g].min) * 100, 0, 100)}%"></i></div>` : '<span>가장 높은 등급이에요</span>'}</div>
+    <div class="fcards">${cards}</div>`;
+  hydrateIcons(box);
+  box.querySelectorAll('[data-th]').forEach(el => el.appendChild(thumb('fac', el.dataset.th, 300, 250)));
+  box.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', closeOverlay));
+  $('#toMap').addEventListener('click', () => openMap(CITIES[id].region));
+  $('#takeCity').addEventListener('click', e => {
+    const from = centerOf(e.currentTarget), n = withHudDelay(600, () => collectCity(id));
+    if (!n) return;
+    sfx.pop(); fly('coin', from, $('#resGold'), 8); floatText(from.x, from.y - 70, ic('coin', 44) + ` +${fmtShort(n)}`, 'good'); paintCity(id);
+  });
+  box.querySelectorAll('.fcard').forEach(card => card.querySelector('.btn.up').addEventListener('click', e => {
+    const st = sitesOf(id).find(x => x.key === card.dataset.k);
+    tryUpgrade(st, e.currentTarget, { after: () => { paintCity(id); const c = box.querySelector(`.fcard[data-k="${st.key}"]`); if (c) bumpEl(c); } });
+  }));
+}
+
+/* ---------- 본거지 고르기 (처음 실행, GAM-038 제안) ---------- */
+function openHomePick() {
+  if (state.home || state.gear !== 'P') return;
+  const sug = state.locPerm ? state.loc : null;
+  showOverlay(`
+    <div class="card homepick">
+      <h3>${ic('star', 56)}본거지를 골라 주세요</h3>
+      <p>본거지에서 섬을 키우고, 차로 모은 자재로 전국의 도시를 하나씩 열어요</p>
+      ${sug ? `<div class="hp-sug"><span>${ic('foot', 34)}지금 위치</span><b>${cityLabel(sug)}</b></div>` : '<p class="sub">위치 권한이 없어 지도에서 골라요</p>'}
+      <div class="actions"><button class="btn ghost" id="hpMap">지도에서 고르기</button>${sug ? '<button class="btn primary big" id="hpHere">여기로</button>' : ''}</div>
+    </div>`, 'dim');
+  $('#hpMap').addEventListener('click', () => openMap(sug ? CITIES[sug].region : 'se', 'pick'));
+  if (sug) $('#hpHere').addEventListener('click', () => { pickHome(sug); closeOverlay(); banner('star', `본거지 · ${CITIES[sug].name}`); sfx.good(); });
+}
+
+/* ---------- S16 폰 화면 (1차 목업 한 장면, D-004). 실제 연동은 없고 같은 상태를 보여줌 ---------- */
+let phCity = null;
+const phone = $('#phone');
+function phMsg(text) { const t = $('#phToast'); if (!t) return; t.textContent = text; t.hidden = false; clearTimeout(phMsg.t); phMsg.t = setTimeout(() => { t.hidden = true; }, 2200); }
+function renderPhone() {
+  if (phone.hidden) return;
+  const body = $('#phBody');
+  if (state.gear === 'D') {                       // GAM-047: 연동된 차가 주행 중이면 폰 조작도 막음
+    body.innerHTML = `<div class="ph-lock">${ic('steering', 64)}<b>차가 주행 중이에요</b><span>주차하면 다시 열려요</span></div>`;
+    return;
+  }
+  if (!state.home) { body.innerHTML = `<div class="ph-lock">${ic('star', 64)}<b>차에서 본거지를 먼저 골라 주세요</b></div>`; return; }
+  const done = DAILY_ITEMS.filter(it => state.daily.done[it.id]).length;
+  if (phCity && state.cities[phCity]) {
+    const rows = sitesOf(phCity).map(st => {
+      const L = lvOf(st), m = breakMat(L), g = upCost(st.type, L);
+      const act = L >= CFG.LV.max ? '<button disabled>MAX</button>'
+        : m ? `<button class="lockd" data-k="${st.key}">${ic('lock', 16)}돌파는 차에서</button>`
+          : `<button data-k="${st.key}">${ic('coin', 16)}${fmtShort(g)}</button>`;
+      return `<li><div><b>${FAC[st.type].name}</b><small>Lv ${L} · 초당 ${fmtRate(rateOf(st))}</small></div>${act}</li>`;
+    }).join('');
+    body.innerHTML = `
+      <div class="ph-top"><button id="phBack">‹</button><b>${cityLabel(phCity)}</b><span>${CFG.GRADES[gradeOf(phCity)].name}</span></div>
+      <div class="ph-card"><span>쌓인 골드</span><b>${ic('coin', 22)}<i data-live="stock|${phCity}">${fmtShort(cityStock(phCity))}</i></b><button id="phTakeCity">거두기</button></div>
+      <ul class="ph-list">${rows}</ul>
+      <p class="ph-note">${ic('lock', 14)}새 시설 짓기와 단계 돌파는 자재가 들어 차에서만 해요</p>`;
+    $('#phBack').addEventListener('click', () => { phCity = null; renderPhone(); });
+    $('#phTakeCity').addEventListener('click', () => { const n = collectCity(phCity); phMsg(n ? `+${fmtShort(n)} 골드` : '쌓인 골드가 없어요'); });
+    body.querySelectorAll('[data-k]').forEach(b => b.addEventListener('click', () => {
+      const st = sitesOf(phCity).find(x => x.key === b.dataset.k);
+      if (b.classList.contains('lockd')) { phMsg(`단계 돌파에는 자재 ${breakMat(lvOf(st))}개가 들어요 · 차에서 할 수 있어요`); return; }
+      const r = upgrade(st);
+      phMsg(r.ok ? `${FAC[st.type].name} Lv ${r.L}` : `골드 ${fmtShort(r.gold || 0)} 부족`);
+    }));
+    return;
+  }
+  const list = ownedIds().map(id => `<li data-c="${id}"><div><b>${cityLabel(id)}</b><small>${state.cities[id].home ? '본거지 · ' : ''}${CFG.GRADES[gradeOf(id)].name} · 초당 <i data-live="rate|${id}">${fmtRate(cityRate(id))}</i></small></div><span>${ic('coin', 16)}<i data-live="stock|${id}">${fmtShort(cityStock(id))}</i> ›</span></li>`).join('');
+  body.innerHTML = `
+    <div class="ph-top"><b>내 차로 짓는 도시</b><span>${ic('phone', 16)}연동됨 (목업)</span></div>
+    <div class="ph-card big"><span>보유 도시 ${ownedIds().length} / ${CITY_IDS.length} · 초당 <i data-live="allRate|">${fmtRate(totalRate())}</i></span>
+      <b>${ic('coin', 26)}<i data-live="allStock|">${fmtShort(ownedIds().reduce((a, c) => a + cityStock(c), 0))}</i></b><button id="phTakeAll">모두 거두기</button></div>
+    <ul class="ph-list cities">${list}</ul>
+    <div class="ph-row lockd" id="phOpen">${ic('lock', 18)}<div><b>새 도시 열기</b><small>자재 ${cityPrice()}개 · 차에서 할 수 있어요</small></div></div>
+    <div class="ph-row"><div><b>오늘의 안전운전 ${done} / ${DAILY_ITEMS.length}</b><small>퀘스트는 차가 기록해요 · 폰에서는 볼 수만 있어요</small></div></div>`;
+  $('#phTakeAll').addEventListener('click', () => { const n = collectAll(); phMsg(n ? `+${fmtShort(n)} 골드` : '쌓인 골드가 없어요'); });
+  $('#phOpen').addEventListener('click', () => phMsg('도시 열기는 자재가 들어서 차에서만 할 수 있어요'));
+  body.querySelectorAll('.cities li').forEach(li => li.addEventListener('click', () => { phCity = li.dataset.c; renderPhone(); }));
+}
+function setPhone(open) { phone.hidden = !open; document.getElementById('app').classList.toggle('phone-on', open); phCity = null; renderPhone(); fit(); emit('phone'); }
+$('#phClose').addEventListener('click', () => setPhone(false));
 
 /* ---------- 섬 누르기 ---------- */
 cv.addEventListener('pointerdown', e => {
@@ -463,34 +781,53 @@ function onHit(h) {
 
 /* ---------- 위 줄 버튼 ---------- */
 $('#btnShop').addEventListener('click', openShop);
+$('#btnMap').addEventListener('click', () => openMap());
+$('#homeName').addEventListener('click', () => openMap());
 $('#btnQuest').addEventListener('click', openQuests);
 $('#careChip').addEventListener('click', openCare);
 $('#btnSound').addEventListener('click', () => { state.sound = !state.sound; save(); refresh(); sfx.tap(); });
 
 /* ---------- 상태 변화에 반응 ---------- */
 on('change', refresh);
+on('change', renderPhone);
+on('change', () => { if ($('#mapScr') && overlay.querySelector('.modal') == null) paintMap(); });
+on('tick', () => { tickHud(); if (!phone.hidden) updateLive(phone); });
 on('warn', renderWarns);
 on('gear', () => {
   if (state.gear === 'D') {                // 주행 시작: 열린 창을 닫고 확정하지 않은 조작은 취소 (SCREENS 8절)
     cancelPlace(); closeOverlay(); hidePop(); carDepart();
   } else {
     carArrive();
+    if (!state.home) setTimeout(openHomePick, 1200);
     if (state.delivery) setTimeout(() => { if (state.gear === 'P' && state.delivery) truckArrive(); }, 1100);
   }
 });
 on('truckParked', () => sfx.horn());
-on('carParked', () => { PETS.forEach((p, i) => setTimeout(() => { p.jump = .45; }, i * 140)); if (state.oil.quest) { catAnim.jump = .45; sfx.open(); } });
+on('carParked', () => {
+  PETS.forEach((p, i) => setTimeout(() => { p.jump = .45; }, i * 140));
+  if (careDue()) { catAnim.jump = .45; sfx.open(); }
+  if (state.newFoot.length) setTimeout(() => banner('foot', `새로 지나간 곳 ${state.newFoot.length}곳 · 지도에서 보기`), 600);
+});
 on('oilDue', () => { if (state.gear === 'P') { catAnim.jump = .45; sfx.open(); } });
+on('checkNew', k => { if (state.gear === 'P') { catAnim.jump = .45; sfx.open(); banner(CHECKS[k].icon, `${CHECKS[k].name} 부족 · 정비소에서 확인`); } });   // 주행 중에는 화면으로 알리지 않음
+on('checkDone', ({ k, mat }) => {
+  if (state.gear !== 'P') return;
+  const cw = iso(CAT_POS.x, CAT_POS.y, 80), s = scr(cw);
+  catAnim.jump = .45; banner(CHECKS[k].icon, `${CHECKS[k].name} 정상으로 돌아옴`); sfx.good();
+  if (mat) setTimeout(() => { fly('crate', { x: s[0], y: s[1] }, $('#resMat'), 6); floatText(s[0] + 90, s[1], ic('crate', 44) + ` +${mat}`, 'good'); }, 400);
+  else setTimeout(() => say(s[0], s[1] - 60, `최근 ${CFG.CHECK.coolDays}일 안에 이미 받았어요`), 400);
+});
 on('restVoice', () => voice('쉬어 가기 퀘스트가 생겼어요'));
 on('restDone', () => {
   const s = scr(iso(car.x, car.y, 60));
   banner('cup', '쉬어 가기 완료'); sfx.good();
-  fly('coin', { x: s[0], y: s[1] }, $('#resGold'), 6);
-  floatText(s[0], s[1] - 60, ic('coin', 44) + ` +${CFG.REST.gold}`, 'good');
+  fly('crate', { x: s[0], y: s[1] }, $('#resMat'), 6);
+  floatText(s[0], s[1] - 60, ic('crate', 44) + ` +${CFG.REST.mat}`, 'good');
 });
 on('nightMarket', () => { banner('lantern', '야시장'); sfx.good(); });
 on('newDay', () => banner('clipboard', '오늘의 퀘스트'));
-on('reset', () => { cancelPlace(); closeOverlay(); hidePop(); placeVehicles(); R.clock = state.clock; Object.keys(shown).forEach(k => delete shown[k]); refresh(); renderWarns(); });
+on('newWeek', () => setTimeout(() => banner('road', '새로운 주 · 거리 자재 다시 1km당 1개'), 1500));
+on('reset', () => { cancelPlace(); closeOverlay(); hidePop(); placeVehicles(); R.clock = state.clock; Object.keys(shown).forEach(k => delete shown[k]); refresh(); renderWarns(); phCity = null; renderPhone(); setTimeout(openHomePick, 300); });
 
 /* ---------- 시작 ---------- */
 load();
@@ -498,6 +835,9 @@ hydrateIcons();
 placeVehicles();
 R.clock = state.clock;
 refresh(); renderWarns(); fit();
+setTimeout(openHomePick, 500);
+/* 실제 시간 1초 = 게임 시간 1초. 시설은 매초 골드를 번다 (GAM-031, GAM-040) */
+setInterval(() => { if (!document.hidden) advance(1 / 60, true); }, 1000);
 window.addEventListener('resize', fit);
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
 requestAnimationFrame(frame);

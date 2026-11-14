@@ -1,10 +1,11 @@
 'use strict';
 /* 게임 상태와 규칙.
-   CFG의 숫자는 모두 목업용 가정값입니다. 팀이 정하지 않은 값이며 README의 "가정값" 표와 같습니다. */
+   CFG의 숫자는 모두 목업용 가정값입니다. 팀이 정하지 않은 값이며 README의 "가정값" 표와 같습니다.
+   재화 역할은 DECISIONS D-003을 따릅니다: 자재는 차에서만 얻는 희소 재화, 골드는 시설이 버는 재화. */
 const CFG = {
-  MAT_PER_KM: 1,            // GAM-001 메모: 1km당 자재 수 (미정)
-  MAT_DAILY_CAP: 40,        // GAM-Q27: 운행 자재 하루 상한 (미정)
-  DAILY_GOLD: 30,           // GAM-Q21: 일일 항목 보상 (미정)
+  MAT_PER_KM: 1,            // GAM-001: 1km당 1개 (draft 예시)
+  WEEK_A: 200,              // GAM-001 주간 상한 제안의 기준 거리 A(km) (GAM-Q27, 확인 대기)
+  DAILY_MAT: 7,             // GAM-Q21: 일일 항목 하나의 자재. 주간 최대 4×7×7=196 ≈ A (GAM-Q27 제안의 원칙)
   DAILY: {                  // GAM-Q21~Q24: 판정 기준 (미정)
     time: { min: 20 },      // 오늘 누적 운전 시간(분) 이상
     accel: { max: 2 },      // 오늘 누적 급가속·급감속 횟수 이하
@@ -12,33 +13,44 @@ const CFG = {
     turn: { min: 3 },       // 오늘 누적 방향 지시등 사용 횟수 이상
     minJudge: 5,            // 이보다 짧은 운행은 횟수 항목 판정에서 뺌(분)
   },
-  REST: { drive: 120, rest: 15, gold: 50 },   // GAM-Q26: 연속 운전 기준·휴식 인정 시간(분) (미정)
-  OIL: { km: 10000, days: 365, gold: 100 },   // GAM-Q5: 주기 예시 데이터 (출처 미정)
+  REST: { drive: 120, rest: 15, mat: 15 },    // GAM-Q26: 연속 운전 기준·휴식 인정 시간(분)·자재 (미정)
+  OIL: { km: 10000, days: 365, mat: 30 },     // GAM-Q5: 주기 예시 데이터 (출처 미정). 기록형, 주기마다 한 번 (D-004)
+  CHECK: { mat: 10, coolDays: 7 },            // GAM-048, GAM-Q40: 차량이 확인하는 항목의 자재와 같은 항목의 보상 간격(일)
   PET: { max: 3, cooldown: 240 },             // GAM-032: 쿨타임(분) (미정)
   STOCK_HOURS: 60,                            // GAM-031: 약 2.5일치까지 쌓임
-  STOCK_SHOW: 8,                              // 이만큼 쌓이면 완성품 표시
+  STOCK_SHOW_SEC: 300,                        // 이만큼(초) 생산하면 완성품 표시
+  LV: {                                       // GAM-040, GAM-041, GAM-Q39
+    max: 40,
+    breaks: { 10: 15, 20: 30, 30: 60 },       // 이 레벨에서 다음으로 올릴 때 드는 자재(단계 돌파)
+    costK: 600, costR: 1.22,                  // 골드 비용 = 1레벨 초당 수익 × costK × costR^(레벨−1)
+  },
+  CITY_PRICE: n => 30 + 15 * (n - 1) + (n - 1) * (n - 1),   // GAM-039: 보유 도시 n곳일 때 다음 도시의 자재 가격
+  GRADES: [                                   // GAM-042: 시설 레벨 합으로 정함. 행정 구역 이름을 쓰지 않음(D-004)
+    { name: '새싹', min: 0 }, { name: '잎새', min: 8 }, { name: '꽃', min: 20 }, { name: '열매', min: 40 }, { name: '나무', min: 70 },
+  ],
+  CITY_FAC: ['bakery', 'market', 'cafe'],     // 새로 연 도시에 있는 생산 시설
 };
 
-/* 시설. rate는 1시간당 골드(목업용 가정값). */
+/* 시설. rate는 1레벨의 초당 골드(목업용 가정값). cost는 짓는 데 드는 자재. */
 const FAC = {
   stop: { name: '정류장' },
-  bakery: { name: '빵집', rate: 3, icon: 'bread' },
-  flower: { name: '꽃집', rate: 2, icon: 'coin' },
+  bakery: { name: '빵집', rate: 1, icon: 'bread' },
+  flower: { name: '꽃집', rate: .8, icon: 'coin' },
   shop: { name: '상점' },
   garage: { name: '정비소' },
   lighthouse: { name: '등대' },
-  market: { name: '시장', cost: 8, rate: 4, icon: 'coin', combo: { near: 'stop', name: '야시장', icon: 'lantern' }, hint: '정류장 옆 · 야시장' },
+  market: { name: '시장', cost: 8, rate: 1.5, icon: 'coin', combo: { near: 'stop', name: '야시장', icon: 'lantern' }, hint: '정류장 옆 · 야시장' },
   park: { name: '공원', cost: 6, hint: '무대 옆 · 야외 공연' },
   stage: { name: '무대', cost: 10, combo: { near: 'park', name: '야외 공연', icon: 'note' }, hint: '공원 옆 · 야외 공연' },
-  cafe: { name: '카페', cost: 12, rate: 5, icon: 'cup' },
+  cafe: { name: '카페', cost: 12, rate: 2, icon: 'cup' },
 };
 const BUILDABLE = ['market', 'park', 'stage', 'cafe'];
 
 const DECOR = {
-  flowerbed: { name: '꽃밭', price: 30 },
-  bench: { name: '벤치', price: 40 },
-  lamp: { name: '가로등', price: 60 },
-  fountain: { name: '분수', price: 150 },
+  flowerbed: { name: '꽃밭', price: 600 },
+  bench: { name: '벤치', price: 900 },
+  lamp: { name: '가로등', price: 1500 },
+  fountain: { name: '분수', price: 4000 },
 };
 
 const DAILY_ITEMS = [
@@ -47,12 +59,18 @@ const DAILY_ITEMS = [
   { id: 'brake', name: '급제동', icon: 'brake', unit: '회' },
   { id: 'turn', name: '방향 지시등', icon: 'turn', unit: '회' },
 ];
+/* GAM-048: 차량이 스스로 확인하는 관리 항목 (Safety, CAR_SAFETY) */
+const CHECKS = {
+  oil: { name: '엔진오일 양', icon: 'drop', api: 'getEngineOilLevelState' },
+  washer: { name: '워셔액', icon: 'washer', api: 'hasLowWasherFluidWarning' },
+};
 
-const START_CLOCK = 14 * 60 + 32;        // 2026-11-14 14:32 (SCREENS.md 6절)
-const SAVE_KEY = 'gam-mockup-v1';
+const START_CLOCK = 14 * 60 + 32;        // 2026-11-14(토) 14:32 (SCREENS.md 6절)
+const SAVE_KEY = 'gam-mockup-v2';
 
 const pad2 = n => String(n).padStart(2, '0');
 const dayOf = clock => Math.floor(clock / 1440);
+const weekOf = day => Math.floor((day + 5) / 7);   // 월요일에 바뀜. 0일째는 토요일
 const hourOf = clock => ((clock % 1440) + 1440) % 1440 / 60;
 function fmtDate(day) {
   const d = new Date(2026, 10, 14 + day);
@@ -63,29 +81,41 @@ function fmtClock(clock) {
   return `${pad2(Math.floor(m / 60))}:${pad2(m % 60)}`;
 }
 const fmtNum = n => Math.round(n).toLocaleString('ko-KR');
+const _short = new Intl.NumberFormat('ko-KR', { notation: 'compact', maximumFractionDigits: 1 });
+const fmtShort = n => (n < 10000 ? fmtNum(n) : _short.format(Math.floor(n)));
+const fmtRate = r => (r < 10 ? r.toFixed(1) : fmtShort(r));
 
 function freshState() {
   return {
-    v: 1,
+    v: 2,
     gear: 'P',
     clock: START_CLOCK,
-    mat: 3, gold: 140,
+    mat: 3, gold: 1000,                // 시작하자마자 장식 하나(벤치 900)를 살 수 있게
     odo: 34512,
-    matToday: 0,
+    week: { i: weekOf(0), km: 0 },
     sim: { km: 11, min: 24, accel: 0, brake: 0, turn: 6 },
-    built: {},                       // 'x,y' → { type }
-    stock: { bakery: 22, flower: 12 },
+    home: null,                      // 본거지 도시 id. 처음 실행할 때 고름 (GAM-038)
+    cities: {},                      // 보유 도시. id → { home } 또는 { lv: {type: 레벨}, stock: {type: 골드}, day }
+    built: {},                       // 본거지 섬: 'x,y' → { type }
+    stock: { bakery: 2400, flower: 1200 },
+    lv: {},                          // 본거지 생산 시설의 레벨. 없으면 1
+    away: 0,                         // 마지막으로 요약을 본 뒤 쌓인 골드 (GAM-044)
     decor: [],                       // { type, x, y }
     inv: {},                         // 보관함: type → 개수
     pets: { dog: { n: 3, acc: 0 }, duck: { n: 2, acc: 0 } },
     daily: { time: 0, accel: 0, brake: 0, turn: 0, done: {} },
     delivery: null,
     rest: null,                      // { state:'active'|'done', acc }
-    oil: { lastDay: -347, lastOdo: 25512, dueOdo: 35512, dueDay: 18, quest: false, thanked: false },
+    oil: { lastDay: -347, lastOdo: 25512, dueOdo: 35512, dueDay: 18, quest: false },
     care: {
       filter: { dueOdo: 40712, dueDay: 140 },
       rotate: { dueOdo: 37312, dueDay: null },
     },
+    sig: { oil: 'normal', washer: 'normal' },                 // 차량 신호 관측값 (시뮬레이터)
+    check: { oil: { active: false, last: -99 }, washer: { active: false, last: -99 } },
+    loc: 'gg:성남', locPerm: true,  // 차량 위치(FusedLocation 대신)와 위치 권한
+    foot: {},                        // 발자국: 도시 id → 첫 관측 날짜(일). 좌표·경로는 저장하지 않음 (GAM-043)
+    tripSeen: [], newFoot: [],
     warn: { tire: false, heat: false },
     sound: true,
     tripRestVoiced: false,
@@ -104,12 +134,17 @@ function save() { try { localStorage.setItem(SAVE_KEY, JSON.stringify(state)); }
 function load() {
   try {
     const s = JSON.parse(localStorage.getItem(SAVE_KEY) || 'null');
-    if (s && s.v === 1) state = Object.assign(freshState(), s);
+    if (s && s.v === 2) state = Object.assign(freshState(), s);
   } catch (e) { /* 손상된 저장은 버림 */ }
 }
 function resetState() { state = freshState(); save(); emit('reset'); }
 
-/* ---- 시설·생산 ---- */
+/* ---- 운행 자재: 주간 완만한 상한 (GAM-001 제안) ---- */
+const A = () => CFG.WEEK_A;
+function weekMat(d) { d = Math.floor(d); return Math.min(d, A()) + Math.floor(Math.max(0, Math.min(d, 2 * A()) - A()) / 2); }
+const weekTier = d => (d < A() ? 1 : d < 2 * A() ? .5 : 0);
+
+/* ---- 본거지 섬의 시설 ---- */
 function producers() {
   const list = [{ id: 'bakery', type: 'bakery', x: 5, y: 4 }, { id: 'flower', type: 'flower', x: 3, y: 4 }];
   Object.keys(state.built).forEach(k => {
@@ -118,8 +153,6 @@ function producers() {
   });
   return list;
 }
-const stockCap = type => FAC[type].rate * CFG.STOCK_HOURS;
-
 function typeAt(x, y) {
   const b = state.built[x + ',' + y];
   if (b) return b.type;
@@ -134,6 +167,76 @@ function comboSites(type) {
   const c = FAC[type].combo; if (!c) return [];
   return Object.keys(state.built).filter(k => state.built[k].type === type)
     .map(k => k.split(',').map(Number)).filter(([x, y]) => isNear(x, y, c.near));
+}
+
+/* ---- 레벨·수익 (GAM-040~042) ---- */
+const tierOf = L => (L > 30 ? 3 : L > 20 ? 2 : L > 10 ? 1 : 0);
+const incomeAt = (type, L) => FAC[type].rate * L * Math.pow(2, tierOf(L));
+const upCost = (type, L) => Math.round(FAC[type].rate * CFG.LV.costK * Math.pow(CFG.LV.costR, L - 1));
+const breakMat = L => CFG.LV.breaks[L] || 0;
+
+/* 사이트: 도시 하나의 생산 시설 하나. { city, key, type } */
+function sitesOf(city) {
+  const c = state.cities[city]; if (!c) return [];
+  if (c.home) return producers().map(p => ({ city, key: p.id, type: p.type, x: p.x, y: p.y }));
+  return CFG.CITY_FAC.map(t => ({ city, key: t, type: t }));
+}
+function lvOf(s) { const c = state.cities[s.city]; return (c.home ? state.lv[s.key] : c.lv[s.key]) || 1; }
+function stockOf(s) { const c = state.cities[s.city]; return (c.home ? state.stock[s.key] : c.stock[s.key]) || 0; }
+function setStock(s, v) { const c = state.cities[s.city]; if (c.home) state.stock[s.key] = v; else c.stock[s.key] = v; }
+const rateOf = s => incomeAt(s.type, lvOf(s));
+const capOf = s => rateOf(s) * CFG.STOCK_HOURS * 3600;
+const ownedIds = () => Object.keys(state.cities);
+const cityRate = city => sitesOf(city).reduce((a, s) => a + rateOf(s), 0);
+const totalRate = () => ownedIds().reduce((a, c) => a + cityRate(c), 0);
+const cityStock = city => sitesOf(city).reduce((a, s) => a + Math.floor(stockOf(s)), 0);
+const lvSum = city => sitesOf(city).reduce((a, s) => a + lvOf(s), 0);
+function gradeOf(city) { const n = lvSum(city); let g = 0; CFG.GRADES.forEach((d, i) => { if (n >= d.min) g = i; }); return g; }
+const homeSite = key => sitesOf(state.home).find(s => s.key === key);
+
+/* 레벨 올리기. 구간 레벨에서는 자재가 든다(단계 돌파). 성공하면 { ok, L, grade:[전,후] } */
+function upgrade(s) {
+  const L = lvOf(s);
+  if (L >= CFG.LV.max) return { err: 'max' };
+  const g = upCost(s.type, L), m = breakMat(L);
+  if (state.gold < g || state.mat < m) return { err: 'lack', gold: Math.max(0, g - state.gold), mat: Math.max(0, m - state.mat) };
+  const g0 = gradeOf(s.city);
+  state.gold -= g; state.mat -= m;
+  const c = state.cities[s.city];
+  if (c.home) state.lv[s.key] = L + 1; else c.lv[s.key] = L + 1;
+  save(); emit('change');
+  return { ok: true, L: L + 1, broke: m > 0, grade: [g0, gradeOf(s.city)] };
+}
+function collectSite(s) {
+  const n = Math.floor(stockOf(s));
+  if (n <= 0) return 0;
+  setStock(s, stockOf(s) - n); state.gold += n;
+  return n;
+}
+function collectCity(city) { const n = sitesOf(city).reduce((a, s) => a + collectSite(s), 0); save(); emit('change'); return n; }
+function collectAll() { const n = ownedIds().reduce((a, c) => a + sitesOf(c).reduce((b, s) => b + collectSite(s), 0), 0); state.away = 0; save(); emit('change'); return n; }
+function collect(id) { const s = homeSite(id); if (!s) return 0; const n = collectSite(s); save(); emit('change'); return n; }
+const stockCap = id => { const s = homeSite(id); return s ? capOf(s) : 0; };
+
+/* ---- 도시 (GAM-039) ---- */
+const cityPrice = () => CFG.CITY_PRICE(ownedIds().length);
+const nextPrice = () => CFG.CITY_PRICE(ownedIds().length + 1);
+function pickHome(id) {
+  if (state.home) return false;
+  state.home = id; state.cities[id] = { home: true };
+  save(); emit('change');
+  return true;
+}
+function openCity(id) {
+  if (state.cities[id] || !CITIES[id]) return { err: 'owned' };
+  const p = cityPrice();
+  if (state.mat < p) return { err: 'lack', mat: p - state.mat };
+  state.mat -= p;                                        // 차감과 보유를 함께 반영 (GAM-039)
+  const lv = {}, stock = {};
+  CFG.CITY_FAC.forEach(t => { lv[t] = 1; stock[t] = 0; });
+  state.cities[id] = { lv, stock, day: dayOf(state.clock) };
+  save(); emit('change');
+  return { ok: true, price: p };
 }
 
 /* ---- 정비 ---- */
@@ -152,24 +255,42 @@ function setOilPreset(p) {
   if (p === 'due') { o.dueOdo = state.odo; }
   checkOil(); save(); emit('change');
 }
+/* 주기형 정비: 사용자 기록으로 완료. 퀘스트일 때만, 주기마다 한 번 자재 (GAM-007, D-004) */
 function recordOil(day, odo) {
   const o = state.oil;
   o.lastDay = day; o.lastOdo = odo;
   o.dueOdo = odo + CFG.OIL.km; o.dueDay = day + CFG.OIL.days;
   const wasQuest = o.quest; o.quest = false;
-  if (wasQuest) state.gold += CFG.OIL.gold;
+  if (wasQuest) state.mat += CFG.OIL.mat;
   save(); emit('change');
-  return wasQuest ? CFG.OIL.gold : 0;
+  return wasQuest ? CFG.OIL.mat : 0;
 }
+/* 차량이 확인하는 항목: 부족이 관측되면 퀘스트, 정상으로 돌아오면 입력 없이 완료 (GAM-048) */
+function setSig(k, v) {
+  state.sig[k] = v;
+  const q = state.check[k], day = dayOf(state.clock);
+  if (v === 'low' && !q.active) { q.active = true; save(); emit('checkNew', k); }
+  else if (v === 'normal' && q.active) {
+    q.active = false;
+    let mat = 0;
+    if (day - q.last >= CFG.CHECK.coolDays) { mat = CFG.CHECK.mat; q.last = day; state.mat += mat; }   // 같은 항목을 반복 보상하지 않음
+    save(); emit('checkDone', { k, mat });
+  }
+  /* 'error'(읽기 실패)는 부족으로도 정상으로도 보지 않는다 (GAM-UC-002 E7) */
+  save(); emit('change');
+}
+const careDue = () => state.oil.quest || Object.values(state.check).some(q => q.active);
 
 /* ---- 시간 ---- */
-function advance(mins) {
+let _tickSave = 0;
+function advance(mins, quiet) {
   if (mins <= 0) return;
   const d0 = dayOf(state.clock);
   state.clock += mins;
-  producers().forEach(p => {
-    state.stock[p.id] = Math.min(stockCap(p.type), (state.stock[p.id] || 0) + FAC[p.type].rate * mins / 60);
-  });
+  ownedIds().forEach(c => sitesOf(c).forEach(s => {
+    const before = stockOf(s), after = Math.min(capOf(s), before + rateOf(s) * mins * 60);
+    if (after > before) { setStock(s, after); state.away += after - before; }
+  }));
   Object.values(state.pets).forEach(p => {
     if (p.n >= CFG.PET.max) { p.acc = 0; return; }
     p.acc += mins;
@@ -178,27 +299,43 @@ function advance(mins) {
   });
   if (state.gear === 'P' && state.rest && state.rest.state === 'active') {
     state.rest.acc += mins;
-    if (state.rest.acc >= CFG.REST.rest) { state.rest.state = 'done'; state.gold += CFG.REST.gold; emit('restDone'); }
+    if (state.rest.acc >= CFG.REST.rest) { state.rest.state = 'done'; state.mat += CFG.REST.mat; emit('restDone'); }
   }
-  if (dayOf(state.clock) !== d0) {
+  const d1 = dayOf(state.clock);
+  if (d1 !== d0) {
     state.daily = { time: 0, accel: 0, brake: 0, turn: 0, done: {} };
-    state.matToday = 0;
     state.rest = null;               // 전날 돌발 퀘스트는 보상 없이 끝남
+    if (weekOf(d1) !== state.week.i) { state.week = { i: weekOf(d1), km: 0 }; emit('newWeek'); }
     emit('newDay');
   }
-  checkOil(); save(); emit('change');
+  checkOil();
+  if (quiet) { emit('tick'); if (++_tickSave >= 15) { _tickSave = 0; save(); } return; }
+  save(); emit('change');
 }
 function jumpTo(target) {
   const now = state.clock % 1440;
   if (target === 'next') { advance(1440 - now + 8.5 * 60); return; }
+  if (target === 'week') {                 // 다음 월요일 08:30
+    const day = dayOf(state.clock), toMon = 7 - ((day + 5) % 7);
+    advance(toMon * 1440 - now + 8.5 * 60); return;
+  }
   let diff = target * 60 - now; if (diff <= 0) diff += 1440;
   advance(diff);
 }
+
+/* ---- 위치·발자국 (GAM-043) ---- */
+function setLoc(id) {
+  state.loc = id;
+  if (state.gear === 'D' && state.locPerm && !state.tripSeen.includes(id)) state.tripSeen.push(id);
+  save(); emit('change');
+}
+function setLocPerm(onOff) { state.locPerm = onOff; if (!onOff) state.tripSeen = []; save(); emit('change'); }
 
 /* ---- 운행 ---- */
 function startTrip() {
   state.gear = 'D';
   state.tripRestVoiced = false;
+  state.tripSeen = state.locPerm ? [state.loc] : [];      // 주행 중에는 관측만 하고 알리지 않음
   save(); emit('gear'); emit('change');
   checkRestTrigger();
 }
@@ -213,18 +350,21 @@ function checkRestTrigger() {
 }
 /* 주차: 이번 운행을 판정하고 택배를 만든다 (GAM-UC-001 B3) */
 function endTrip() {
-  const s = state.sim;
+  const s = state.sim, day = dayOf(state.clock);
   state.gear = 'P';
+  if (state.locPerm) state.tripSeen.forEach(id => { if (state.foot[id] == null) { state.foot[id] = day; state.newFoot.push(id); } });
+  state.tripSeen = [];
   if (s.km > 0) {
     const odo0 = state.odo;
     state.odo += s.km;
-    const mat = Math.max(0, Math.min(s.km * CFG.MAT_PER_KM, CFG.MAT_DAILY_CAP - state.matToday));
-    state.matToday += mat;
+    const wk0 = state.week.km, wk1 = wk0 + s.km;
+    const mat = (weekMat(wk1) - weekMat(wk0)) * CFG.MAT_PER_KM;    // 구간 경계를 넘어도 잃거나 두 번 받지 않음
+    state.week.km = wk1;
     const d = state.daily;
     const allDoneBefore = DAILY_ITEMS.every(it => d.done[it.id]);
     d.time += s.min; d.accel += s.accel; d.brake += s.brake; d.turn += s.turn;
     const short = s.min < CFG.DAILY.minJudge;
-    let gold = 0;
+    let safe = 0;
     const items = DAILY_ITEMS.map(it => {
       let status, value = d[it.id];
       if (d.done[it.id]) status = 'kept';                         // 이미 달성, 다시 보상하지 않음
@@ -233,7 +373,7 @@ function endTrip() {
         const c = CFG.DAILY[it.id];
         const ok = c.min != null ? value >= c.min : value <= c.max;
         status = ok ? 'ok' : 'no';
-        if (ok) { d.done[it.id] = true; gold += CFG.DAILY_GOLD; }
+        if (ok) { d.done[it.id] = true; safe += CFG.DAILY_MAT; }
       }
       return { id: it.id, status, value };
     });
@@ -243,9 +383,9 @@ function endTrip() {
     state.delivery = {
       km: s.km + (prev ? prev.km : 0),
       mat: mat + (prev ? prev.mat : 0),
-      gold: gold + (prev ? prev.gold : 0),
+      safe: safe + (prev ? prev.safe : 0),
       odo0: prev ? prev.odo0 : odo0, odo1: state.odo,
-      capped: mat < s.km * CFG.MAT_PER_KM,
+      wk0: prev ? prev.wk0 : wk0, wk1,
       allDoneBefore, items,
     };
   }
@@ -253,27 +393,20 @@ function endTrip() {
 }
 function claimDelivery() {
   const d = state.delivery; if (!d) return null;
-  state.mat += d.mat; state.gold += d.gold; state.delivery = null;
+  state.mat += d.mat + d.safe; state.delivery = null;
   save(); emit('change');
   return d;
 }
 
-/* ---- 건설·수확·쓰다듬기·상점 ---- */
+/* ---- 건설·쓰다듬기·상점 ---- */
 function build(type, x, y) {
   const cost = FAC[type].cost;
   if (state.mat < cost || state.built[x + ',' + y]) return false;
   state.mat -= cost;
   state.built[x + ',' + y] = { type };
-  if (FAC[type].rate) state.stock[x + ',' + y] = 0;
+  if (FAC[type].rate) { state.stock[x + ',' + y] = 0; state.lv[x + ',' + y] = 1; }
   save(); emit('change');
   return true;
-}
-function collect(id) {
-  const n = Math.floor(state.stock[id] || 0);
-  if (n <= 0) return 0;
-  state.stock[id] -= n; state.gold += n;
-  save(); emit('change');
-  return n;
 }
 function pet(id) {
   const p = state.pets[id];
@@ -310,5 +443,6 @@ function questBadge() {
   let n = DAILY_ITEMS.filter(it => !state.daily.done[it.id]).length;
   if (state.oil.quest) n++;
   if (state.rest && state.rest.state === 'active') n++;
+  n += Object.values(state.check).filter(q => q.active).length;
   return n;
 }
