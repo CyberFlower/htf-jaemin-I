@@ -36,17 +36,31 @@
 
 `build.mjs`는 앱별로 남은 빈칸(`SCENARIO.md`와 `PROPOSAL.md`의 `TODO`)도 함께 보여 줍니다. `--check`를 붙이면 쓰지 않고 검사만 합니다.
 
+### 목업을 장면별 캡처로 넣기
+
+목업이 장면 상태를 주소로 받지 못하면(예: 시뮬레이터 패널로 상태를 바꾸는 목업) 장면마다 캡처를 만들어 연결합니다. game은 `capture/game.cjs`가 [game 목업](../game-isometric/README.md)의 시뮬레이터 버튼과 전역 함수로 SC-01~SC-07 상태를 만들고 차량 화면(1920×1080)만 찍어 `projects/game/assets/scenes/`에 저장합니다. 목업 코드는 바꾸지 않습니다.
+
+```bash
+node spikes/mockup-frame/capture/game.cjs
+```
+
+- Playwright와 Chromium이 필요합니다(`require('playwright')`).
+- 목업이나 장면 순서가 바뀌면 다시 실행하고, 바뀐 PNG를 함께 커밋합니다.
+- 캡처의 숫자는 목업 가정값입니다. 원고 수치로 옮기지 않습니다.
+
 ## 파일
 
 - `index.html`: 틀. 외부 의존성이 없는 단일 파일입니다.
 - `build.mjs`: 장면 표 → `data/<p>.js` 생성, 빈칸 보고. 외부 의존성이 없습니다.
 - `data/<p>.js`: 생성된 장면 데이터.
+- `capture/game.cjs`: game 목업 장면 캡처 스크립트(Playwright).
 
 새 프로젝트를 더하면 `index.html`의 `<script src="data/...">` 줄을 하나 추가합니다. 빠뜨리면 `build.mjs`가 알려 줍니다.
 
 ## 검증과 한계
 
 - 2026-11-14에 Chromium(Playwright)으로 두 앱의 장면 넘기기, 녹화 모드, 장면 이름 끄기, 자리표시 화면을 확인했습니다. HTML 목업(iframe)과 캡처 이미지 연결은 시험용 파일로 확인한 뒤 되돌렸습니다.
+- 2026-11-14에 game 장면 7개를 캡처로 연결했습니다(`capture/game.cjs`). grandma는 SC-08에 HTML 목업(`?embed=1`)이 연결되어 있습니다.
 - 화면 규격은 `SCENARIO.md` 1절의 "화면 규격" 줄을 읽습니다. 지금 값(1920×1080)은 에뮬레이터 실측값이 아닙니다([open-questions.md](../../docs/open-questions.md) Q4).
 - 틀은 목업을 그대로 띄울 뿐입니다. 목업 안의 상태(어느 화면, 어느 차량 신호)는 목업이 주소(`#...`, `?...`)로 받도록 만들어야 장면마다 다르게 열 수 있습니다.
 - 차량 신호, SDK, 에뮬레이터와 연결되지 않습니다. 실제 차량 화면의 크기, 밝기, 터치 사용성을 보장하지 않습니다.

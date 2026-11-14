@@ -20,6 +20,7 @@
 |---|---|
 | [GOAL](GOAL.md) · [Decisions](DECISIONS.md) | 목표·범위와 사람이 합의한 결정 |
 | [UC](USE_CASES.md) · [요구사항](REQUIREMENTS.md) · [목업 UC 보완안](../../spikes/grandma-journey-context/docs/UC-PROPOSAL.md) | 상세 흐름·예외·수용 기준. 전체 목록이 제출 시연의 구현 범위는 아님 |
+| [화면 구성](SCREENS.md) | 임팩트 장면, 목업 HTML 화면과 S##의 대응, 차량 상태별 동작, 시연 순서 (Draft 제안) |
 | [운전자 중심 지식 모델·모바일 연계 제안](../../spikes/grandma-journey-context/docs/PRODUCT-AND-KNOWLEDGE.md) | 어떤 기억·조건이 이번 선택을 바꾸는지, 폰과 차량의 역할. Draft 설계이며 추가 기능 구현 전 |
 | [API 채용안](API-ADOPTION.md) · [외부 장소 연계안](PLACE-INTEGRATION.md) | SDK 검증 계획, 100×100·장소 출처·식별·갱신 |
 | [열린 질문](OPEN_QUESTIONS.md) | 미결정 사항과 검증 방법 |
