@@ -24,7 +24,7 @@
 
 ### 0.3 출처 목록
 
-- [SDK 문서] (확인일 2026-11-14): [Overview](https://document.pleos.ai/docs/pleos-only/connect-sdk-pleos/) · [Vehicle SDK 소개](https://document.pleos.ai/docs/pleos-only/connect-sdk-pleos/Vehicle/intro) · [Vehicle 퍼미션](https://document.pleos.ai/docs/pleos-only/connect-sdk-pleos/Vehicle/vehicle-permission) · [FusedLocation 설정](https://document.pleos.ai/docs/pleos-only/connect-sdk-pleos/FusedLocation/project-setup) · [SpeechToText 소개](https://document.pleos.ai/docs/pleos-only/connect-sdk-pleos/SpeechToText/intro) · [TextToSpeech 소개](https://document.pleos.ai/docs/pleos-only/connect-sdk-pleos/TextToSpeech/intro)
+- [SDK 문서] (확인일 2026-11-14): [Overview](https://document.pleos.ai/docs/pleos-only/connect-sdk-pleos/) · [Vehicle SDK 소개](https://document.pleos.ai/docs/pleos-only/connect-sdk-pleos/Vehicle/intro) · [Vehicle 퍼미션](https://document.pleos.ai/docs/pleos-only/connect-sdk-pleos/Vehicle/vehicle-permission) · [FusedLocation 설정](https://document.pleos.ai/docs/pleos-only/connect-sdk-pleos/FusedLocation/project-setup) · [SpeechToText 소개](https://document.pleos.ai/docs/pleos-only/connect-sdk-pleos/SpeechToText/intro) · [TextToSpeech 소개](https://document.pleos.ai/docs/pleos-only/connect-sdk-pleos/TextToSpeech/intro) · [Vehicle API Reference: Safety](https://document.pleos.ai/docs/pleos-only/connect-sdk-pleos/Vehicle/vehicle/ai.pleos.playground.vehicle.api/safety/entry) · [Tire](https://document.pleos.ai/docs/pleos-only/connect-sdk-pleos/Vehicle/vehicle/ai.pleos.playground.vehicle.api/tire/entry) · [TelltaleType](https://document.pleos.ai/docs/pleos-only/connect-sdk-pleos/Vehicle/vehicle/ai.pleos.playground.vehicle.constant.telltale/telltale-type/entry)
 - 공모전 (확인일 2026-11-12): [공모전 개발 환경](https://appdevchallenge.auto-hmg.io/guide/development) · [Pleos Playground](https://pleos.ai/playground)
 - [Pleos 참고] (확인일 2026-11-12~14): [에뮬레이터 설정](https://document.pleos.ai/docs/connect/guide/getting-started/application-development/setup-connect-sdk-emulator) · [Virtual Console 가이드](https://document.pleos.ai/docs/pleos-only/app-test-guide/virtual-console-guide) · [차량 앱 FAQ](https://document.pleos.ai/docs/pleos-only/vehicle-app-developer-guide/vehicle-app-faq) · [주행 규제 개발 가이드](https://document.pleos.ai/docs/pleos-only/vehicle-app-developer-guide/driving-restriction-development-guide) · [SDK API 정책](https://document.pleos.ai/docs/pleos-only/vehicle-app-planning-guide/pleos-connect-sdk-api) · [API 호환성 및 가용성](https://document.pleos.ai/docs/pleos-only/vehicle-app-planning-guide/api-compatibility-availability) · [하드웨어 접근 정책](https://document.pleos.ai/docs/pleos-only/vehicle-app-planning-guide/platform-api-architecture) · [Gleo Interface 구현 가이드](https://document.pleos.ai/docs/pleos-only/app-integration-guide/guide/core-concepts) · [ADB Command FAQ](https://document.pleos.ai/docs/pleos-only/vehicle-app-developer-guide/adb-command-reference-guide)
 - [Android] (확인일 2026-11-13): [VehiclePropertyIds](https://developer.android.com/reference/android/car/VehiclePropertyIds)
@@ -139,17 +139,46 @@ dependencyResolutionManagement {
 | HVAC | 온도, 풍량, 습도 제어·조회 | `CAR_CLIMATE` | GRD: 동행자 공조 |
 | Light | 조명 상태, 앰비언트 라이트 제어 | `CAR_LIGHTS` | |
 | Odometer | 총 주행 거리, 트립 거리·시간, 거리 단위 | `CAR_DRIVE` | GAM: 건축 자재, 정비 퀘스트, 단거리 비율 |
-| Safety | 차량 경고(Warning) | `CAR_SAFETY` | GAM: 도시 이상 현상 |
+| Safety | 엔진오일·브레이크액·변속기 오일 레벨 상태, 워셔액 부족, power down 경고, 안전벨트, 에어백, 경고등(Telltales). 4.2.1절 | `CAR_SAFETY`. 경고등만 `PRIVATE_CAR_SAFETY` | GAM: 도시 이상 현상, 차량이 확인하는 관리 퀘스트 |
 | Seat | 위치, 각도, 기능 제어·조회 | `CAR_SEATS` | GRD: 탑승 후보 (점유 정보 확인 필요) |
 | SideMirror | 사이드미러 열선 | `CAR_MIRRORS` | |
 | Steeringwheel | 핸들 상태, 열선 | 퍼미션 표에 없음 | GAM: 음성 차량 제어 (범위 검토 중) |
-| Tire | 타이어 상태 | `CAR_SAFETY` | GAM: 공기압 경고 |
+| Tire | 저압 기준값(kPa)과 휠 영역만. 현재 공기압과 경고 여부는 없습니다(4.2.1절) | `CAR_SAFETY` | GAM: 공기압 경고에는 쓸 수 없음 |
 | Toll | 하이패스 음성 안내 음량 | `CAR_TOLL` | |
 | TurnSignal | 방향 지시등 | `CAR_LIGHTS` | |
 | Window | 창문 제어·상태 | `CAR_WINDOWS` | |
 | Wiper | 와이퍼 제어·상태 | `CAR_WINDOWS` | |
 
 쓰기(제어) 퍼미션은 `CONTROL_CAR_*` 형식입니다(예: `CONTROL_CAR_DOORS`). 정확한 이름은 각 API의 `@RequiresPermission`에서 확인합니다. 퍼미션이 없으면 `onFailed`로 `VehicleException`(`ERROR_SECURITY_PERMISSION`)이 전달됩니다.
+
+#### 4.2.1 Safety·Tire 도메인의 API와 정비 관련 신호 (확인일 2026-11-14)
+
+[SDK 문서] Vehicle API Reference의 메서드 페이지 본문을 확인했습니다. 문서 확인 수준이고 에뮬레이터에서는 확인하지 않았습니다.
+
+| API | 돌려주는 값 | 퍼미션 (보호 수준) |
+|---|---|---|
+| Safety `getEngineOilLevelState`, `registerEngineOilLevelState` | `OilLevelState`: `LOW`, `HIGH`, `NORMAL`, `ERROR`, `CRITICALLY_LOW` | `CAR_SAFETY` (normal) |
+| Safety `getBrakeFluidLevelState`, `registerBrakeFluidLevelState` | `OilLevelState` | `CAR_SAFETY` (normal) |
+| Safety `getTransmissionOilLevelState`, `registerTransmissionOilLevelState` | `OilLevelState` | `CAR_SAFETY` (normal) |
+| Safety `hasLowWasherFluidWarning`, `registerLowWasherFluidWaringState` | Boolean. true이면 워셔액에 문제가 있음 | `CAR_SAFETY` (normal) |
+| Safety `hasPowerDownWarningIndicator`, `registerPowerDownWarningIndicator` | Boolean. true이면 엔진에 문제가 있음 | `CAR_SAFETY` (normal) |
+| Safety `getTelltalesInfo`, `registerTelltales`, `checkTelltalesCapabilities` | `Telltales`(경고등 목록). `TelltaleType`에 `TPMS`, `ENGINE_TEMPERATURE`, `ENGINE_OIL_PRESSURE`, `LOW_VOLT_BATTERY`, `ENGINE`, `MASTER_WARNING`, `LOW_FUEL` 등이 있습니다 | **`PRIVATE_CAR_SAFETY` (signature\|privileged)** |
+| Tire `getLowTirePressure(area)` | 저압 **기준값**(kPa). 현재 공기압이 아닙니다 | `CAR_SAFETY` (normal) |
+| Tire `checkLowTirePressureCapabilities`, `checkWheelAreaCapabilities` | 지원 여부와 휠 영역 | `CAR_SAFETY` (normal) |
+
+- 메서드 이름 `registerLowWasherFluidWaringState`의 철자(`Waring`)는 문서 그대로입니다.
+- **공기압 경고(TPMS)와 과열 경고는 경고등 API로만 읽을 수 있고, 이 API는 `PRIVATE_CAR_SAFETY`가 필요합니다.** signature\|privileged 권한은 보통 일반 앱에 주어지지 않습니다(추론). 에뮬레이터에서 선언과 호출이 되는지 확인해야 합니다([GAM-Q3](../../projects/game/OPEN_QUESTIONS.md)).
+- Virtual Console 가이드의 Safety 항목은 Telltales뿐입니다(3절). 오일 레벨, 브레이크액, 워셔액 값을 바꾸는 항목은 가이드에 없습니다. 바꾸는 방법은 확인이 필요합니다([GAM-Q37](../../projects/game/OPEN_QUESTIONS.md)).
+- **정비 이력, 교체 시기, 오일 수명을 주는 API는 없습니다.** Vehicle API Reference의 19개 도메인 메서드 458개를 이름 기준으로 확인했습니다. 엔진오일 레벨은 오일의 양이며, 교체 여부나 교체 시기를 알려 주지 않습니다.
+- [Android] `VehiclePropertyIds`(상수 250개)에도 정비 이력이나 오일 수명 프로퍼티는 없습니다. 관련 프로퍼티의 읽기 권한은 아래와 같습니다.
+
+| AAOS 프로퍼티 | 읽기 권한 (보호 수준) |
+|---|---|
+| `TIRE_PRESSURE`, `CRITICALLY_LOW_TIRE_PRESSURE` | `Car.PERMISSION_TIRES` (Signature\|Privileged) |
+| `ENGINE_OIL_LEVEL`, `ENGINE_COOLANT_TEMP` | `Car.PERMISSION_CAR_ENGINE_DETAILED` (Signature\|Privileged) |
+| `BRAKE_FLUID_LEVEL_LOW`, `BRAKE_PAD_WEAR_PERCENTAGE` | `Car.PERMISSION_READ_BRAKE_INFO` (Dangerous) |
+
+AAOS 프로퍼티를 공모전에서 쓸 수 있는지는 4.3절과 같이 Q11을 따릅니다.
 
 ### 4.3 AAOS 표준 API로만 읽는 차량 신호
 
@@ -237,9 +266,9 @@ Q11의 답이 "불가"일 때 씁니다. 2026-11-14에 [SDK 문서] API Referenc
 | AAOS 차량 신호(속도·기어·주차 브레이크·시동)의 **실제 사용 가능 여부** | 주행 중/정차 중 판단 (두 프로젝트의 공통 원칙), GAM 급가속·급제동·공회전 판단 | 읽는 경로는 [Pleos 참고]와 [Android] 문서로 확인했습니다(4.3절). 남은 것: 공모전 범위에 드는지(Q11, 사용 가능으로 가정하고 문의 중), 에뮬레이터에서 값이 들어오는지, Dangerous 권한을 거부했을 때의 대체 동작 |
 | 에뮬레이터에서 **차량 속도를 바꾸는 방법** | GAM 급가속·급제동 시연 | Virtual Console 가이드에 속도 항목이 없습니다(3절). ADB Command FAQ에도 속도를 바꾸는 명령은 없습니다. 주행 중 UX 제한만 시연하려면 [Pleos 참고] ADB Command FAQ의 `adb shell cmd hmg_car_service --service drivingstate driving_regulation on`(해제는 `off`)을 쓸 수 있는지 확인합니다(문서 확인, 에뮬레이터 미검증) |
 | 좌석 점유(탑승) 감지 | GRD 동행 확인 | Seat 도메인 설명은 위치·각도·기능 위주입니다 |
-| Safety 경고 종류, Tire 공기압 항목 | GAM 이상 현상 | 공기압·과열 경고가 있는지 확인이 필요합니다 |
+| 공기압·과열 경고등을 일반 앱이 읽을 수 있는가 | GAM 이상 현상 | 경고 종류는 확인했습니다(4.2.1절). 경고등 API가 `PRIVATE_CAR_SAFETY`(signature\|privileged)를 요구합니다. 에뮬레이터에서 확인합니다(GAM-Q3) |
+| 오일·브레이크액 레벨, 워셔액 값을 에뮬레이터에서 바꾸는 방법 | GAM 차량이 확인하는 관리 퀘스트 시연 | Virtual Console 가이드에 항목이 없습니다(GAM-Q37) |
 | 에뮬레이터 화면 규격 | README 필수 항목, 레이아웃 | 실행해서 확인합니다 |
-| 정비 이력 API | GAM 정비 퀘스트 | 없다고 가정하고 수동 입력부터 시작합니다 |
 | 12V 배터리 상태 | GAM 배터리 관리 퀘스트 | EvBattery 설명은 고전압 배터리·충전 위주입니다 |
 | Seat 열선, Steeringwheel 열선 제어의 정확한 API 이름 | GAM 음성 차량 제어 | care 원본의 `setHeatingLevel()` 등은 확인되지 않은 이름입니다 |
 | 운전자 주의 분산 최소화 설계 가이드 | 두 프로젝트의 주행 중 UX | 별도 문서가 있다고만 확인했습니다 |
