@@ -81,6 +81,20 @@ SDK 의존은 `SDK 도메인/API (퍼미션) — 검증 태그` 형태로 씁니
 | 미지원 | 확인해 보니 제공하지 않습니다. 대체 동작을 적습니다 |
 | 확인 필요 | 아직 모릅니다. `OPEN_QUESTIONS.md`의 질문 ID를 함께 적습니다 |
 
+### 근거를 찾는 순서 (차량 신호, SDK, 플랫폼 API)
+
+UC와 FR에 차량 신호나 API를 쓸 때는 아래 순서로 찾습니다. 출처 등급은 [dev-environment.md](../contest/dev-environment.md) 0.2절에 있습니다.
+
+1. **[SDK 문서]를 먼저 봅니다.** [Pleos Connect SDK 문서](https://document.pleos.ai/docs/pleos-only/connect-sdk-pleos/)의 SDK 5종(Vehicle, NaviHelper, FusedLocation, SpeechToText, TextToSpeech)입니다. 요약은 dev-environment.md 4절에 있습니다. 같은 기능이 SDK에 있으면 SDK API를 씁니다.
+2. **SDK에 없으면 AAOS 표준 API를 봅니다.** dev-environment.md 4.3절의 표를 먼저 보고, 없으면 [Android `VehiclePropertyIds`](https://developer.android.com/reference/android/car/VehiclePropertyIds)를 봅니다. AAOS 표준 API를 공모전에서 쓸 수 있는지는 주최측에 확인 중이며, 쓸 수 있다고 가정하고 설계합니다([open-questions.md](../open-questions.md) Q11).
+   - 의존 표기: `AAOS <프로퍼티> (<권한>, <보호 수준>) — 문서 확인, 공모전 범위 확인 중 (Q11)`. 예: `AAOS PERF_VEHICLE_SPEED (Car.PERMISSION_SPEED, Dangerous) — 문서 확인, 공모전 범위 확인 중 (Q11)`
+   - Q11의 답이 "불가"일 때의 대체 동작을 함께 적습니다. 후보는 dev-environment.md 4.3.1절에 있습니다.
+   - Dangerous 권한은 사용자가 거부할 수 있으므로, 거부했을 때의 동작도 적습니다.
+   - `VehiclePropertyIds`에 없는 비표준 프로퍼티는 쓰지 않습니다.
+3. **둘 다 없으면** `미지원`으로 적고 대체 동작을 씁니다. 있는지 확신이 없으면 `확인 필요`로 적고 질문 ID를 연결합니다. 없는 API 이름을 지어내지 않습니다.
+
+Gleo Interface는 공지가 따로 허용하므로 1번과 같이 다룹니다(dev-environment.md 4.5절). 외부 음성 인식 서비스와 Pleos LLM SDK는 쓸 수 없습니다(dev-environment.md 1절, 4절).
+
 ### 수용 기준
 
 - 관찰할 수 있는 결과로 씁니다. "~할 수 있다", "~하지 않는다" 형태가 좋습니다.
@@ -106,6 +120,7 @@ SDK 의존은 `SDK 도메인/API (퍼미션) — 검증 태그` 형태로 씁니
 - [ ] 심사 태그가 하나 이상 있습니다
 - [ ] 수용 기준이 하나 이상이고 관찰할 수 있습니다
 - [ ] SDK 의존마다 검증 태그가 있습니다
+- [ ] AAOS 표준 API에 의존하면 Q11을 연결하고, AAOS를 못 쓸 때의 대체 동작을 적었습니다
 - [ ] 모르는 것은 `OPEN_QUESTIONS.md`의 질문으로 연결했습니다
 - [ ] 근거 없는 수치가 없습니다
 - [ ] UC를 연결했다면 흐름 번호와 FR의 양쪽 참조가 맞습니다

@@ -56,7 +56,7 @@
 
 - [ ] 에뮬레이터를 실행할 수 있는 팀원 PC 수 (T1)
 - [ ] Android·Kotlin 경험이 있는 팀원 수
-- [ ] 출품작 수: 1개 또는 2개 ([open-questions.md](../open-questions.md) Q1)
+- [x] 출품작 수: 2개 각각 접수 ([open-questions.md](../open-questions.md) Q1)
 - [ ] Virtual Console로 데모에 필요한 신호(Odometer, Fuel, Safety, Door, Navi)를 바꿀 수 있는지 (open-questions Q8, 각 프로젝트 OPEN_QUESTIONS)
 
 ## 결정

@@ -14,7 +14,7 @@
 | 결정 | 기한 | 막히는 것 | 관련 | 담당 | 상태 |
 |---|---|---|---|---|---|
 | 프로젝트 owner 지정 | 11/12 | 모든 PR merge 판단 | [README 팀](README.md#팀) | | Open |
-| 출품작 수: 1개, 2개, 또는 통합 (주최측 답을 먼저 받음) | 11/13 | 문서 범위, PROPOSAL, 목업 범위 | Q1, Q2, GAM-Q10 | | Open |
+| 출품작 수: 1개, 2개, 또는 통합 (주최측 답을 먼저 받음) | 11/13 | 문서 범위, PROPOSAL, 목업 범위 | Q1, Q2, GAM-Q10 | | Resolved: 2개 각각 접수 (Q1), 한 저장소 유지 (Q2). GAM-Q10은 Open |
 | 목업 구현 방식 | 11/13 | 목업 제작 전체 | Q3, [ADR-0002](docs/decisions/0002-mockup-implementation.md) | | Open |
 | 두 프로젝트의 Goal과 Non-goal 합의 | 11/13 | 요구사항 확정 | 각 `GOAL.md` | | Open |
 | P0 요구사항 Confirmed | 11/13 | 목업, PROPOSAL 3~5번 | 각 `REQUIREMENTS.md` | | Open |
@@ -30,10 +30,12 @@
 답이 오는 데 시간이 걸리므로 11/12~13 중에 보냅니다. 문의처는 `appdevchallenge@hyundai-partners.com`이고, FAQ와 공지사항을 먼저 확인합니다.
 
 - [ ] 문의 메일 발송 (담당: )
-  - Q1 한 팀이 작품 두 개를 접수할 수 있는가
-  - Q2 한 저장소에 앱이 두 개 있어도 되는가
-  - Q6 에뮬레이터 시연에도 Vehicle 퍼미션 사전 승인이 필요한가
-  - Q7 Gleo Interface를 쓸 수 있는가
+  - ~~Q1 한 팀이 작품 두 개를 접수할 수 있는가~~ 설명회에서 답변 (Resolved)
+  - ~~Q2 한 저장소에 앱이 두 개 있어도 되는가~~ 팀 결정으로 해결, 문의하지 않음 (Resolved)
+  - ~~Q6 에뮬레이터 시연에도 Vehicle 퍼미션 사전 승인이 필요한가~~ 설명회에서 답변 (Resolved)
+  - ~~Q7 Gleo Interface를 쓸 수 있는가~~ 공지에서 답변 (Resolved)
+  - 운영사무국은 API 동작 같은 기술 문의에 답하지 않습니다. 남은 문의는 Q11(AAOS 신호가 공모전 범위에 드는지)입니다
+  - Q11 문의 발송 (2026-11-14). 답변 대기
 - [ ] 답을 받으면 각 질문을 Resolved로 바꾸고 근거를 남김
 
 ## 3. 에뮬레이터 확인 (담당 1명, 반나절)

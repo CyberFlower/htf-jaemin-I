@@ -12,7 +12,7 @@
 | `GRD` | 다녀왔습니다 | 가족 채팅방의 "언제 한번 가자"를 차량이 함께 실제로 다녀온 하루로 만드는 동행 여정 앱 | [draft/proposal-grandma.html](draft/proposal-grandma.html) | [projects/grandma](projects/grandma/) |
 | `GAM` | 내 차로 짓는 도시 | 운행과 소모 기록으로 도시를 키우고, 정비 시기는 퀘스트로 알아차리는 앱 | [draft/proposal-game.png](draft/proposal-game.png), [draft/proposal-care.html](draft/proposal-care.html) (케어 요소) | [projects/game](projects/game/) |
 
-game의 퀘스트가 차량 정비 알림이나 grandma의 "동행 여정"을 받아들이는 방향을 검토 중입니다. 두 작품을 따로 낼지 하나로 합칠지는 아직 정하지 않았습니다([미결정 질문 Q1](docs/open-questions.md)).
+두 작품은 **각각 접수**하고, 저장소는 이 저장소 하나를 같이 씁니다([Q1, Q2](docs/open-questions.md)). game의 퀘스트가 grandma의 "동행 여정"을 받아들이는 연계는 따로 검토 중입니다(GAM-Q10).
 
 ## 일정
 
@@ -95,12 +95,25 @@ Use Case와 기능 요구사항(FR)을 작성·보강할 때는 [앱 공통 템�
 
 ## 제출 정보
 
-> 공모전은 README에 아래 5개 항목을 요구합니다. 목업 방식과 출품작이 정해지면 채웁니다([submission.md](docs/contest/submission.md) 5절).
+> 이 저장소에는 출품작 두 개가 있고, 각각 따로 접수했습니다. 심사하시는 앱의 절을 봐 주세요.
+> 공모전은 README에 아래 5개 항목을 요구합니다. 목업 방식이 정해지면 채웁니다([submission.md](docs/contest/submission.md) 5절).
+
+### 다녀왔습니다 (GRD)
 
 | 항목 | 내용 |
 |---|---|
-| 앱 이름 및 한 줄 소개 | 위 프로젝트 표 (출품작 확정 후 정리) |
+| 앱 이름 및 한 줄 소개 | 다녀왔습니다: 위 프로젝트 표 (확정 후 정리) |
 | 실행 방법 | TBD |
 | 테스트 환경 및 필요한 설정 | TBD |
 | Pleos Connect 에뮬레이터 버전과 화면 규격 | v2.1.0 / 화면 규격 TBD (`adb shell wm size`로 확인) |
-| APK 위치 | [`apk/`](apk/) (`팀명_앱이름_release.apk`) 또는 GitHub Release 링크 |
+| APK 위치 | [`apk/`](apk/) (`팀명_다녀왔습니다_release.apk`) 또는 GitHub Release 링크 |
+
+### 내 차로 짓는 도시 (GAM)
+
+| 항목 | 내용 |
+|---|---|
+| 앱 이름 및 한 줄 소개 | 내 차로 짓는 도시: 위 프로젝트 표 (확정 후 정리) |
+| 실행 방법 | TBD |
+| 테스트 환경 및 필요한 설정 | TBD |
+| Pleos Connect 에뮬레이터 버전과 화면 규격 | v2.1.0 / 화면 규격 TBD (`adb shell wm size`로 확인) |
+| APK 위치 | [`apk/`](apk/) (`팀명_내차로짓는도시_release.apk`) 또는 GitHub Release 링크 |
