@@ -165,6 +165,18 @@ function showOverlay(html, cls) {
 function closeOverlay() { overlay.hidden = true; overlay.innerHTML = ''; }
 overlay.addEventListener('pointerdown', e => { if (e.target === overlay) closeOverlay(); });
 function hidePop() { pop.hidden = true; pop.innerHTML = ''; }
+/* 말풍선은 아래쪽 꼭짓점이 (x, y)에 오도록 위로 펼쳐집니다. 실제 높이를 재서 위 줄·화면 밖으로 잘리지 않게 둡니다 */
+function placePop(x, y, yBelow) {
+  pop.hidden = false; pop.classList.remove('below');
+  const h = pop.offsetHeight, w2 = pop.offsetWidth / 2 + 20;
+  pop.style.left = clamp(x, w2, W - w2) + 'px';
+  if (y - h < 130 && yBelow != null) {            // 위쪽 공간이 모자라면 건물 아래에 띄워 건물을 가리지 않음
+    pop.classList.add('below');
+    pop.style.top = clamp(yBelow + 16, 130, H - h - 20) + 'px';
+    return;
+  }
+  pop.style.top = clamp(y, h + 130, H - 40) + 'px';
+}
 
 /* ---------- S03 택배 ---------- */
 function weekRow(wk) {
@@ -365,14 +377,13 @@ function openFacPop(p) {
   const hrs = Math.ceil((cap - st) / r0 / 3600), u = upLabel(site);
   const r1 = L < CFG.LV.max ? incomeAt(p.type, L + 1) : r0;
   pop.innerHTML = `
-    <div class="fp-head"><b>${FAC[p.type].name}</b><i class="lv">Lv ${L}</i>${starsHtml(L)}</div>
+    <div class="fp-head"><b>${FAC[p.type].name}</b><i class="lv">Lv ${L}</i>${starsHtml(L)}<button class="fp-move" id="fpMove" aria-label="옮기기">${ic('move', 30)}</button></div>
     <div class="fp-top">${ic(FAC[p.type].icon, 50)}<b>${fmtShort(n)}</b><small>/ ${fmtShort(cap)}</small></div>
     <div class="track"><i style="width:${clamp(st / cap * 100, 0, 100)}%"></i></div>
     <div class="fp-sub">초당 ${fmtRate(r0)}${L < CFG.LV.max ? ` → ${fmtRate(r1)}` : ''} · ${n >= cap - 1 ? '가득 참' : ic('clock', 28) + ` ${hrs}시간`}</div>
     <div class="fp-btns"><button class="btn primary" id="fpTake" ${n > 0 ? '' : 'disabled'}>거두기</button>
-      <button class="btn up ${u.lack ? 'lack' : ''} ${u.brk ? 'brk' : ''}" id="fpUp" ${u.off ? 'disabled' : ''}>${u.html}</button>
-      <button class="btn ghost" id="fpMove">${ic('move', 32)}옮기기</button></div>`;
-  pop.style.left = clamp(s[0], 230, W - 230) + 'px'; pop.style.top = clamp(s[1], 430, H - 40) + 'px'; pop.hidden = false;
+      <button class="btn up ${u.lack ? 'lack' : ''} ${u.brk ? 'brk' : ''}" id="fpUp" ${u.off ? 'disabled' : ''}>${u.html}</button></div>`;
+  placePop(s[0], s[1], scr(iso(p.x + .5, p.y + .5, -12))[1]);
   $('#fpTake').addEventListener('click', () => { hidePop(); doCollect(p.id, w[0], w[1] + 50); });
   $('#fpMove').addEventListener('click', () => startMove(p.id));
   $('#fpUp').addEventListener('click', e => tryUpgrade(site, e.currentTarget, {
@@ -891,7 +902,7 @@ function onHit(h) {
     const d = state.decor.find(o => o.x === h.x && o.y === h.y); if (!d) return;
     const s = scr(iso(h.x + .5, h.y + .5, 70));
     pop.innerHTML = `<b class="pop-title">${DECOR[d.type].name}</b><div class="pop-row"><button class="btn ghost" id="decMove">옮기기</button><button class="btn ghost" id="decKeep">보관함에</button></div>`;
-    pop.style.left = clamp(s[0], 260, W - 260) + 'px'; pop.style.top = clamp(s[1], 300, H - 40) + 'px'; pop.hidden = false;
+    placePop(s[0], s[1]);
     $('#decMove').addEventListener('click', () => { hidePop(); place = { kind: 'decorMove', type: d.type, fx: d.x, fy: d.y, x: d.x, y: d.y }; showPlaceBar(); sfx.tap(); });
     $('#decKeep').addEventListener('click', () => { pickupDecor(h.x, h.y); hidePop(); sfx.pop(); });
     return;
@@ -905,7 +916,7 @@ function onHit(h) {
     else if (state.built[h.key]) {                                     // 장식 건물(공원·무대): 옮기기
       const s = scr(iso(h.x + .5, h.y + .5, (HGT[h.type] || 90) + 10));
       pop.innerHTML = `<b class="pop-title">${FAC[h.type].name}</b><button class="btn ghost" id="popMove">${ic('move', 32)}옮기기</button>`;
-      pop.style.left = clamp(s[0], 230, W - 230) + 'px'; pop.style.top = clamp(s[1], 300, H - 40) + 'px'; pop.hidden = false;
+      placePop(s[0], s[1]);
       $('#popMove').addEventListener('click', () => startMove(h.key));
     }
   }
