@@ -17,3 +17,5 @@
 | [DECISIONS.md](DECISIONS.md) | 이 프로젝트에서 정한 것 |
 
 퀘스트로 확장하는 방향: 차량 정비 알림, care의 운전 습관 케어, grandma의 "동행 여정"을 퀘스트로 받아들이는 안을 검토 중입니다(GAM-G4, GAM-011~014).
+
+실험 목업은 [spikes/game-isometric](../../spikes/game-isometric/README.md)에 있습니다. 저장소 루트에서 `npm run dev`로 실행합니다. 차에서 모은 자재로 전국 지도의 도시를 열고, 시설 레벨업·단계 돌파로 키우는 흐름(SCREENS.md 12절)을 검토합니다. 차량 신호는 시뮬레이션이며 ADR-0002는 Proposed입니다.
