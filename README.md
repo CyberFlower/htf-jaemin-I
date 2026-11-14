@@ -43,6 +43,7 @@
 │       ├── README.md         프로젝트 홈
 │       ├── GOAL.md           문제, 타깃, Goal/Non-goal, 성공 기준, 원칙
 │       ├── REQUIREMENTS.md   ID별 요구사항
+│       ├── SCENARIO.md       코어 시나리오 가이드 (장면 표가 목업 틀과 영상의 원본)
 │       ├── PROPOSAL.md       접수양식 02 원고
 │       ├── OPEN_QUESTIONS.md 아직 모르는 것
 │       └── DECISIONS.md      정한 것
@@ -51,6 +52,7 @@
 │   ├── process/            작업 흐름, 요구사항 작성 가이드
 │   ├── decisions/          저장소 전체 결정 기록 (ADR)
 │   └── open-questions.md   공통 미결정 질문
+├── spikes/                 실험 코드. mockup-frame/은 두 앱의 목업을 장면 순서대로 보여 주는 틀
 ├── apk/                    제출용 APK 위치 (공모전 규칙)
 └── .github/                PR·Issue 템플릿
 ```
@@ -63,6 +65,8 @@
 4. **목업:** ADR-0002가 정해지면 시작합니다.
 
 자세한 내용은 [docs/process/workflow.md](docs/process/workflow.md)를 참고하세요.
+
+제출물은 프로젝트마다 [목업 틀](spikes/mockup-frame/README.md), 코어 시나리오 가이드(`SCENARIO.md`), 접수양식 원고(`PROPOSAL.md`) 세 가지입니다. 평소 작업이 이 세 가지를 함께 채우는 규칙은 [docs/process/submission-package.md](docs/process/submission-package.md)에 있습니다.
 
 Use Case와 기능 요구사항(FR)을 작성·보강할 때는 [앱 공통 템플릿](docs/process/templates/README.md)을 사용합니다. 복사용 양식, 작성 예시, 기존 `DECISIONS.md`와의 연결 방법을 제공합니다.
 

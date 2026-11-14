@@ -104,6 +104,8 @@
 
 ## 9. 시연 영상 순서 (1차)
 
+장면별 상세와 목업 연결은 [SCENARIO.md](SCENARIO.md)에 씁니다. 아래 순서를 바꾸면 `SCENARIO.md` 2절 장면 표도 함께 고칩니다([규칙](../../docs/process/submission-package.md)).
+
 | 순서 | 장면 | 화면 |
 |---|---|---|
 | 1 | 낮의 섬. 주민이 돌아다님 | S01 |
