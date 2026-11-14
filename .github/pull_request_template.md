@@ -17,6 +17,7 @@
 - [ ] 문서에 없는 SDK API나 퍼미션을 사실처럼 쓰지 않았습니다 (`확인 필요`로 표시)
 - [ ] 근거 없는 수치가 없습니다
 - [ ] Confirmed 항목을 바꿨다면 `DECISIONS.md`에 먼저 기록했습니다
+- [ ] 대표 시나리오, 목업 화면, P0 요구사항, SDK 의존을 바꿨다면 `SCENARIO.md`와 `PROPOSAL.md`의 해당 칸도 고치고 `node spikes/mockup-frame/build.mjs`를 실행했습니다 (`docs/process/submission-package.md`)
 - [ ] 실명, 연락처, 이메일, 계정 ID, 키가 없습니다
 - [ ] 에이전트를 썼다면 생성된 내용을 직접 읽고 확인했습니다
 

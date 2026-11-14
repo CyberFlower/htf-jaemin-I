@@ -9,7 +9,7 @@
 | 0. 탐색 | 아이디어를 넓힌다 | Issue(아이디어), `REQUIREMENTS.md`의 Draft 항목 | 기한 없음. 계속 열려 있습니다 |
 | 1. 정의 | Goal에 합의하고 요구사항을 구체화한다 | `GOAL.md` 합의, 요구사항 Review | P0 후보마다 수용 기준, 심사 태그, SDK 의존이 적혀 있다 |
 | 2. 확정 | 데모 범위를 정한다 | P0 Confirmed, `DECISIONS.md` 기록 | P0을 막는 `OPEN_QUESTIONS`가 해결되었거나 대체 동작이 정해졌다 |
-| 3. 목업 | 대표 시나리오를 시연할 수 있게 만든다 | [ADR-0002](../decisions/0002-mockup-implementation.md)에서 정한 형태의 목업, 시연 영상 | `GOAL.md`의 성공 기준을 체크했다 |
+| 3. 목업 | 대표 시나리오를 시연할 수 있게 만든다 | [ADR-0002](../decisions/0002-mockup-implementation.md)에서 정한 형태의 목업, 시연 영상, `SCENARIO.md` ([제출 패키지](submission-package.md)) | `GOAL.md`의 성공 기준을 체크했다 |
 | 4. 제출 | 접수한다 | 접수양식(`PROPOSAL.md` 기반), 영상, 커밋 hash | [submission.md](../contest/submission.md) 체크리스트를 마쳤다 |
 
 단계는 프로젝트마다 따로 진행합니다. 한 프로젝트가 목업 단계여도 다른 프로젝트는 정의 단계일 수 있습니다.
@@ -76,4 +76,10 @@ projects/grandma/GOAL.md와 REQUIREMENTS.md의 P0 항목으로 PROPOSAL.md 3~5�
 
 ```text
 docs/contest/submission.md 7절 체크리스트로 저장소를 점검하고, 안 된 항목을 알려줘.
+```
+
+```text
+docs/process/submission-package.md를 읽고, node spikes/mockup-frame/build.mjs를 실행해줘.
+projects/game/SCENARIO.md의 SC-03 상세를 REQUIREMENTS.md와 USE_CASES.md에 있는 내용으로만 채워줘.
+모르는 칸은 TODO로 두고 질문 ID를 붙여줘.
 ```
