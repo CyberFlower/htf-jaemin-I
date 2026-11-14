@@ -23,6 +23,7 @@ Codex는 이 파일을 직접 읽고, Claude Code는 `CLAUDE.md`를 통해 읽�
 | 심사 기준과의 연결 | `docs/contest/judging.md` |
 | SDK, 차량 신호, 퍼미션 | `docs/contest/dev-environment.md` |
 | 제출물과 접수양식 원고 | `docs/contest/submission.md`, `projects/<p>/PROPOSAL.md` |
+| 목업, 대표 시나리오, 시연 영상 | `docs/process/submission-package.md`, `projects/<p>/SCENARIO.md` |
 
 ## 3. 무엇을 믿을 것인가 (우선순위)
 
@@ -62,6 +63,15 @@ Codex는 이 파일을 직접 읽고, Claude Code는 `CLAUDE.md`를 통해 읽�
 - 한 PR에서는 한 프로젝트, 한 주제만 다룹니다. 공통 문서는 예외입니다.
 - 요구사항 ID는 재사용하지 않습니다. 없애는 항목은 지우지 말고 Dropped로 둡니다.
 
+### 제출 패키지를 작업과 함께 채웁니다
+
+- 프로젝트마다 낼 것은 세 가지입니다: 목업 틀(`spikes/mockup-frame/`), 코어 시나리오 가이드(`projects/<p>/SCENARIO.md`), 접수양식 02 원고(`projects/<p>/PROPOSAL.md`). 자세한 규칙은 `docs/process/submission-package.md`에 있습니다.
+- 셋은 장면 ID로 이어집니다. 장면의 원본은 `SCENARIO.md` 2절 장면 표 하나입니다. 틀의 `data/*.js`는 생성된 파일이므로 손으로 고치지 않습니다.
+- 원천 문서(`GOAL.md`, `USE_CASES.md`, `REQUIREMENTS.md`, `SCREENS.md`)나 목업 화면을 고치면, 같은 PR에서 `SCENARIO.md`와 `PROPOSAL.md`의 해당 칸도 고칩니다. 어디를 고칠지는 `submission-package.md` 3절 표를 따릅니다.
+- 내용은 원천에서 제출물로만 흐릅니다. `SCENARIO.md`나 `PROPOSAL.md`에만 있는 기능, 수치, SDK를 만들지 않습니다.
+- 모르는 칸은 `TODO`로 두고 질문 ID를 붙입니다(예: `TODO (GRD-Q9)`). 추측으로 채우지 않습니다.
+- 작업을 마칠 때 `node spikes/mockup-frame/build.mjs`를 실행하고, 줄어든 빈칸과 남은 빈칸을 보고합니다.
+
 ### 두 프로젝트의 공통 제품 원칙
 
 - 주행 중에 화면 조작을 요구하지 않습니다. 상호작용은 정차·주차 중에 하고, 주행 중에는 음성과 안내만 씁니다.
@@ -74,6 +84,7 @@ Codex는 이 파일을 직접 읽고, Claude Code는 `CLAUDE.md`를 통해 읽�
 
 - 문서는 한국어로 씁니다. 코드 식별자, 파일명, 브랜치명은 영어로 씁니다.
 - 요구사항 ID: `GRD-###` / `GRD-N##` / `GAM-###` / `GAM-N##`. Goal은 `GRD-G#` / `GAM-G#`, 질문은 `GRD-Q#` / `GAM-Q#`, 공통 질문은 `Q#`입니다.
+- 대표 시나리오의 장면 ID: `GRD-SC-##` / `GAM-SC-##`. `SCENARIO.md` 안에서는 `SC-##`로 씁니다.
 - Use Case를 추가할 때는 `GRD-UC-###` / `GAM-UC-###`를 씁니다. [공통 UC·FR 템플릿](docs/process/templates/README.md)의 연결 규칙을 따르고, 기존 요구사항·질문·결정 ID는 유지합니다.
 - 모든 요구사항에 심사 태그를 하나 이상 붙입니다: `[차량특화]` `[창의]` `[기술]` `[사업]`
 - 날짜는 `YYYY-MM-DD` 절대 날짜로 씁니다. "내일", "다음 주"라고 쓰지 않습니다.

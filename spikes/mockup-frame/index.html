@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>목업 틀 · 차량용 앱 공모전</title>
+<style>
+:root{
+  --bg:#0d0f12;--panel:#15181d;--panel2:#1c2027;--line:#2a2f38;--text:#e9ecf0;--muted:#98a2ae;
+  --accent:#8ec5ff;--park:#62d391;--stop:#f0c350;--drive:#ff9670;--warn:#ff6464;--out:#b7a2ff;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--text);font:15px/1.5 system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;display:grid;grid-template-rows:auto 1fr;overflow:hidden}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+header{display:flex;align-items:center;gap:16px;padding:10px 16px;border-bottom:1px solid var(--line);background:var(--panel)}
+header h1{font-size:15px;margin:0;font-weight:600;white-space:nowrap}
+.tabs{display:flex;gap:6px;flex-wrap:wrap}
+.tab{padding:6px 12px;border-radius:999px;border:1px solid var(--line);color:var(--muted)}
+.tab[aria-selected="true"]{background:var(--text);color:var(--bg);border-color:var(--text);font-weight:600}
+.tools{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap}
+.tool{padding:6px 10px;border-radius:8px;border:1px solid var(--line);color:var(--muted);white-space:nowrap}
+.tool:hover,.tab:not([aria-selected="true"]):hover{color:var(--text);border-color:var(--muted)}
+.tool[aria-pressed="true"]{color:var(--text);border-color:var(--accent)}
+kbd{font:12px ui-monospace,SFMono-Regular,Menlo,monospace;border:1px solid var(--line);border-radius:4px;padding:0 4px;margin-left:4px;color:var(--muted)}
+
+main{display:grid;grid-template-columns:300px 1fr;min-height:0}
+aside{border-right:1px solid var(--line);background:var(--panel);display:flex;flex-direction:column;min-height:0}
+.app{padding:14px 16px;border-bottom:1px solid var(--line)}
+.app b{display:block;font-size:17px}
+.app span{color:var(--muted);font-size:13px}
+.scenes{list-style:none;margin:0;padding:8px;overflow:auto;flex:1}
+.scene{width:100%;text-align:left;display:grid;grid-template-columns:auto 1fr;gap:2px 10px;padding:10px;border-radius:10px;border:1px solid transparent}
+.scene:hover{background:var(--panel2)}
+.scene[aria-current="true"]{background:var(--panel2);border-color:var(--line)}
+.scene .id{font:12px ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--muted);padding-top:2px}
+.scene .id::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;border:1.5px solid var(--muted);margin-right:6px}
+.scene.has .id::before{background:var(--park);border-color:var(--park)}
+.scene .name{font-weight:600}
+.scene .meta{grid-column:2;font-size:12px;color:var(--muted)}
+.foot{padding:12px 16px;border-top:1px solid var(--line);font-size:12px;color:var(--muted)}
+
+.view{display:grid;grid-template-rows:1fr auto;min-width:0;min-height:0}
+.area{position:relative;min-height:0;display:grid;place-items:center;padding:24px}
+.bezel{background:#000;border-radius:18px;padding:10px;box-shadow:0 0 0 1px #2b303a,0 30px 80px rgba(0,0,0,.6)}
+.sizer{position:relative;overflow:hidden;border-radius:9px;background:#11141a}
+.screen{position:absolute;left:0;top:0;transform-origin:0 0;background:#11141a;overflow:hidden}
+.screen iframe,.screen img{display:block;width:100%;height:100%;border:0}
+.screen img{object-fit:contain;background:#000}
+.empty{width:100%;height:100%;display:grid;place-content:center;justify-items:center;gap:28px;text-align:center;color:#cfd6df;background:
+  repeating-linear-gradient(135deg,#141820 0 40px,#171c25 40px 80px)}
+.empty .tag{font:600 34px ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--muted);letter-spacing:.04em}
+.empty .ttl{font-size:76px;font-weight:700;line-height:1.2;max-width:1500px}
+.empty .sub{font-size:36px;color:var(--muted);max-width:1400px}
+
+.caption{border-top:1px solid var(--line);background:var(--panel);padding:12px 20px;display:grid;gap:6px}
+.caption .row{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+.caption .cid{font:13px ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--muted)}
+.caption .ct{font-size:18px;font-weight:700}
+.caption .cc{color:#cdd3da}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{font-size:12px;padding:2px 9px;border-radius:999px;border:1px solid var(--line);color:var(--muted);white-space:nowrap}
+.chip.state{font-weight:700;color:var(--bg);border-color:transparent;background:var(--muted)}
+.chip.park{background:var(--park)}.chip.stop{background:var(--stop)}.chip.drive{background:var(--drive)}
+.chip.warn{background:var(--warn)}.chip.out{background:var(--out)}
+.note{font-size:12px;color:var(--muted)}
+
+body.rec{grid-template-rows:1fr}
+body.rec header,body.rec aside{display:none}
+body.rec main{grid-template-columns:1fr}
+body.nocap .caption{display:none}
+.nodata{grid-row:1/-1;display:grid;place-content:center;text-align:center;color:var(--muted);padding:40px}
+.nodata code{color:var(--text)}
+@media (max-width:900px){main{grid-template-columns:1fr}aside{display:none}}
+</style>
+</head>
+<body>
+<header>
+  <h1>목업 틀</h1>
+  <div class="tabs" id="tabs" role="tablist" aria-label="앱"></div>
+  <div class="tools">
+    <button class="tool" id="prev">이전<kbd>←</kbd></button>
+    <button class="tool" id="next">다음<kbd>→</kbd></button>
+    <button class="tool" id="cap" aria-pressed="true">설명 줄<kbd>C</kbd></button>
+    <button class="tool" id="rec" aria-pressed="false">녹화 모드<kbd>R</kbd></button>
+    <button class="tool" id="full">전체 화면<kbd>F</kbd></button>
+  </div>
+</header>
+<main id="main">
+  <aside>
+    <div class="app"><b id="appName"></b><span id="appSub"></span></div>
+    <ol class="scenes" id="scenes"></ol>
+    <div class="foot" id="foot"></div>
+  </aside>
+  <section class="view">
+    <div class="area" id="area">
+      <div class="bezel"><div class="sizer" id="sizer"><div class="screen" id="screen"></div></div></div>
+    </div>
+    <div class="caption" id="caption">
+      <div class="row"><span class="cid" id="cid"></span><span class="ct" id="ct"></span><span class="cc" id="cc"></span></div>
+      <div class="chips" id="chips"></div>
+      <div class="note">화면 밖의 이 줄과 목록은 시연 안내입니다. 앱 화면이 아닙니다.</div>
+    </div>
+  </section>
+</main>
+
+<!-- 장면 데이터: projects/<p>/SCENARIO.md 2절에서 build.mjs가 만듭니다 -->
+<script src="data/grandma.js"></script>
+<script src="data/game.js"></script>
+<script>
+(function () {
+  var DATA = window.MOCKUP_DATA || {};
+  var keys = Object.keys(DATA);
+  var $ = function (id) { return document.getElementById(id); };
+  var el = function (tag, cls, text) { var n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; };
+
+  if (!keys.length) {
+    var box = el('div', 'nodata');
+    box.append('장면 데이터가 없습니다. 저장소 루트에서 ', el('code', '', 'node spikes/mockup-frame/build.mjs'), '를 실행한 뒤 다시 엽니다.');
+    $('main').replaceChildren(box);
+    return;
+  }
+
+  var state = { p: keys[0], i: 0 };
+  var shown = null;
+
+  function stateClass(s) {
+    if (/경고/.test(s)) return 'warn';
+    if (/주행/.test(s)) return 'drive';
+    if (/주차/.test(s)) return 'park';
+    if (/정차/.test(s)) return 'stop';
+    if (/밖/.test(s)) return 'out';
+    return '';
+  }
+
+  function readHash() {
+    var parts = decodeURIComponent(location.hash.replace(/^#/, '')).split('/');
+    if (DATA[parts[0]]) {
+      state.p = parts[0];
+      var idx = DATA[state.p].scenes.findIndex(function (s) { return s.id === parts[1]; });
+      state.i = idx >= 0 ? idx : 0;
+    }
+    document.body.classList.toggle('rec', parts.indexOf('rec') >= 0);
+    document.body.classList.toggle('nocap', parts.indexOf('nocap') >= 0);
+  }
+
+  function writeHash() {
+    var d = DATA[state.p], s = d.scenes[state.i];
+    var parts = [state.p, s ? s.id : ''];
+    if (document.body.classList.contains('rec')) parts.push('rec');
+    if (document.body.classList.contains('nocap')) parts.push('nocap');
+    var next = '#' + parts.join('/');
+    if (location.hash !== next) history.replaceState(null, '', next);
+  }
+
+  function fit() {
+    var d = DATA[state.p], area = $('area');
+    var w = area.clientWidth - 48 - 20, h = area.clientHeight - 48 - 20;
+    var scale = Math.max(0.05, Math.min(w / d.width, h / d.height));
+    var screen = $('screen'), sizer = $('sizer');
+    screen.style.width = d.width + 'px';
+    screen.style.height = d.height + 'px';
+    screen.style.transform = 'scale(' + scale + ')';
+    sizer.style.width = Math.round(d.width * scale) + 'px';
+    sizer.style.height = Math.round(d.height * scale) + 'px';
+  }
+
+  function drawScreen(d, s) {
+    var key = state.p + '/' + (s ? s.id : '');
+    if (shown === key) return;
+    shown = key;
+    var screen = $('screen');
+    if (!s) { screen.replaceChildren(); return; }
+    if (s.src && s.kind === 'image') {
+      var img = el('img'); img.src = s.src; img.alt = s.id + ' ' + s.title;
+      screen.replaceChildren(img);
+    } else if (s.src) {
+      var frame = el('iframe'); frame.src = s.src; frame.title = s.id + ' ' + s.title;
+      screen.replaceChildren(frame);
+    } else {
+      var empty = el('div', 'empty');
+      empty.append(el('div', 'tag', d.code + ' · ' + s.id + (s.screens ? ' · ' + s.screens : '')), el('div', 'ttl', s.title), el('div', 'sub', '화면 준비 중입니다. 장면 표의 "틀" 칸에 목업 파일이나 캡처를 연결하면 여기에 나옵니다.'));
+      screen.replaceChildren(empty);
+    }
+  }
+
+  function render() {
+    var d = DATA[state.p], s = d.scenes[state.i];
+    $('tabs').replaceChildren.apply($('tabs'), keys.map(function (k) {
+      var b = el('button', 'tab', DATA[k].name);
+      b.setAttribute('role', 'tab');
+      b.setAttribute('aria-selected', String(k === state.p));
+      b.onclick = function () { state.p = k; state.i = 0; render(); };
+      return b;
+    }));
+    $('appName').textContent = d.name;
+    $('appSub').textContent = d.scenario || '';
+    $('scenes').replaceChildren.apply($('scenes'), d.scenes.map(function (sc, i) {
+      var li = el('li'), b = el('button', 'scene' + (sc.src ? ' has' : ''));
+      b.append(el('span', 'id', sc.id), el('span', 'name', sc.title), el('span', 'meta', [sc.state, sc.screens].filter(Boolean).join(' · ')));
+      b.setAttribute('aria-current', String(i === state.i));
+      b.onclick = function () { state.i = i; render(); };
+      li.append(b);
+      return li;
+    }));
+    var linked = d.scenes.filter(function (sc) { return sc.src; }).length;
+    $('foot').replaceChildren(
+      el('div', '', '화면 연결 ' + linked + '/' + d.scenes.length + ' · 화면 규격 ' + (d.spec || d.width + '×' + d.height)),
+      el('div', '', '원본: ' + d.source + ' 2절')
+    );
+    $('cid').textContent = s ? d.code + '-' + s.id : '';
+    $('ct').textContent = s ? s.title : '장면이 없습니다';
+    $('cc').textContent = s ? s.caption : '';
+    var chips = [];
+    if (s) {
+      if (s.state) chips.push(el('span', 'chip state ' + stateClass(s.state), s.state));
+      if (s.screens) chips.push(el('span', 'chip', '화면 ' + s.screens));
+      if (s.reqs) chips.push(el('span', 'chip', s.reqs));
+      if (s.tags) chips.push(el('span', 'chip', s.tags));
+    }
+    $('chips').replaceChildren.apply($('chips'), chips);
+    $('cap').setAttribute('aria-pressed', String(!document.body.classList.contains('nocap')));
+    $('rec').setAttribute('aria-pressed', String(document.body.classList.contains('rec')));
+    drawScreen(d, s);
+    fit();
+    writeHash();
+    document.title = (s ? d.code + '-' + s.id + ' ' + s.title + ' · ' : '') + d.name + ' · 목업 틀';
+  }
+
+  function step(n) {
+    var len = DATA[state.p].scenes.length;
+    if (!len) return;
+    state.i = Math.min(len - 1, Math.max(0, state.i + n));
+    render();
+  }
+  function toggle(cls) { document.body.classList.toggle(cls); render(); }
+  function full() {
+    if (document.fullscreenElement) document.exitFullscreen();
+    else if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen().catch(function () {});
+  }
+
+  $('prev').onclick = function () { step(-1); };
+  $('next').onclick = function () { step(1); };
+  $('cap').onclick = function () { toggle('nocap'); };
+  $('rec').onclick = function () { toggle('rec'); };
+  $('full').onclick = full;
+  document.addEventListener('keydown', function (e) {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') step(1);
+    else if (e.key === 'ArrowLeft' || e.key === 'PageUp') step(-1);
+    else if (e.key === 'r' || e.key === 'R' || e.key === 'ㄱ') toggle('rec');
+    else if (e.key === 'c' || e.key === 'C' || e.key === 'ㅊ') toggle('nocap');
+    else if (e.key === 'f' || e.key === 'F' || e.key === 'ㄹ') full();
+    else return;
+    e.preventDefault();
+  });
+  window.addEventListener('resize', fit);
+  window.addEventListener('hashchange', function () { readHash(); render(); });
+
+  readHash();
+  render();
+})();
+</script>
+</body>
+</html>

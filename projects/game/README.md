@@ -12,6 +12,7 @@
 | [USE_CASES.md](USE_CASES.md) | 사용자 목표별 기본·대안·예외 흐름 (`GAM-UC-###`, Draft) |
 | [REQUIREMENTS.md](REQUIREMENTS.md) | ID별 요구사항 (`GAM-###`, `GAM-N##`) |
 | [SCREENS.md](SCREENS.md) | (제안) 공모전에서 보여줄 장면, 화면 목록, 시연 영상 순서 |
+| [SCENARIO.md](SCENARIO.md) | 코어 시나리오 가이드 (`GAM-SC-##`, Draft). 장면 표가 [목업 틀](../../spikes/mockup-frame/README.md)과 시연 영상의 원본 |
 | [PROPOSAL.md](PROPOSAL.md) | 접수양식 02의 1~8번 원고 |
 | [OPEN_QUESTIONS.md](OPEN_QUESTIONS.md) | 아직 모르는 것 (`GAM-Q#`) |
 | [DECISIONS.md](DECISIONS.md) | 이 프로젝트에서 정한 것 |
