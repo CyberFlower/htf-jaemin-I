@@ -199,7 +199,7 @@ HTML 목업의 폰 화면은 이 흐름을 보여 주는 예시이며 실제 기
 
 | 항목 | 내용 |
 |---|---|
-| 실행 방법 | [spikes/game-isometric/index.html](../../spikes/game-isometric/index.html)을 Chrome이나 Edge로 엽니다. 빌드와 서버가 필요 없고, 장면 순서만 볼 때는 [목업 틀](../../spikes/mockup-frame/README.md)을 엽니다 |
+| 실행 방법 | [spikes/game-isometric/index.html](../../spikes/game-isometric/index.html)을 Chrome이나 Edge로 엽니다. (`spikes/game-isometric/src/`)을 수정하면 `node spikes/game-isometric/build.mjs`로 다시 생성합니다. 장면 순서만 볼 때는 [목업 틀](../../spikes/mockup-frame/README.md)을 엽니다 |
 | 처음 상태 (초기 데이터) | 녹화 전에 시뮬레이터의 `처음 상태로`를 누릅니다. 진행 상태는 브라우저 localStorage에 남습니다 |
 | 차량 신호를 바꾸는 방법과 순서 | 목업 오른쪽 차량 시뮬레이터로 `D 주행`(SC-02) → 주행 중 `타이어 공기압` 켜고 끄기(SC-03) → 이동 거리, 운전 시간, 횟수 → `P 주차`(SC-04) → 정비 상태 `기준 도달`(SC-07) 순서로 넣고, 이어서 위 줄 지도 아이콘(SC-08) → 경기 → 미보유 도시 → `열기` → `확정`(SC-09)을 누릅니다. 발자국은 주행 중 시뮬레이터 위치를 바꾼 뒤 주차하면 생깁니다 |
 | 가상 데이터 표시 | 차량 신호는 모두 시뮬레이터 값이고 Pleos SDK와 에뮬레이터에 연결하지 않았습니다. 정비 주기는 화면에 `예시 데이터`로 표시하고, 그 밖의 숫자(1km당 자재, 일일 기준과 보상, 시설 비용)도 목업 가정값이라 영상 첫 장면에 밝힙니다 |
