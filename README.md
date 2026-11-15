@@ -10,7 +10,7 @@
 
 | 앱 | 한 줄 소개 | ① 목업 실행 | ② 대표 시나리오 | ③ Pleos SDK 활용 | ④ 기획서 원고 |
 |---|---|---|---|---|---|
-| **다녀왔습니다** (`GRD`) | "언제 한번 가자"던 가족과의 약속을, 차량이 함께 준비해 실제로 다녀온 하루로 만드는 기억 기반 동행 여정 앱 | [HTML 목업](spikes/grandma-journey-context/README.md) (SC-01~08) | [SCENARIO.md](projects/grandma/SCENARIO.md) | [SDK.md](projects/grandma/SDK.md) | [PROPOSAL.md](projects/grandma/PROPOSAL.md) |
+| **다녀왔습니다** (`GRD`) | 가족과 나눈 "다음에"를 한 올씩 이어, "다녀왔습니다"로 매듭짓는 차 안의 동행 앱 | [HTML 목업](spikes/grandma-journey-context/README.md) (SC-01~08) | [SCENARIO.md](projects/grandma/SCENARIO.md) | [SDK.md](projects/grandma/SDK.md) | [PROPOSAL.md](projects/grandma/PROPOSAL.md) |
 | **내 차로 짓는 도시** (`GAM`) | 주차할 때마다 방금 달린 거리와 안전운전 기록이 건축 자재로 도착해 섬 도시를 키우고, 정비 시기와 차량 경고도 알아차리는 차량용 도시 꾸미기 앱 | [아이소메트릭 섬 HTML 목업](spikes/game-isometric/README.md) | [SCENARIO.md](projects/game/SCENARIO.md) | [SDK.md](projects/game/SDK.md) | [PROPOSAL.md](projects/game/PROPOSAL.md) |
 
 - **장면 순서대로 한 번에 보기:** [목업 틀](spikes/mockup-frame/README.md)의 `index.html`을 열면 두 앱의 장면을 차량 화면 비율로 넘겨 볼 수 있습니다.
@@ -61,7 +61,6 @@
 │       ├── SCENARIO.md       코어 시나리오 가이드 (장면 표가 목업 틀과 영상의 원본)
 │       ├── assets/scenes/    목업 틀에 연결한 장면 캡처 (game)
 │       ├── PROPOSAL.md       접수양식 02 원고
-│       ├── OPEN_QUESTIONS.md 아직 모르는 것
 │       └── DECISIONS.md      정한 것
 ├── docs/
 │   ├── contest/            공모전 사실: 심사 기준, 제출 규칙, 개발 환경·SDK
@@ -71,8 +70,7 @@
 ├── spikes/                 실험 코드
 │   ├── mockup-frame/         두 앱의 목업을 장면 순서대로 보여 주는 틀 (capture/에 장면 캡처 스크립트)
 │   ├── game-isometric/       game HTML 목업 (아이소메트릭 섬, 차량 시뮬레이터)
-│   ├── grandma-journey-context/ grandma HTML 목업 (첫 방문~재방문 SC-01~08, "실로 잇는 기억" 화면, 차량 상태 시연 도구)
-│   └── grandma-ui-concepts/  grandma 화면 콘셉트 비교안 (A+ 채택 근거)
+│   └── grandma-journey-context/ grandma HTML 목업 (첫 방문~재방문 SC-01~08, "실로 잇는 기억" 화면, 차량 상태 시연 도구)
 ├── apk/                    제출용 APK 위치 (공모전 규칙)
 └── .github/                PR·Issue 템플릿
 ```
@@ -126,7 +124,7 @@ Use Case와 기능 요구사항(FR)을 작성·보강할 때는 [앱 공통 템�
 
 | 항목 | 내용 |
 |---|---|
-| 앱 이름 및 한 줄 소개 | 다녀왔습니다: "언제 한번 가자"던 가족과의 약속을, 차량이 함께 준비해 실제로 다녀온 하루로 만드는 기억 기반 동행 여정 앱 |
+| 앱 이름 및 한 줄 소개 | 다녀왔습니다: 가족과 나눈 "다음에"를 한 올씩 이어, "다녀왔습니다"로 매듭짓는 차 안의 동행 앱 |
 | 실행 방법 | 1차 제출물은 HTML 목업입니다(설치·빌드 없음). [`spikes/grandma-journey-context/journey-demo.html`](spikes/grandma-journey-context/journey-demo.html)을 브라우저로 엽니다. 첫 방문(SC-01~07)과 재방문(SC-08)이 한 화면 흐름으로 이어집니다. 시연 순서는 [SCENARIO.md](projects/grandma/SCENARIO.md) 4절 |
 | 테스트 환경 및 필요한 설정 | 최신 Chrome·Edge·Safari. 화면은 1920×1080(16:9) 기준. 차량 신호, 내비, 날씨, 장소 검색 결과는 차량 화면 밖 시연 도구로 바꾸며 Pleos SDK에는 아직 연결하지 않았습니다 |
 | Pleos Connect 에뮬레이터 버전과 화면 규격 | v2.1.0 / 화면 규격 TBD (`adb shell wm size`로 확인) |

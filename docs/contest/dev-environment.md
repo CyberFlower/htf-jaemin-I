@@ -168,8 +168,8 @@ dependencyResolutionManagement {
 | Tire `checkLowTirePressureCapabilities`, `checkWheelAreaCapabilities` | 지원 여부와 휠 영역 | `CAR_SAFETY` (normal) |
 
 - 메서드 이름 `registerLowWasherFluidWaringState`의 철자(`Waring`)는 문서 그대로입니다.
-- **공기압 경고(TPMS)와 과열 경고는 경고등 API로만 읽을 수 있고, 이 API는 `PRIVATE_CAR_SAFETY`가 필요합니다.** signature\|privileged 권한은 보통 일반 앱에 주어지지 않습니다(추론). 에뮬레이터에서 선언과 호출이 되는지 확인해야 합니다([GAM-Q3](../../projects/game/OPEN_QUESTIONS.md)).
-- Virtual Console 가이드의 Safety 항목은 Telltales뿐입니다(3절). 오일 레벨, 브레이크액, 워셔액 값을 바꾸는 항목은 가이드에 없습니다. 바꾸는 방법은 확인이 필요합니다([GAM-Q40](../../projects/game/OPEN_QUESTIONS.md)).
+- **공기압 경고(TPMS)와 과열 경고는 경고등 API로만 읽을 수 있고, 이 API는 `PRIVATE_CAR_SAFETY`가 필요합니다.** signature\|privileged 권한은 보통 일반 앱에 주어지지 않습니다(추론). 에뮬레이터에서 선언과 호출이 되는지 확인해야 합니다(GAM-Q3, [projects/game/README.md](../../projects/game/README.md)).
+- Virtual Console 가이드의 Safety 항목은 Telltales뿐입니다(3절). 오일 레벨, 브레이크액, 워셔액 값을 바꾸는 항목은 가이드에 없습니다. 바꾸는 방법은 확인이 필요합니다(game 프로젝트, [projects/game/README.md](../../projects/game/README.md)).
 - **정비 이력, 교체 시기, 오일 수명을 주는 API는 없습니다.** Vehicle API Reference의 19개 도메인 메서드 458개를 이름 기준으로 확인했습니다. 엔진오일 레벨은 오일의 양이며, 교체 여부나 교체 시기를 알려 주지 않습니다.
 - [Android] `VehiclePropertyIds`(상수 250개)에도 정비 이력이나 오일 수명 프로퍼티는 없습니다. 관련 프로퍼티의 읽기 권한은 아래와 같습니다.
 
@@ -249,6 +249,12 @@ Q11의 답이 "불가"일 때 씁니다. 2026-11-14에 [SDK 문서] API Referenc
 
 요청은 Pleos Connect Navigation 앱으로 전달되고 결과는 `NaviHelperEventListener` 콜백으로 옵니다. 실제로 받는 이벤트는 Navigation 앱의 구현과 현재 상태에 따라 달라질 수 있습니다.
 
+[SDK 문서] (확인일 2026-11-14) [NaviHelper 목적지](https://document.pleos.ai/docs/pleos-only/connect-sdk-pleos/NaviHelper/destinations)·[경유지](https://document.pleos.ai/docs/pleos-only/connect-sdk-pleos/NaviHelper/waypoint-settings) 가이드:
+
+- `get*Info()`의 예로 `getDestinationInfo()` → `onDestinationInfo`, `getWaypointInfo()`가 있습니다.
+- 경유지는 FIRST·SECOND의 최대 두 곳입니다.
+- 가이드 예시에는 `onWaypointInfo`와 `onWayPointInfo` 표기가 섞여 있습니다. 실제 3.0.5 인터페이스에서 시그니처를 확인해야 합니다.
+
 #### 4.4.1 NaviHelperEventListener 이벤트와 주행 중 알림 데이터
 
 [SDK 문서] NaviHelper Programming Guide "Event listeners"와 API Reference(2026-11-14 확인). 문서는 "Navigation 앱의 구현 시나리오에 따라 전달되는 이벤트가 달라질 수 있다"고 합니다. 에뮬레이터에서 어떤 이벤트가 오는지는 확인하지 않았습니다.
@@ -275,6 +281,7 @@ Q11의 답이 "불가"일 때 씁니다. 2026-11-14에 [SDK 문서] API Referenc
 - FusedLocation: `isSupported()`를 먼저 호출합니다. `getLastKnownLocation()`, `registerFusedLocationCallback()`, `addProximityAlert()`(지오펜스 진입·이탈)를 제공합니다. 콜백 값은 `null`일 수 있습니다.
 - STT/TTS 모드: `HYBRID`(기본, 서버 우선이고 실패하면 기기 엔진), `SERVER`, `ON_DEVICE`. 서버를 쓰는 모드는 네트워크와 Playground **My Project 자격 증명으로 앱을 등록**해야 합니다. 자격 증명은 커밋하지 않습니다.
 - STT는 인식한 텍스트만 돌려줍니다. 음성 명령 실행은 Gleo Interface를 쓰라고 안내합니다. **공모전 참가팀은 Gleo Interface(App Schema)를 별도 검토·승인 없이 쓸 수 있습니다**(공지, [open-questions.md](../open-questions.md) Q7). [Gleo Interface 구현 가이드](https://document.pleos.ai/docs/pleos-only/app-integration-guide/guide/core-concepts)에 따르면 앱이 function을 정의한 JSON(App Schema)을 등록하고, Gleo AI가 Gleo Action으로 앱을 호출하고, 앱은 Callback으로 응답합니다. 퍼미션과 등록 절차는 아직 정리하지 않았습니다(확인 필요). 가이드에는 "개발이 진행됨에 따라 계속 개선된다"는 문구가 있습니다.
+- [SDK 문서] (확인일 2026-11-14) [SpeechToText 소개](https://document.pleos.ai/docs/pleos-only/connect-sdk-pleos/SpeechToText/intro): `initialize()`, `addListener()`, `setLocale()`, `request()`, `stop()`. [TextToSpeech 소개](https://document.pleos.ai/docs/pleos-only/connect-sdk-pleos/TextToSpeech/intro): `initialize()`, `addEventListener()`, `speak()`, `stop()`.
 - **음성 인식은 SpeechToText SDK로만 합니다.** 차량 마이크 음성을 외부 음성 인식 서비스로 보내면 안 됩니다(공지).
 - [SDK 문서] SpeechToText `sendAudio(ByteArray)`: 차량 마이크 대신 앱이 가진 PCM 오디오를 인식시킬 수 있습니다. **ON_DEVICE 모드에서만** 됩니다. 예시는 16 kHz, 16-bit, mono PCM입니다. 시연 때 같은 발화를 반복해서 재생하는 용도로 쓸 수 있습니다(에뮬레이터 미검증).
 - Pleos LLM SDK는 제공되지 않습니다(공지). 생성형 AI 응답이 필요하면 외부 API를 쓰는 방안을 검토하되, 입력은 STT가 돌려준 텍스트여야 합니다.
@@ -287,7 +294,7 @@ Q11의 답이 "불가"일 때 씁니다. 2026-11-14에 [SDK 문서] API Referenc
 |---|---|---|
 | AAOS 차량 신호(속도·기어·주차 브레이크·시동)의 **실제 사용 가능 여부** | 주행 중/정차 중 판단 (두 프로젝트의 공통 원칙), GAM 급가속·급제동·공회전 판단 | 읽는 경로는 [Pleos 참고]와 [Android] 문서로 확인했습니다(4.3절). 남은 것: 공모전 범위에 드는지(Q11, 사용 가능으로 가정하고 문의 중), 에뮬레이터에서 값이 들어오는지, Dangerous 권한을 거부했을 때의 대체 동작 |
 | 에뮬레이터에서 **차량 속도를 바꾸는 방법** | GAM 급가속·급제동 시연 | Virtual Console 가이드에 속도 항목이 없습니다(3절). ADB Command FAQ에도 속도를 바꾸는 명령은 없습니다. 주행 중 UX 제한만 시연하려면 [Pleos 참고] ADB Command FAQ의 `adb shell cmd hmg_car_service --service drivingstate driving_regulation on`(해제는 `off`)을 쓸 수 있는지 확인합니다(문서 확인, 에뮬레이터 미검증) |
-| 좌석 점유(탑승) 감지의 값과 동작 | GRD 동행 확인, GAM 동승 안전벨트 퀘스트 | API 이름은 확인했습니다(4.2절 Seat, 2026-11-14). 반환 값의 의미, 에뮬레이터·Virtual Console "좌석 점유"로 바꿀 때의 동작은 남았습니다(GAM-Q30, GRD-Q2) |
+| 좌석 점유(탑승) 감지의 값과 동작 | GRD 동행 확인, GAM 동승 안전벨트 퀘스트 | API 이름은 확인했습니다(4.2절 Seat, 2026-11-14). 반환 값의 의미, 에뮬레이터·Virtual Console "좌석 점유"로 바꿀 때의 동작은 남았습니다(GAM-Q30, GRD-008) |
 | 공기압·과열 경고등을 일반 앱이 읽을 수 있는가 | GAM 이상 현상 | 경고 종류는 확인했습니다(4.2.1절). 경고등 API가 `PRIVATE_CAR_SAFETY`(signature\|privileged)를 요구합니다. 에뮬레이터에서 확인합니다(GAM-Q3) |
 | 오일·브레이크액 레벨, 워셔액 값을 에뮬레이터에서 바꾸는 방법 | GAM 차량이 확인하는 관리 퀘스트 시연 | Virtual Console 가이드에 항목이 없습니다(GAM-Q40) |
 | 에뮬레이터 화면 규격 | README 필수 항목, 레이아웃 | 실행해서 확인합니다 |
