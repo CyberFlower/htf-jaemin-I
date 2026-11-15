@@ -39,7 +39,7 @@
 
 ### 목업을 장면별 캡처로 넣기
 
-목업이 장면 상태를 주소로 받지 못하면(예: 시뮬레이터 패널로 상태를 바꾸는 목업) 장면마다 캡처를 만들어 연결합니다. game은 `capture/game.cjs`가 [game 목업](../game-isometric/README.md)의 시뮬레이터 버튼과 전역 함수로 SC-01~SC-07 상태를 만들고 차량 화면(1920×1080)만 찍어 `projects/game/assets/scenes/`에 저장합니다. 목업 코드는 바꾸지 않습니다.
+목업이 장면 상태를 주소로 받지 못하면(예: 시뮬레이터 패널로 상태를 바꾸는 목업) 장면마다 캡처를 만들어 연결합니다. game은 `capture/game.cjs`가 [game 목업](../game-isometric/README.md)의 시뮬레이터 버튼과 전역 함수로 SC-01~SC-09 상태를 만들고 차량 화면(1920×1080)만 찍어 `projects/game/assets/scenes/`에 저장합니다. 목업 코드는 바꾸지 않습니다.
 
 ```bash
 node spikes/mockup-frame/capture/game.cjs

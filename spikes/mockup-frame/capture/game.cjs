@@ -59,22 +59,29 @@ const outDir = path.join(root, 'projects/game/assets/scenes');
   await wait(300);
   await shot('SC-02');
 
-  // SC-03 주차하면 택배가 온다: 이번 운행 11km·24분·방향 지시등 6회(목업 초기값) → P 주차 → 택배
+  // SC-03 공기압 경고와 일렁이는 길: 주행 중 시뮬레이터 '타이어 공기압' → 경고 카드 → 해제
+  await sim('#simTire');
+  await wait(2500);
+  await shot('SC-03');
+  await sim('#simTire');
+  await wait(800);
+
+  // SC-04 주차하면 택배가 온다: 이번 운행 11km·24분·방향 지시등 6회(목업 초기값) → P 주차 → 택배
   await sim('#simGear button[data-v="P"]');
   await page.waitForFunction(() => truck.parked, null, { timeout: 15000 });
   await wait(500);
   await page.evaluate(() => openDelivery());
   await wait(2200);
-  await shot('SC-03');
+  await shot('SC-04');
   await page.click('#dlTake');
   await wait(1500);
 
-  // SC-04 시설 짓기: 위 줄 상점 → 시설 탭(S11·S04)을 연 화면
+  // SC-05 시설 짓기: 위 줄 상점 → 시설 탭(S11·S04)을 연 화면
   await page.click('#btnShop');
   await wait(300);
   await page.click('#overlay [data-tab="fac"]');
   await wait(1200);
-  await shot('SC-04');
+  await shot('SC-05');
   // 이어지는 장면을 위해 정류장(8,4) 옆 빈 땅(7,4)에 시장을 짓고 시간을 넘깁니다
   await page.evaluate(() => { closeOverlay(); place = { kind: 'build', type: 'market', x: 7, y: 4 }; showPlaceBar(); });
   await wait(300);
@@ -84,7 +91,7 @@ const outDir = path.join(root, 'projects/game/assets/scenes');
   await page.waitForFunction(() => R.nightMarket, null, { timeout: 15000 });
   await wait(2500);
 
-  // SC-05 거두고, 사고, 쓰다듬기: 벤치를 사서 광장에 놓고, 빵집 완성품을 거두고, 주민을 쓰다듬는 순간
+  // SC-06 거두고, 사고, 쓰다듬기: 벤치를 사서 광장에 놓고, 빵집 완성품을 거두고, 주민을 쓰다듬는 순간
   await page.evaluate(() => { buyDecor('bench'); place = { kind: 'decor', type: 'bench', x: 2, y: 6 }; showPlaceBar(); });
   await wait(300);
   await page.click('#placeYes');
@@ -97,32 +104,25 @@ const outDir = path.join(root, 'projects/game/assets/scenes');
   // 주민은 돌아다니므로 좌표로 누르면 옆의 장식이 눌릴 수 있습니다. 쓰다듬기를 직접 부릅니다
   await page.evaluate(() => { const d = RES.list[0], s = iso(d.x, d.y); onHit({ kind: 'pet', id: d.id, sx: s[0], sy: s[1] }); });
   await wait(450);
-  await shot('SC-05');
+  await shot('SC-06');
   await wait(1500);
 
-  // SC-06 정비소 주민의 정비 알림: 정비 상태 '기준 도달' → 차량 관리 화면
+  // SC-07 정비소 주민의 정비 알림: 정비 상태 '기준 도달' → 차량 관리 화면
   await sim('#simOil button[data-v="due"]');
   await wait(800);
   await page.evaluate(() => openCare());
   await wait(1200);
-  await shot('SC-06');
+  await shot('SC-07');
   await page.evaluate(() => closeOverlay());
 
-  // SC-07 공기압 경고와 일렁이는 길: 시뮬레이터 '타이어 공기압'
-  await sim('#simTire');
-  await wait(2500);
-  await shot('SC-07');
-
-  // SC-08 전국 지도: 경고를 풀고 위 줄 지도 아이콘 → 본거지 권역이 선택된 전국 지도(S13)
-  await sim('#simTire');
-  await wait(800);
+  // SC-08 전국 지도: 위 줄 지도 아이콘 → 본거지 권역이 선택된 전국 지도(S13)
   await page.evaluate(() => { closeOverlay(); });
   await page.click('#btnMap');
   await wait(1800);
   await shot('SC-08');
 
   // SC-09 새 도시 열기: 경기 권역의 첫 미보유 도시 → 도시 카드(S14) → 열기 → 확정 직전 화면
-  // 자재는 SC-03에서 받은 운행 보상에 시연용으로 더해 여는 가격을 넘깁니다(목업 가정값)
+  // 자재는 SC-04에서 받은 운행 보상에 시연용으로 더해 여는 가격을 넘깁니다(목업 가정값)
   await page.evaluate(() => { state.mat = Math.max(state.mat, cityPrice() + 12); save(); refresh(); });
   await page.click('.rtile[data-r="gg"]');
   await wait(400);

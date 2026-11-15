@@ -43,3 +43,6 @@ CLAUDE.local.md
 # 임시
 *.log
 tmp/
+
+# 접수양식 01 · 동의서 원본 (저장소 밖에서 다룬다, AGENTS.md 4절)
+reference/

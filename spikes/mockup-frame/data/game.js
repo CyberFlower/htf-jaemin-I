@@ -26,41 +26,41 @@ window.MOCKUP_DATA["game"] = {
     },
     {
       "id": "SC-03",
-      "title": "주차하면 택배가 온다",
-      "state": "주차",
-      "sdk": "Vehicle Odometer, Brake, TurnSignal, AAOS 속도",
+      "title": "공기압 경고와 일렁이는 길",
+      "state": "주행 (경고: 공기압)",
+      "sdk": "Vehicle Safety 경고등",
       "src": "../../projects/game/assets/scenes/SC-03.png",
       "kind": "image"
     },
     {
       "id": "SC-04",
-      "title": "시설 짓기",
+      "title": "주차하면 택배가 온다",
       "state": "주차",
-      "sdk": "— (로컬 저장, 주차 판단만)",
+      "sdk": "Vehicle Odometer, Brake, TurnSignal, AAOS 속도",
       "src": "../../projects/game/assets/scenes/SC-04.png",
       "kind": "image"
     },
     {
       "id": "SC-05",
-      "title": "거두고, 사고, 쓰다듬기",
+      "title": "시설 짓기",
       "state": "주차",
-      "sdk": "— (로컬 저장, 기기 시각)",
+      "sdk": "— (로컬 저장, 주차 판단만)",
       "src": "../../projects/game/assets/scenes/SC-05.png",
       "kind": "image"
     },
     {
       "id": "SC-06",
-      "title": "정비소 주민의 정비 알림",
+      "title": "거두고, 사고, 쓰다듬기",
       "state": "주차",
-      "sdk": "Vehicle Odometer, CarInfo",
+      "sdk": "— (로컬 저장, 기기 시각)",
       "src": "../../projects/game/assets/scenes/SC-06.png",
       "kind": "image"
     },
     {
       "id": "SC-07",
-      "title": "공기압 경고와 일렁이는 길",
-      "state": "경고 (공기압)",
-      "sdk": "Vehicle Safety 경고등",
+      "title": "정비소 주민의 정비 알림",
+      "state": "주차",
+      "sdk": "Vehicle Odometer, CarInfo",
       "src": "../../projects/game/assets/scenes/SC-07.png",
       "kind": "image"
     },
@@ -76,7 +76,7 @@ window.MOCKUP_DATA["game"] = {
       "id": "SC-09",
       "title": "차로 모은 자재로 새 도시 열기",
       "state": "주차",
-      "sdk": "— (자재는 SC-03의 Vehicle Odometer와 안전운전 보상)",
+      "sdk": "— (자재는 SC-04의 Vehicle Odometer와 안전운전 보상)",
       "src": "../../projects/game/assets/scenes/SC-09.png",
       "kind": "image"
     }
