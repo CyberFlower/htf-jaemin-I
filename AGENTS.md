@@ -21,7 +21,7 @@ Codex는 이 파일을 직접 읽고, Claude Code는 `CLAUDE.md`를 통해 읽�
 | 프로젝트 기획과 요구사항 | `projects/<p>/GOAL.md` → `REQUIREMENTS.md` → `OPEN_QUESTIONS.md` → `DECISIONS.md` |
 | 요구사항 작성 형식 | `docs/process/requirements-guide.md` |
 | 심사 기준과의 연결 | `docs/contest/judging.md` |
-| SDK, 차량 신호, 퍼미션 | `docs/contest/dev-environment.md` |
+| SDK, 차량 신호, 퍼미션 | `docs/contest/dev-environment.md`, `projects/<p>/SDK.md` (프로젝트별 활용 맵) |
 | 제출물과 접수양식 원고 | `docs/contest/submission.md`, `projects/<p>/PROPOSAL.md` |
 | 목업, 대표 시나리오, 시연 영상 | `docs/process/submission-package.md`, `projects/<p>/SCENARIO.md` |
 

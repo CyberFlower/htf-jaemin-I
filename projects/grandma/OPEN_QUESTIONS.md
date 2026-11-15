@@ -6,7 +6,7 @@
 | ID | 질문 | 영향 | 확인 방법 | 담당 | 상태 |
 |---|---|---|---|---|---|
 | GRD-Q1 | 가족 공유 웹(서버 필요)을 목업과 PT 범위에 넣을까? 시뮬레이션으로 대체할까? | GRD-004, 개발 부담 | 팀 결정 | | Open |
-| GRD-Q2 | Seat 도메인에 좌석 점유 정보가 있는가? | GRD-008 | Seat API Reference, 에뮬레이터 | | Open |
+| GRD-Q2 | Seat 도메인에 좌석 점유 정보가 있는가? | GRD-008 | Seat API Reference, 에뮬레이터. API 이름은 확인(2026-11-14, `getCurrentSeatOccupancy` 등, [dev-environment.md](../../docs/contest/dev-environment.md) 4.2절). 값의 의미와 에뮬레이터·Virtual Console 동작은 남음(game GAM-Q30과 같은 확인) | | Open |
 | GRD-Q3 | NaviHelper 경유지 추가가 에뮬레이터 내비게이션에서 동작하는가? | GRD-007 (핵심 데모) | 에뮬레이터 스파이크 | | Open |
 | GRD-Q4 | HVAC 제어 퍼미션 이름과 시연 사용 가능 여부 | GRD-009 | API Reference, 주최측 문의(Q6) | | Open |
 | GRD-Q5 | 날씨, 장소 검색, 캘린더에 어떤 외부 API를 쓰고 키는 어떻게 관리하는가? | GRD-002, GRD-003 | 팀 조사 | | Open |

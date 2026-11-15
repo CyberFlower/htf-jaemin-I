@@ -126,21 +126,22 @@
 3. 차량 실행: 출발 준비 점검, 내비게이션 적용, 동행 확인 (GRD-006, GRD-007, GRD-008)
 4. 다녀옴 기록과 대표 시나리오 전체 시연 (GRD-010)
 
-SDK/API 사용 계획: "문서 확인"은 공식 SDK 문서에 해당 API가 있다는 뜻입니다. 에뮬레이터 검증은 1단계에서 합니다.
+Pleos SDK 활용: 차량이 여정의 순간을 알려 줍니다. 정차 상태와 현재 위치가 약속을 남길 순간과 장소를 주고(FusedLocation, SpeechToText), 연료·배터리 상태가 출발 준비를(Vehicle Fuel/EvBattery), 내비게이션이 승인한 경유지를 다시 입력 없이 경로로(NaviHelper), 도어 신호가 동행을 물을 시점을(Vehicle Door) 줍니다. 주행 중에는 화면 대신 음성 안내 한 줄만 씁니다(TextToSpeech). 신호는 관측으로만 쓰고 탑승·방문은 운전자가 확인합니다. 아래 "문서 확인"은 공식 SDK 문서에 해당 API가 있다는 뜻이고, 에뮬레이터 검증은 1단계에서 합니다.
 
-| SDK / 도메인 | 쓰는 장면 | 요구사항 | 검증 |
-|---|---|---|---|
-| SpeechToText (`STT_SERVICE`) | SC-01 정차 중 한마디 입력 | GRD-002 | 문서 확인 |
-| FusedLocation `getLastKnownLocation` (`FUSED_LOCATION`) | SC-01 현재 위치 주변 장소 후보 | GRD-002 | 문서 확인 |
-| Vehicle Fuel / EvBattery (`CAR_ENERGY`) | SC-03 출발 준비 점검 | GRD-006 | 문서 확인 |
-| NaviHelper `requestRouteWithWaypoints()` / `addWaypoint()` (`NAVI_ROUTE_SEARCH`) | SC-03, SC-05 목적지와 경유지 적용 | GRD-007 | 문서 확인. 에뮬레이터 동작은 확인 필요 |
-| TextToSpeech (`TTS_SERVICE`) | SC-04, SC-06 주행 중 음성 안내 | GRD-N01 | 문서 확인 |
-| Vehicle Door (`CAR_DOORS`) | SC-05 탑승 후보 관측 | GRD-008 | 문서 확인 |
-| Vehicle Seat 좌석 점유 (`CAR_SEATS`) | SC-05 탑승 후보 보조 | GRD-008 | 확인 필요. 쓸 수 없으면 사용자가 동행자를 직접 고릅니다 |
-| FusedLocation 이동 기록 (`FUSED_LOCATION`) | SC-07 기록 초안 | GRD-010 | 문서 확인 |
-| 주행/정차 판단 | 모든 장면의 화면 전환 | GRD-N01, GRD-002 | 확인 필요. AAOS 표준 API(`PERF_VEHICLE_SPEED`, `GEAR_SELECTION`, `PARKING_BRAKE_ON`, `CarUxRestrictions`)가 공모전 범위에 드는지 주최측에 확인 중입니다. 쓸 수 없거나 상태가 불명확하면 입력을 제한합니다. Odometer의 거리 변화만으로 정차·주차를 확정하지 않습니다 |
-| 외부 API (날씨, 장소 검색) | SC-01, SC-02, SC-03 | GRD-002, GRD-003 | 확인 필요 (서비스 선정 전). 실패하면 "미확인"으로 표시하고 수동 계획으로 진행합니다 |
-| Vehicle HVAC 제어 | 확장 기능 (동행자 공조) | GRD-009 | 확인 필요. 제어할 수 없으면 준비 체크리스트로 대신합니다 |
+| SDK / 도메인 | 주요 API (퍼미션) | 쓰는 장면 | 요구사항 | 검증 |
+|---|---|---|---|---|
+| SpeechToText | `request()` 등 (`STT_SERVICE`) | SC-01 정차 중 한마디로 약속 남기기, SC-07 방문 기록의 한마디 | GRD-002, GRD-016 | 문서 확인 |
+| FusedLocation | `getLastKnownLocation()`, `registerFusedLocationCallback()` (`FUSED_LOCATION`) | SC-01 정차한 자리 주변 장소 후보, SC-07 이동 기록 | GRD-002, GRD-010 | 문서 확인 |
+| Vehicle Fuel / EvBattery | 연료·배터리 상태 조회 (`CAR_ENERGY`) | SC-03 출발 준비 점검 | GRD-006 | 문서 확인 |
+| NaviHelper | `requestRouteWithWaypoints()`, `addWaypoint()` (`NAVI_ROUTE_SEARCH`), `getDestinationInfo()` (`NAVI_ROUTE`) | SC-03·SC-05 승인한 목적지와 경유지 적용, SC-08 선택한 목적지 읽기 | GRD-007, GRD-014 | 문서 확인. 에뮬레이터 동작은 확인 필요 |
+| Vehicle Door | 도어 열림·닫힘 (`CAR_DOORS`) | SC-05 동행 질문의 계기 | GRD-008 | 문서 확인 |
+| Vehicle Seat | `getCurrentSeatOccupancy()` 등 좌석 점유 (`CAR_SEATS`) | SC-05 동행 확인 보조 | GRD-008 | API 이름 문서 확인. 값과 동작은 확인 필요. 쓸 수 없으면 사용자가 동행자를 직접 고릅니다 |
+| TextToSpeech | `speak()` (`TTS_SERVICE`) | SC-04·SC-06 주행 중 안내 한 줄 | GRD-N01 | 문서 확인 |
+| 주행/정차 판단 | AAOS `CarUxRestrictionsManager`, `GEAR_SELECTION`, `PARKING_BRAKE_ON` | 모든 장면의 화면 전환과 입력 제한 | GRD-N01 | 확인 필요. 공모전 범위에 드는지 주최측에 확인 중입니다. 상태가 불명확하면 입력을 제한하고, 주행 거리 변화만으로 정차·주차를 확정하지 않습니다 |
+| 외부 API (날씨, 장소 검색) | — | SC-01, SC-02, SC-03 | GRD-002, GRD-003 | 확인 필요 (서비스 선정 전). 실패하면 "미확인"으로 표시하고 수동 계획으로 진행합니다 |
+| Vehicle HVAC 제어 | — | 확장 기능 (동행자 공조) | GRD-009 | 확인 필요. 제어할 수 없으면 준비 체크리스트로 대신합니다 |
+
+장면별 API 흐름, 신호가 없을 때의 동작, 선언할 퍼미션의 전체 목록은 "Pleos SDK 활용 맵"(7번 참고자료)에 정리했습니다.
 
 설계 원칙:
 
@@ -152,16 +153,18 @@ SDK/API 사용 계획: "문서 확인"은 공식 SDK 문서에 해당 API가 있
 ### 확인할 것
 
 - TODO ([ADR-0002](../../docs/decisions/0002-mockup-implementation.md), Q3): 목업 구현 방식이 Proposed입니다. 제출 원고에는 공식 요건과 일정만 썼습니다. 방식이 정해지면 "구현 방식과 일정"에 1차 목업의 형태와 Android 전환 계획을 씁니다. Java와 Kotlin 중 무엇을 쓸지도 정합니다.
-- TODO: "1차 접수에 화면 목업과 시연 영상을 낸다"는 [TODO.md](../../TODO.md)의 계획을 옮긴 것입니다. 실제로 내는 것과 맞는지 제출 전에 확인합니다. 현재 [실험 목업](../../spikes/grandma-journey-context/README.md)은 SC-08 재방문 변형에 연결했습니다. SC-01~07 첫 방문 화면은 아직 연결되지 않았으며 실제 SDK 연동 전입니다.
+- TODO: "1차 접수에 화면 목업과 시연 영상을 낸다"는 [TODO.md](../../TODO.md)의 계획을 옮긴 것입니다. 2026-11-15에 SC-01~07 [첫 방문 목업](../../spikes/grandma-first-visit/README.md)을 만들어 대표 시나리오 전체를 눌러 볼 수 있습니다(SC-08은 재방문 목업). 둘 다 SDK 연동 전 시연입니다. 영상 녹화 여부를 제출 전에 확인합니다.
 - TODO: 개발 단계는 draft §07(MVP-1~4)과 TODO.md 3절(에뮬레이터 확인 항목)을 묶어 쓴 것입니다. 팀 일정과 맞는지 확인합니다.
 - TODO (Q8, Q11): 주행/정차 판단 신호가 정해지지 않았습니다. Q11의 답이 오면 해당 행의 검증 칸을 고칩니다.
 - TODO (GRD-Q3): NaviHelper 경유지 추가가 에뮬레이터 내비게이션에서 동작하는지 확인합니다. 핵심 데모입니다.
-- TODO (GRD-Q2): Seat 도메인의 좌석 점유 정보. Virtual Console 가이드에는 "좌석 점유" 조작 항목이 있습니다([dev-environment.md](../../docs/contest/dev-environment.md) 3절). SDK API는 확인하지 못했습니다.
+- TODO (GRD-Q2): Seat 좌석 점유 API 이름은 확인했습니다(`getCurrentSeatOccupancy` 등, [dev-environment.md](../../docs/contest/dev-environment.md) 4.2절, 2026-11-14). 반환 값의 의미와 Virtual Console "좌석 점유"로 바꿀 때의 동작은 에뮬레이터에서 확인합니다.
 - TODO (GRD-Q6): STT 한국어 인식 품질과 ON_DEVICE 모드.
 - TODO (GRD-Q5): 날씨, 장소 검색 외부 API와 키 관리.
 - TODO (GRD-Q4, Q6): HVAC 제어 퍼미션 이름과 시연 가능 여부. GRD-009는 P2입니다. 확장 기능 행을 표에서 뺄지 정합니다.
 - TODO: GRD-006의 데모는 "Virtual Console에서 연료나 배터리 값을 바꾼다"인데, dev-environment.md 3절에 따르면 Virtual Console 가이드에 연료 항목이 없습니다(배터리, 충전, 주행 가능 거리는 있음). 시연은 배터리 값으로 할지 확인합니다.
 - TODO: 검증 칸의 질문 번호(Q8, Q11, GRD-Q2 등)는 심사자가 알 수 없으므로 제출 원고에서 뺐습니다. 검증 태그 자체는 REQUIREMENTS.md 표기를 따랐습니다.
+- TODO: 5번 SDK 표는 [SDK.md](SDK.md) 1·2절과 맞췄습니다. 둘 중 하나를 고치면 다른 쪽도 고칩니다. 표의 "주요 API"는 대표 이름만 적었습니다. 전체 목록은 SDK.md 3절입니다.
+- TODO (Q12): "Pleos SDK 활용 맵"을 별지로 붙일지, 저장소 링크로 적을지 정합니다. 양식 5번 분량이 길어지면 표를 별지로 옮기는 방법도 있습니다.
 
 ## 6. 기대효과 및 발전 가능성 `[사업]`
 
@@ -196,10 +199,11 @@ SDK/API 사용 계획: "문서 확인"은 공식 SDK 문서에 해당 API가 있
 - GitHub 저장소와 커밋 hash: (제출 시 기재)
 - 이 앱의 README 절과 APK 경로: (제출 시 기재). 같은 저장소에 다른 출품작 "내 차로 짓는 도시"도 있습니다.
 - 코어 시나리오 가이드: (제출 시 기재)
+- Pleos SDK 활용 맵: (제출 시 기재)
 
 ### 확인할 것
 
-- TODO: 화면 시안. [목업 틀](../../spikes/mockup-frame/README.md)에 연결된 장면은 SC-08 하나(1/8)입니다. 캡처를 만들면 파일로 붙이거나 링크를 적습니다. 장면별 화면과 목업 화면의 대응은 [SCREENS.md](SCREENS.md)에 있습니다.
+- TODO (Q12): 화면 시안. 장면 8개의 캡처가 있습니다([assets/scenes](assets/scenes/), `node spikes/mockup-frame/capture/grandma.cjs`로 다시 만듦). 목업 틀 연결 8/8. 양식에 파일로 붙일지 링크로 적을지는 Q12에서 정합니다.
 - TODO: 시연 영상 링크와 공개 범위. 영상과 캡처에 개인정보가 보이지 않는지 확인합니다([submission.md](../../docs/contest/submission.md) 6절).
 - TODO: 저장소 주소와 최종 커밋 hash. 두 접수 메일에 같은 hash를 적습니다.
 - TODO: 루트 README의 "다녀왔습니다 (GRD)" 절 링크. APK를 내지 않으면 APK 경로 줄을 뺍니다.

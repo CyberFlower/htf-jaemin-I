@@ -92,7 +92,7 @@
 - 수용 기준:
   - 도어 열림·닫힘만으로 탑승이나 신원을 확정하지 않는다. 항상 사용자에게 확인한다.
   - 좌석 신호를 쓸 수 없으면 수동으로 동행자를 고른다.
-- 의존: Vehicle Door (CAR_DOORS) — 문서 확인, Seat 점유 (CAR_SEATS) — 확인 필요 (GRD-Q2)
+- 의존: Vehicle Door (CAR_DOORS) — 문서 확인, Seat 좌석 점유 `checkSeatOccupancyCapabilities`, `getCurrentSeatOccupancy`, `registerSeatOccupancy` (CAR_SEATS) — API 이름 문서 확인(dev-environment.md 4.2절, 2026-11-14), 값의 의미와 에뮬레이터 동작 — 확인 필요 (GRD-Q2, GAM-Q30)
 - 출처: draft §02-4 동행, §03 확인
 
 ### GRD-009 동행자 공조 설정 적용

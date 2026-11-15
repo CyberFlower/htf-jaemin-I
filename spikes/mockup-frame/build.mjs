@@ -12,6 +12,7 @@ const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(here, '..', '..');
 const check = process.argv.includes('--check');
 const COLUMNS = ['ID', '장면', '차량 상태', '화면', '틀', '한 줄 설명', '요구사항', '심사'];
+const OPTIONAL = ['SDK']; // 있으면 읽습니다. 틀에서 S 키로 켜는 SDK 줄에 씁니다
 const IMAGE = /\.(png|jpe?g|webp|gif|svg)$/i;
 const problems = [];
 
@@ -37,7 +38,8 @@ function sceneTable(lines, file) {
   const head = rows[0];
   const missing = COLUMNS.filter((c) => !head.includes(c));
   if (missing.length) { problems.push(`${file}: 장면 표에 열이 없습니다: ${missing.join(', ')}`); return []; }
-  return rows.slice(2).map((r) => Object.fromEntries(COLUMNS.map((c) => [c, r[head.indexOf(c)] ?? ''])));
+  const cols = COLUMNS.concat(OPTIONAL.filter((c) => head.includes(c)));
+  return rows.slice(2).map((r) => Object.fromEntries(cols.map((c) => [c, r[head.indexOf(c)] ?? ''])));
 }
 
 function frameSource(cell, dir, file, id) {
@@ -46,7 +48,7 @@ function frameSource(cell, dir, file, id) {
     if (!isBlank(cell)) problems.push(`${file}: ${id}의 "틀" 칸은 링크([이름](경로)) 또는 TODO여야 합니다`);
     return null;
   }
-  const [target, suffix = ''] = link[1].split(/(?=[#?])/, 2);
+  const [, target, suffix] = link[1].match(/^([^?#]*)(.*)$/); // ?embed=1#SC-01 같은 뒷부분을 그대로 둡니다
   if (/^[a-z]+:/i.test(target)) { problems.push(`${file}: ${id}의 "틀" 칸에는 저장소 안의 파일만 넣습니다`); return null; }
   const abs = path.resolve(dir, decodeURI(target));
   if (!fs.existsSync(abs)) { problems.push(`${file}: ${id}의 "틀" 파일이 없습니다: ${link[1]}`); return null; }
@@ -65,6 +67,26 @@ function todoBySection(text) {
   }
   if (n) out.push([name, n]);
   return out;
+}
+
+// SDK.md의 `코드` 안 API·상수 이름이 근거 문서(dev-environment.md, 프로젝트의 API-ADOPTION.md)에 있는지 봅니다.
+// 경고만 하고 실패로 치지 않습니다. 사람이 확인합니다.
+function sdkReport(dir) {
+  const file = path.join(dir, 'SDK.md');
+  if (!fs.existsSync(file)) return null;
+  const text = fs.readFileSync(file, 'utf8');
+  const sources = [path.join(root, 'docs/contest/dev-environment.md'), path.join(dir, 'API-ADOPTION.md')]
+    .filter((f) => fs.existsSync(f)).map((f) => fs.readFileSync(f, 'utf8')).join('\n');
+  const names = new Set();
+  for (const m of text.matchAll(/`([^`\n]+)`/g)) {
+    for (const tok of m[1].split(/[^A-Za-z0-9_.]+/)) {
+      const t = tok.replace(/\.+$/, '');
+      if (/^(get|set|register|unregister|check|request|add|remove|cancel|change|has|is|on)[A-Z][A-Za-z0-9]*$/.test(t) || /^[A-Z][A-Z0-9]*(_[A-Z0-9]+)+$/.test(t)) names.add(t);
+    }
+  }
+  const unknown = [...names].filter((n) => !sources.includes(n)).sort();
+  const todo = text.split('\n').filter((l) => !l.startsWith('>')).join('\n').match(/TODO/g)?.length || 0;
+  return { names: names.size, unknown, todo };
 }
 
 const projects = fs.readdirSync(path.join(root, 'projects'), { withFileTypes: true })
@@ -97,7 +119,7 @@ for (const p of projects) {
     const frame = frameSource(r['틀'], dir, file, id);
     // 틀에는 장면 번호, 이름, 차량 상태만 보입니다. 나머지 열은 SCENARIO.md에서 읽습니다.
     return {
-      id, title: plain(r['장면']), state: filled(r['차량 상태']),
+      id, title: plain(r['장면']), state: filled(r['차량 상태']), sdk: filled(r['SDK'] || ''),
       src: frame ? frame.src : null, kind: frame ? frame.kind : null,
     };
   });
@@ -123,6 +145,7 @@ for (const p of projects) {
     p, code, scenes,
     scenarioTodo: todoBySection(text),
     proposalTodo: fs.existsSync(proposal) ? todoBySection(fs.readFileSync(proposal, 'utf8')) : null,
+    sdk: sdkReport(dir),
   });
 }
 
@@ -146,6 +169,12 @@ for (const r of report) {
     for (const [name, n] of r.proposalTodo) console.log(`                     ${String(n).padStart(2)}  ${name}`);
   } else {
     console.log('  3) 접수양식 원고   PROPOSAL.md가 없습니다');
+  }
+  if (r.sdk) {
+    console.log(`  +) SDK 활용 맵     API·상수 이름 ${r.sdk.names}개, TODO ${r.sdk.todo}개`);
+    if (r.sdk.unknown.length) console.log(`                     근거 문서에서 못 찾은 이름: ${r.sdk.unknown.join(', ')}`);
+  } else {
+    console.log('  +) SDK 활용 맵     SDK.md가 없습니다');
   }
   console.log('');
 }
