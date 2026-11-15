@@ -3,11 +3,11 @@
  * game 목업 장면 캡처
  *
  * 목적: spikes/game-isometric/index.html(내 차로 짓는 도시 HTML 목업)을 열어
- *       projects/game/SCENARIO.md 2절 장면 SC-01~SC-07의 차량 화면(#stage, 1920×1080)을
+ *       projects/game/SCENARIO.md 2절 장면 SC-01~SC-09의 차량 화면(#stage, 1920×1080)을
  *       PNG로 저장합니다. 목업 틀(spikes/mockup-frame/)과 접수양식 7번 화면 시안에 씁니다.
  * 실행: 저장소 루트에서  node spikes/mockup-frame/capture/game.cjs
  *       Playwright와 Chromium이 필요합니다(require('playwright')).
- * 출력: projects/game/assets/scenes/SC-01.png ~ SC-07.png
+ * 출력: projects/game/assets/scenes/SC-01.png ~ SC-09.png
  * 원칙: 목업 코드를 바꾸지 않습니다. 시뮬레이터 버튼과 목업의 전역 함수(state.js, ui.js)로
  *       장면 상태를 만듭니다. 시연 순서는 spikes/game-isometric/README.md 4절을 따릅니다.
  *       목업이 바뀌면 이 스크립트를 다시 실행해 캡처를 새로 만듭니다.
@@ -107,6 +107,25 @@ const outDir = path.join(root, 'projects/game/assets/scenes');
   await sim('#simTire');
   await wait(2500);
   await shot('SC-07');
+
+  // SC-08 전국 지도: 경고를 풀고 위 줄 지도 아이콘 → 본거지 권역이 선택된 전국 지도(S13)
+  await sim('#simTire');
+  await wait(800);
+  await page.evaluate(() => { closeOverlay(); });
+  await page.click('#btnMap');
+  await wait(1800);
+  await shot('SC-08');
+
+  // SC-09 새 도시 열기: 경기 권역의 첫 미보유 도시 → 도시 카드(S14) → 열기 → 확정 직전 화면
+  // 자재는 SC-03에서 받은 운행 보상에 시연용으로 더해 여는 가격을 넘깁니다(목업 가정값)
+  await page.evaluate(() => { state.mat = Math.max(state.mat, cityPrice() + 12); save(); refresh(); });
+  await page.click('.rtile[data-r="gg"]');
+  await wait(400);
+  await page.locator('.ctile:not(.own)').first().click();
+  await wait(600);
+  await page.locator('.citycard [data-ok]').click();
+  await wait(600);
+  await shot('SC-09');
 
   await browser.close();
   if (errors.length) { console.error('페이지 오류:', errors); process.exitCode = 1; }
