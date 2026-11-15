@@ -5,7 +5,7 @@
 **심사자가 먼저 볼 것**
 
 1. [PROPOSAL.md](PROPOSAL.md): 접수양식 02 원고 (초안)
-2. [SCENARIO.md](SCENARIO.md): 대표 시나리오 "토요일 장보기"를 장면 7개로 설명한 가이드와 장면 캡처
+2. [SCENARIO.md](SCENARIO.md): 대표 시나리오 "토요일 장보기"를 장면 9개로 설명한 가이드와 장면 캡처
 3. [SDK.md](SDK.md): Pleos SDK를 어디에 어떻게 쓰는지 한눈에 보는 맵 (API, 퍼미션, 검증 상태)
 4. [HTML 목업](../../spikes/game-isometric/README.md): `spikes/game-isometric/index.html`을 브라우저로 엽니다. 차량 신호는 시뮬레이터 값이고 SDK에는 아직 연결하지 않았습니다
 

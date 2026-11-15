@@ -63,6 +63,22 @@ window.MOCKUP_DATA["game"] = {
       "sdk": "Vehicle Safety 경고등 (GAM-Q3)",
       "src": "../../projects/game/assets/scenes/SC-07.png",
       "kind": "image"
+    },
+    {
+      "id": "SC-08",
+      "title": "전국 지도에서 내 도시 보기",
+      "state": "주차",
+      "sdk": "FusedLocation (발자국)",
+      "src": "../../projects/game/assets/scenes/SC-08.png",
+      "kind": "image"
+    },
+    {
+      "id": "SC-09",
+      "title": "차로 모은 자재로 새 도시 열기",
+      "state": "주차",
+      "sdk": "— (자재는 SC-03의 Vehicle Odometer·안전운전 보상)",
+      "src": "../../projects/game/assets/scenes/SC-09.png",
+      "kind": "image"
     }
   ]
 };

@@ -43,6 +43,8 @@
 | SC-05 거두고, 사고, 쓰다듬기 | 주차 | 차량 신호 없음 (로컬 저장, 기기 시각) | 시설이 번 골드를 거두고 상점을 씁니다 | 위와 같음 | GAM-031~033 |
 | SC-06 정비소 주민의 정비 알림 | 주차 | Odometer 누적 거리 (`CAR_DRIVE`), CarInfo (`CAR_INFO`). 정비 이력 API는 없음 — 미지원 (GAM-Q4) | 마지막 교체 기록과 누적 거리로 남은 거리·기간을 계산하고 `점검 권장`까지만 말합니다 | 정비 이력은 사용자 기록으로 대신합니다. 주기 데이터가 없으면 확인 필요 (GAM-Q5) | GAM-006, GAM-007, GAM-N05 |
 | SC-07 공기압 경고와 일렁이는 길 | 경고 | Safety `registerTelltales` (`TelltaleType`의 `TPMS`) (`PRIVATE_CAR_SAFETY`) — 일반 앱 사용 여부 확인 필요 (GAM-Q3) | 실제 경고 카드를 맨 위에 띄우고 섬의 길을 일렁이게 합니다. 경고가 풀리면 둘 다 사라집니다 | 경고 신호를 받을 수 없으면 이상 현상을 만들지 않습니다. 경고를 추측하지 않습니다 | GAM-009, GAM-N02 |
+| SC-08 전국 지도에서 내 도시 보기 | 주차 | FusedLocation `isSupported()`, `registerFusedLocationCallback()`, `getLastKnownLocation()`, `addProximityAlert()` (`FUSED_LOCATION`, dangerous) — 문서 확인 | 이 차가 지나간 도시를 발자국(도시와 날짜만)으로 지도에 남깁니다 | 위치 권한이 없으면 발자국 없이 동작하고 "발자국 기록 꺼짐"을 보여 줍니다 | GAM-038, GAM-043, GAM-044 |
+| SC-09 차로 모은 자재로 새 도시 열기 | 주차 | 직접 쓰는 신호 없음. 자재의 출처가 SC-03의 Vehicle Odometer와 안전운전 신호 | 자재를 차감하고 도시를 엽니다. 자재는 차에서만 얻고 씁니다 | 주차를 판단할 수 없으면 열기를 막습니다 | GAM-039, GAM-N08 |
 
 대표 시나리오 밖에서 SDK를 쓰는 장면 (UC 연결):
 
@@ -52,7 +54,6 @@
 | 경로의 공사·낙석 구간을 지나오면 섬의 길도 정리 | NaviHelper `onCautionPointInfo`, `onCameraAlert`, `onReRouteEnded`, `onDestinationArrived` | GAM-UC-006, GAM-036 |
 | 장거리 운행 중 쉬어 가기 안내 → 주차해 쉬면 완료 | Odometer 트립 시간 (`CAR_DRIVE`), TextToSpeech (`TTS_SERVICE`) | GAM-UC-002, GAM-030 |
 | 엔진오일 양이 모자라다는 신호 → 정상으로 돌아오면 완료 | Safety `getEngineOilLevelState` 등 (`CAR_SAFETY`) | GAM-048 |
-| 이 차가 지나간 도시에 발자국 | FusedLocation (`FUSED_LOCATION`) | GAM-043 |
 
 ## 3. 기능별 API 목록
 
