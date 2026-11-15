@@ -18,7 +18,7 @@
 | [REQUIREMENTS.md](REQUIREMENTS.md) | 요구사항 (`GAM-###`, `GAM-N##`) |
 | [SCREENS.md](SCREENS.md) | 화면 목록, 조작, 시연 영상 순서 |
 | [SCENARIO.md](SCENARIO.md) | 대표 시나리오 장면 표 (`GAM-SC-##`). 목업 틀과 시연 영상이 이 표를 따릅니다 |
-| [SDK.md](SDK.md) | Pleos SDK 활용 맵: SDK별 쓰는 곳, 장면별 신호 흐름, 퍼미션, 쓰지 않는 것, 검증 계획 |
+| [SDK.md](SDK.md) | Pleos SDK 활용 맵: 사용 SDK, 장면별 SDK 흐름, 기능별 API, 선언할 퍼미션, 현재 구현 상태 |
 | [ROAD-INFO.md](ROAD-INFO.md) | 도로 주의 구간과 외부 실시간 돌발 정보 |
 | [PROPOSAL.md](PROPOSAL.md) | 접수양식 02의 1~8번 원고 |
 | [DECISIONS.md](DECISIONS.md) | 이 프로젝트에서 정한 것 |

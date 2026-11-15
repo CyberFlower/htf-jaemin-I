@@ -4,24 +4,24 @@
    재화 역할은 DECISIONS D-003을 따릅니다: 자재는 차에서만 얻는 희소 재화, 골드는 시설이 버는 재화. */
 const CFG = {
   MAT_PER_KM: 1,            // GAM-001: 1km당 1개 (draft 예시)
-  WEEK_A: 200,              // GAM-001 주간 상한 제안의 기준 거리 A(km) (GAM-Q27, 확인 대기)
-  DAILY_MAT: 7,             // GAM-Q21: 일일 항목 하나의 자재. 주간 최대 4×7×7=196 ≈ A (GAM-Q27 제안의 원칙)
-  DAILY: {                  // GAM-Q21~Q24: 판정 기준 (미정)
+  WEEK_A: 200,              // GAM-001 주간 상한 제안의 기준 거리 A(km)
+  DAILY_MAT: 7,             // GAM-025: 일일 항목 하나의 자재. 주간 최대 4×7×7=196 ≈ A
+  DAILY: {                  // GAM-026~029: 판정 기준
     time: { min: 20 },      // 오늘 누적 운전 시간(분) 이상
     accel: { max: 2 },      // 오늘 누적 급가속·급감속 횟수 이하
     brake: { max: 1 },      // 오늘 누적 급제동 횟수 이하
     turn: { min: 3 },       // 오늘 누적 방향 지시등 사용 횟수 이상
     minJudge: 5,            // 이보다 짧은 운행은 횟수 항목 판정에서 뺌(분)
   },
-  REST: { drive: 120, rest: 15, mat: 15 },    // GAM-Q26: 연속 운전 기준·휴식 인정 시간(분)·자재 (미정)
-  OIL: { km: 10000, days: 365, mat: 30 },     // GAM-Q5: 주기 예시 데이터 (출처 미정). 기록형, 주기마다 한 번 (D-004)
-  CHECK: { mat: 10, coolDays: 7 },            // GAM-048, GAM-Q40: 차량이 확인하는 항목의 자재와 같은 항목의 보상 간격(일)
+  REST: { drive: 120, rest: 15, mat: 15 },    // GAM-030: 연속 운전 기준·휴식 인정 시간(분)·자재 (미정)
+  OIL: { km: 10000, days: 365, mat: 30 },     // GAM-006: 주기 예시 데이터. 기록형, 주기마다 한 번 (D-004)
+  CHECK: { mat: 10, coolDays: 7 },            // GAM-048: 차량이 확인하는 항목의 자재와 같은 항목의 보상 간격(일)
   PET: { max: 3, cooldown: 240 },             // GAM-032: 쿨타임(분) (미정)
   RESIDENTS_MAX: 6,                           // 섬을 돌아다니는 주민 수 상한 (기본 2명 + 생산 시설 수, GAM-032)
   TILE: { prices: [2000, 8000, 24000], maxRing: 2 },     // 땅 넓히기: 둘레별 칸당 골드(원래 섬 안·첫째·둘째 둘레), 최대 둘레 (미정)
   STOCK_HOURS: 60,                            // GAM-031: 약 2.5일치까지 쌓임
   STOCK_SHOW_SEC: 300,                        // 이만큼(초) 생산하면 완성품 표시
-  LV: {                                       // GAM-040, GAM-041, GAM-Q39
+  LV: {                                       // GAM-040, GAM-041
     max: 40,
     breaks: { 10: 15, 20: 30, 30: 60 },       // 이 레벨에서 다음으로 올릴 때 드는 자재(단계 돌파)
     costK: 600, costR: 1.22,                  // 골드 비용 = 1레벨 초당 수익 × costK × costR^(레벨−1)
@@ -418,7 +418,7 @@ function startTrip() {
 /* 주행 중 연속 운전 시간이 기준을 넘으면 돌발 퀘스트 (GAM-030) */
 function checkRestTrigger() {
   if (state.gear !== 'D' || state.tripRestVoiced) return;
-  if (state.sim.min >= CFG.REST.drive && !state.rest) {          // 하루 한 번만 (GAM-Q26 가정)
+  if (state.sim.min >= CFG.REST.drive && !state.rest) {          // 하루 한 번만 (가정)
     state.tripRestVoiced = true;
     state.rest = { state: 'active', acc: 0 };
     save(); emit('restVoice'); emit('change');

@@ -12,7 +12,7 @@ window.MOCKUP_DATA["game"] = {
       "id": "SC-01",
       "title": "낮의 섬",
       "state": "주차",
-      "sdk": "주차 판단: AAOS 기어·주차 브레이크 (Q11)",
+      "sdk": "주차 판단: AAOS 기어, 주차 브레이크",
       "src": "../../projects/game/assets/scenes/SC-01.png",
       "kind": "image"
     },
@@ -20,7 +20,7 @@ window.MOCKUP_DATA["game"] = {
       "id": "SC-02",
       "title": "출발하면 주행 모드",
       "state": "주행",
-      "sdk": "주행 판단: AAOS (Q11) · Vehicle Odometer",
+      "sdk": "주행 판단: AAOS, Vehicle Odometer",
       "src": "../../projects/game/assets/scenes/SC-02.png",
       "kind": "image"
     },
@@ -28,13 +28,13 @@ window.MOCKUP_DATA["game"] = {
       "id": "SC-03",
       "title": "주차하면 택배가 온다",
       "state": "주차",
-      "sdk": "Vehicle Odometer · Brake · TurnSignal · AAOS 속도 (Q11)",
+      "sdk": "Vehicle Odometer, Brake, TurnSignal, AAOS 속도",
       "src": "../../projects/game/assets/scenes/SC-03.png",
       "kind": "image"
     },
     {
       "id": "SC-04",
-      "title": "시장을 짓고 야시장으로",
+      "title": "시설 짓기",
       "state": "주차",
       "sdk": "— (로컬 저장, 주차 판단만)",
       "src": "../../projects/game/assets/scenes/SC-04.png",
@@ -52,7 +52,7 @@ window.MOCKUP_DATA["game"] = {
       "id": "SC-06",
       "title": "정비소 주민의 정비 알림",
       "state": "주차",
-      "sdk": "Vehicle Odometer · CarInfo",
+      "sdk": "Vehicle Odometer, CarInfo",
       "src": "../../projects/game/assets/scenes/SC-06.png",
       "kind": "image"
     },
@@ -60,7 +60,7 @@ window.MOCKUP_DATA["game"] = {
       "id": "SC-07",
       "title": "공기압 경고와 일렁이는 길",
       "state": "경고 (공기압)",
-      "sdk": "Vehicle Safety 경고등 (GAM-Q3)",
+      "sdk": "Vehicle Safety 경고등",
       "src": "../../projects/game/assets/scenes/SC-07.png",
       "kind": "image"
     },
@@ -76,7 +76,7 @@ window.MOCKUP_DATA["game"] = {
       "id": "SC-09",
       "title": "차로 모은 자재로 새 도시 열기",
       "state": "주차",
-      "sdk": "— (자재는 SC-03의 Vehicle Odometer·안전운전 보상)",
+      "sdk": "— (자재는 SC-03의 Vehicle Odometer와 안전운전 보상)",
       "src": "../../projects/game/assets/scenes/SC-09.png",
       "kind": "image"
     }

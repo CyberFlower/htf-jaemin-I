@@ -69,15 +69,20 @@ const outDir = path.join(root, 'projects/game/assets/scenes');
   await page.click('#dlTake');
   await wait(1500);
 
-  // SC-04 시장을 짓고 야시장으로: 정류장(8,4) 옆 빈 땅(7,4)에 시장 → 확정 → 저녁
-  await page.evaluate(() => { place = { kind: 'build', type: 'market', x: 7, y: 4 }; showPlaceBar(); });
+  // SC-04 시설 짓기: 위 줄 상점 → 시설 탭(S11·S04)을 연 화면
+  await page.click('#btnShop');
+  await wait(300);
+  await page.click('#overlay [data-tab="fac"]');
+  await wait(1200);
+  await shot('SC-04');
+  // 이어지는 장면을 위해 정류장(8,4) 옆 빈 땅(7,4)에 시장을 짓고 시간을 넘깁니다
+  await page.evaluate(() => { closeOverlay(); place = { kind: 'build', type: 'market', x: 7, y: 4 }; showPlaceBar(); });
   await wait(300);
   await page.click('#placeYes');
   await wait(1500);
   await sim('[data-jump="18.7"]');
   await page.waitForFunction(() => R.nightMarket, null, { timeout: 15000 });
   await wait(2500);
-  await shot('SC-04');
 
   // SC-05 거두고, 사고, 쓰다듬기: 벤치를 사서 광장에 놓고, 빵집 완성품을 거두고, 주민을 쓰다듬는 순간
   await page.evaluate(() => { buyDecor('bench'); place = { kind: 'decor', type: 'bench', x: 2, y: 6 }; showPlaceBar(); });

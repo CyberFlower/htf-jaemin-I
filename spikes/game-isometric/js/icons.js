@@ -1,5 +1,5 @@
 'use strict';
-/* 아이콘은 모두 직접 그린 24x24 path입니다. 외부 자산을 쓰지 않습니다(GAM-Q12).
+/* 아이콘은 모두 직접 그린 24x24 path입니다. 외부 자산을 쓰지 않습니다.
    같은 정의를 HTML(SVG)과 캔버스(Path2D) 양쪽에서 씁니다.
    항목: [d, fill, stroke, strokeWidth] */
 const ICONS = {
