@@ -48,7 +48,7 @@ function frameSource(cell, dir, file, id) {
     if (!isBlank(cell)) problems.push(`${file}: ${id}의 "틀" 칸은 링크([이름](경로)) 또는 TODO여야 합니다`);
     return null;
   }
-  const [target, suffix = ''] = link[1].split(/(?=[#?])/, 2);
+  const [, target, suffix] = link[1].match(/^([^?#]*)(.*)$/); // ?embed=1#SC-01 같은 뒷부분을 그대로 둡니다
   if (/^[a-z]+:/i.test(target)) { problems.push(`${file}: ${id}의 "틀" 칸에는 저장소 안의 파일만 넣습니다`); return null; }
   const abs = path.resolve(dir, decodeURI(target));
   if (!fs.existsSync(abs)) { problems.push(`${file}: ${id}의 "틀" 파일이 없습니다: ${link[1]}`); return null; }

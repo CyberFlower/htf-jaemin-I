@@ -153,7 +153,7 @@ Pleos SDK 활용: 차량이 여정의 순간을 알려 줍니다. 정차 상태�
 ### 확인할 것
 
 - TODO ([ADR-0002](../../docs/decisions/0002-mockup-implementation.md), Q3): 목업 구현 방식이 Proposed입니다. 제출 원고에는 공식 요건과 일정만 썼습니다. 방식이 정해지면 "구현 방식과 일정"에 1차 목업의 형태와 Android 전환 계획을 씁니다. Java와 Kotlin 중 무엇을 쓸지도 정합니다.
-- TODO: "1차 접수에 화면 목업과 시연 영상을 낸다"는 [TODO.md](../../TODO.md)의 계획을 옮긴 것입니다. 실제로 내는 것과 맞는지 제출 전에 확인합니다. 현재 [실험 목업](../../spikes/grandma-journey-context/README.md)은 SC-08 재방문 변형에 연결했습니다. SC-01~07 첫 방문 화면은 아직 연결되지 않았으며 실제 SDK 연동 전입니다.
+- TODO: "1차 접수에 화면 목업과 시연 영상을 낸다"는 [TODO.md](../../TODO.md)의 계획을 옮긴 것입니다. 2026-11-15에 SC-01~07 [첫 방문 목업](../../spikes/grandma-first-visit/README.md)을 만들어 대표 시나리오 전체를 눌러 볼 수 있습니다(SC-08은 재방문 목업). 둘 다 SDK 연동 전 시연입니다. 영상 녹화 여부를 제출 전에 확인합니다.
 - TODO: 개발 단계는 draft §07(MVP-1~4)과 TODO.md 3절(에뮬레이터 확인 항목)을 묶어 쓴 것입니다. 팀 일정과 맞는지 확인합니다.
 - TODO (Q8, Q11): 주행/정차 판단 신호가 정해지지 않았습니다. Q11의 답이 오면 해당 행의 검증 칸을 고칩니다.
 - TODO (GRD-Q3): NaviHelper 경유지 추가가 에뮬레이터 내비게이션에서 동작하는지 확인합니다. 핵심 데모입니다.
@@ -203,7 +203,7 @@ Pleos SDK 활용: 차량이 여정의 순간을 알려 줍니다. 정차 상태�
 
 ### 확인할 것
 
-- TODO: 화면 시안. [목업 틀](../../spikes/mockup-frame/README.md)에 연결된 장면은 SC-08 하나(1/8)입니다. 캡처를 만들면 파일로 붙이거나 링크를 적습니다. 장면별 화면과 목업 화면의 대응은 [SCREENS.md](SCREENS.md)에 있습니다.
+- TODO (Q12): 화면 시안. 장면 8개의 캡처가 있습니다([assets/scenes](assets/scenes/), `node spikes/mockup-frame/capture/grandma.cjs`로 다시 만듦). 목업 틀 연결 8/8. 양식에 파일로 붙일지 링크로 적을지는 Q12에서 정합니다.
 - TODO: 시연 영상 링크와 공개 범위. 영상과 캡처에 개인정보가 보이지 않는지 확인합니다([submission.md](../../docs/contest/submission.md) 6절).
 - TODO: 저장소 주소와 최종 커밋 hash. 두 접수 메일에 같은 hash를 적습니다.
 - TODO: 루트 README의 "다녀왔습니다 (GRD)" 절 링크. APK를 내지 않으면 APK 경로 줄을 뺍니다.

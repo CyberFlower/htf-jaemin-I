@@ -41,7 +41,7 @@
 | SC-07 다녀옴 | 주차 | FusedLocation 이동 기록 (`FUSED_LOCATION`), SpeechToText (`STT_SERVICE`) | 실제 이동과 사용자가 확인한 방문으로 기록 초안. 한마디를 더해 약속 완료 | 위치·음성이 없으면 선택 입력으로 기록. 정차·경유지 도착만으로 방문을 확정하지 않음 | GRD-010, GRD-016 |
 | SC-08 다시 가는 여정 | 정차 | NaviHelper `getDestinationInfo()` → `onDestinationInfo` (`NAVI_ROUTE`), FusedLocation, SpeechToText, NaviHelper 경로 적용 | 같은 장소의 기억으로 이번 동행을 묻고, 주변 후보 두 곳과 이유를 보여 준 뒤, 승인한 경유지를 적용 | 목적지 조회 실패면 저장 장소나 수동 선택. 검색 실패면 저장된 방문 장소만 표시 | GRD-013~018 |
 
-지금 HTML 목업(SC-08)은 위 신호를 실제로 읽지 않는 시연입니다(6절).
+지금 HTML 목업(SC-01~07 첫 방문, SC-08 재방문)은 위 신호를 실제로 읽지 않는 시연입니다(6절).
 
 ## 3. 기능별 API 목록
 
@@ -116,7 +116,7 @@
 
 ## 6. 검증 계획과 현재 상태
 
-- **현재:** [HTML 목업](../../spikes/grandma-journey-context/README.md)은 SC-08 재방문 흐름을 가상 데이터로 시연합니다. 내비 적용, 음성, 차량 상태, 날씨, 외부 검색은 모두 **SDK에 연결하지 않은 시연**입니다.
+- **현재:** [첫 방문 목업](../../spikes/grandma-first-visit/README.md)은 SC-01~07을, [재방문 목업](../../spikes/grandma-journey-context/README.md)은 SC-08을 가상 데이터로 시연합니다. 첫 방문 목업의 시연 도구가 주행/정차, 도어 열림→닫힘, 연료, 내비 응답을 대신 넣습니다. 내비 적용, 음성, 차량 상태, 날씨, 외부 검색은 모두 **SDK에 연결하지 않은 시연**입니다.
 - **다음:** [API-ADOPTION.md](API-ADOPTION.md) 5절의 최소 실험 순서를 에뮬레이터 v2.1.0에서 진행합니다.
   1. 주행 제한·권한 (입력 차단, 권한 거부)
   2. STT·TTS (한국어 한마디 → 채택 → 저장)
