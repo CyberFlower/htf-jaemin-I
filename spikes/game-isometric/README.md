@@ -1,13 +1,14 @@
 # HTML 목업: 내 차로 짓는 도시
 
+![내 차로 짓는 도시 첫 화면 (SC-01)](../../projects/game/assets/scenes/SC-01.png)
+
 대표 시나리오를 직접 조작해 볼 수 있도록 HTML로 만든 실험 목업입니다. 화면과 규칙은 [GOAL.md](../../projects/game/GOAL.md), [SCREENS.md](../../projects/game/SCREENS.md), [USE_CASES.md](../../projects/game/USE_CASES.md), [REQUIREMENTS.md](../../projects/game/REQUIREMENTS.md), [DECISIONS.md](../../projects/game/DECISIONS.md)의 D-003, D-004를 따릅니다.
 
 ## 1. 목적
 
 - 1차 시연 영상에 쓸 수 있도록 실제로 조작되는 game 목업을 HTML로 만듭니다.
 - [SCREENS.md](../../projects/game/SCREENS.md) 2절의 주요 장면이 한 화면 흐름으로 이어지는지 봅니다.
-- 자재는 차에서만 얻는 희소 재화이고 골드는 시설이 매초 버는 재화라는 역할 구분(D-003)이 화면에서 읽히는지 봅니다.
-- 차량 신호는 화면 밖 시뮬레이터로 넣고, 필요한 SDK 기능은 모두 쓸 수 있다고 보고 만들었습니다(5절).
+- 차량 신호는 화면 밖 시뮬레이터로 넣습니다(5절).
 
 ## 2. 실행
 
@@ -15,8 +16,7 @@
 
 - 글꼴 Jua(SIL OFL)를 Google Fonts에서 불러오고, 네트워크가 없으면 시스템 글꼴로 대체됩니다.
 - 이미지 파일은 없습니다. 섬, 건물, 주민, 아이콘, 지도는 모두 캔버스·SVG path·CSS로 직접 그렸습니다.
-- 진행 상태는 브라우저 localStorage에 저장됩니다(GAM-N04). 녹화 전에는 시뮬레이터의 `처음 상태로`를 누르고, 이전 버전의 저장은 읽지 않습니다.
-- 실제 시간 1초가 게임 시간 1초로 흐르고, 시설이 매초 골드를 쌓습니다.
+- 진행 상태는 브라우저 localStorage에 저장됩니다.
 
 ## 3. 화면 구성
 

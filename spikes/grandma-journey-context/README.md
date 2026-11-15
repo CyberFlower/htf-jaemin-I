@@ -1,5 +1,7 @@
 # 다녀왔습니다 · 14.6인치 차량 디스플레이 목업
 
+![다녀왔습니다 첫 화면 (SC-01)](../../projects/grandma/assets/scenes/SC-01.png)
+
 대표 시나리오 SC-01~08을 **한 앱의 하루 흐름**으로 보여 주는 HTML 목업입니다. 홈의 지금 카드가 차량 상태에 따라 기억 남기기 → 약속·계획·승인 → 출발 준비 → 주행 → 동행 확인 → 다녀옴 기록으로 바뀌고, 첫 방문 기록을 저장하면 재방문 여정(파도 서가·어머니)과 발자국으로 이어집니다.
 
 - 실행: `journey-demo.html`을 Chrome·Edge·Safari 같은 최신 브라우저에서 엽니다. 설치·빌드·서버가 필요 없는 단일 파일입니다. 글꼴(Gowun Batang, Nanum Pen Script, Noto Sans KR)만 Google Fonts에서 받고, 오프라인이면 기본 글꼴로 보입니다.

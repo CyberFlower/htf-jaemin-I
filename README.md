@@ -2,30 +2,48 @@
 
 현대자동차그룹 차량용 앱 개발 공모전에 내기 위해, Pleos Connect(Android Automotive OS 기반 차량 인포테인먼트) 앱 아이디어 두 개를 기획하고 요구사항을 확정해 목업까지 만드는 5인 팀 저장소입니다.
 
-> **현재 단계: 1차 접수 준비** (2026-11-14 기준). 두 앱 모두 HTML 목업으로 대표 시나리오를 시연합니다. Pleos SDK 연결과 Android 앱은 2차 PT(2026-12-03) 전까지 만듭니다. 구현 방식은 [ADR-0002](docs/decisions/0002-mockup-implementation.md)(Proposed)에서 정합니다.
+## 앱 소개
 
-## 심사하시는 분께
+### 내 차로 짓는 도시 (`GAM`)
 
-이 저장소에는 출품작 두 개가 있고, 각각 따로 접수했습니다. 심사하시는 앱의 행에서 왼쪽부터 보시면 됩니다.
+**"차로 가는 모든 순간이 게임 같아야 하니까"**
 
-| 앱 | 한 줄 소개 | ① 목업 실행 | ② 대표 시나리오 | ③ Pleos SDK 활용 | ④ 기획서 원고 |
-|---|---|---|---|---|---|
-| **다녀왔습니다** (`GRD`) | 가족과 나눈 "다음에"를 한 올씩 이어, "다녀왔습니다"로 매듭짓는 차 안의 동행 앱 | [HTML 목업](spikes/grandma-journey-context/README.md) (SC-01~08) | [SCENARIO.md](projects/grandma/SCENARIO.md) | [SDK.md](projects/grandma/SDK.md) | [PROPOSAL.md](projects/grandma/PROPOSAL.md) |
-| **내 차로 짓는 도시** (`GAM`) | 주차할 때마다 방금 달린 거리와 안전운전 기록이 건축 자재로 도착해 섬 도시를 키우고, 정비 시기와 차량 경고도 알아차리는 차량용 도시 꾸미기 앱 | [아이소메트릭 섬 HTML 목업](spikes/game-isometric/README.md) | [SCENARIO.md](projects/game/SCENARIO.md) | [SDK.md](projects/game/SDK.md) | [PROPOSAL.md](projects/game/PROPOSAL.md) |
+평범한 출퇴근도 주말의 작은 외출도 나만의 도시를 키우는 여정이 됩니다. 주차하면 방금 달린 거리와 안전운전 기록이 건축 자재로 도착하고, 그 자리에서 섬 도시를 꾸미며 다음 정비 시기와 차량 경고도 함께 챙깁니다.
 
-- **장면 순서대로 한 번에 보기:** [목업 틀](spikes/mockup-frame/README.md)의 `index.html`을 열면 두 앱의 장면을 차량 화면 비율로 넘겨 볼 수 있습니다.
-- **Pleos SDK 활용 맵(③):** 장면마다 어떤 SDK API를 쓰는지, 퍼미션, 신호가 없을 때의 동작, 검증 상태를 정리했습니다. API 근거는 [개발 환경 정리](docs/contest/dev-environment.md) 4절에 있습니다.
-- **검증 상태를 구분해 적었습니다.** "문서 확인"은 Pleos 공식 문서에 API가 있다는 뜻이고, 에뮬레이터 동작 확인은 아직 하지 않았습니다. 목업의 차량 신호는 시연용 값입니다.
+| 항목 | 내용 |
+|---|---|
+| 실행 방법 | 내 차로 짓는 도시 목업의 [`index.html`](spikes/game-isometric/index.html)을 브라우저로 엽니다. 시연 순서는 [SCENARIO.md](projects/game/SCENARIO.md) 4절을 참고하세요 |
+| 테스트 환경 및 필요한 설정 | 최신 Chrome·Edge. 화면은 1920×1080(16:9) 기준입니다. 차량 신호는 화면 오른쪽 시뮬레이터에서 시연용 값으로 조작합니다.  |
+
+### 다녀왔습니다 (`GRD`)
+
+**"다음에 같이 가자, 그 말이 잊히지 않도록"**
+
+가족과 나눈 "다음에"를 한 올씩 이어, "다녀왔습니다"로 매듭짓는 차 안의 동행 앱입니다. 정차한 자리에서 한마디로 약속을 남기면, 출발 준비와 함께 탈 사람 확인, 다녀온 기록까지 차가 곁에서 이어 줍니다.
+
+| 항목 | 내용 |
+|---|---|
+| 실행 방법 | 다녀왔습니다 목업의 [`journey-demo.html`](spikes/grandma-journey-context/journey-demo.html)을 브라우저로 엽니다. 첫 방문(SC-01~07)과 재방문(SC-08)이 한 화면 흐름으로 이어집니다. 시연 순서는 [SCENARIO.md](projects/grandma/SCENARIO.md) 4절을 참고하세요 |
+| 테스트 환경 및 필요한 설정 | 최신 Chrome·Edge·Safari. 화면은 1920×1080(16:9) 기준입니다. 차량 신호, 내비, 날씨, 장소 검색 결과는 차량 화면 밖 시연 도구에서 시연용 값으로 조작합니다 |
+
+### 자료 바로 가기
+
+| 앱 | 목업 | 대표 시나리오 | Pleos SDK 활용 |
+|---|---|---|---|
+| **내 차로 짓는 도시** (`GAM`) | [내 차로 짓는 도시 목업](spikes/game-isometric/README.md) | [SCENARIO.md](projects/game/SCENARIO.md) | [SDK.md](projects/game/SDK.md) |
+| **다녀왔습니다** (`GRD`) | [다녀왔습니다 목업](spikes/grandma-journey-context/README.md) | [SCENARIO.md](projects/grandma/SCENARIO.md) | [SDK.md](projects/grandma/SDK.md) |
+
+- **목업 실행 방법:** 위 표의 목업 README에서 각 앱의 실행 방법을 확인할 수 있습니다.
+- **장면별 사진 보기:** [목업 틀](spikes/mockup-frame/README.md)의 `index.html`을 열면 두 앱의 목업 사진을 대표 시나리오 순서대로 넘겨 볼 수 있습니다.
+- **Pleos SDK 활용 맵:** 장면마다 어떤 SDK API를 쓰는지, 퍼미션, 신호가 없을 때의 동작, 검증 상태를 정리했습니다. API 근거는 [개발 환경 정리](docs/contest/dev-environment.md) 4절에 있습니다.
 - 아래부터는 팀의 작업 문서입니다. 기획 근거가 궁금하시면 각 프로젝트의 `GOAL.md`, `USE_CASES.md`, `REQUIREMENTS.md`를 보시면 됩니다.
 
 ## 프로젝트
 
-| 코드 | 이름 | 원본 기획 | 문서 |
-|---|---|---|---|
-| `GRD` | 다녀왔습니다 | [draft/proposal-grandma.html](draft/proposal-grandma.html) | [projects/grandma](projects/grandma/) |
-| `GAM` | 내 차로 짓는 도시 | [draft/proposal-game.png](draft/proposal-game.png), [draft/proposal-care.html](draft/proposal-care.html) (케어 요소) | [projects/game](projects/game/) |
-
-두 작품은 **각각 접수**하고, 저장소는 이 저장소 하나를 같이 씁니다([Q1, Q2](docs/open-questions.md)). game의 퀘스트가 grandma의 "동행 여정"을 받아들이는 연계는 따로 검토 중입니다(GAM-Q10).
+| 코드 | 이름 | 문서 |
+|---|---|---|
+| `GAM` | 내 차로 짓는 도시 | [projects/game](projects/game/) |
+| `GRD` | 다녀왔습니다 | [projects/grandma](projects/grandma/) |
 
 ## 일정
 
@@ -51,8 +69,8 @@
 ├── CLAUDE.md               AGENTS.md를 가져옴 (Claude Code가 읽음)
 ├── draft/                  v0.1 원본 기획안. 고치지 않습니다
 ├── projects/
-│   ├── grandma/            다녀왔습니다 (GRD)
-│   └── game/               내 차로 짓는 도시 (GAM)
+│   ├── game/               내 차로 짓는 도시 (GAM)
+│   └── grandma/            다녀왔습니다 (GRD)
 │       ├── README.md         프로젝트 홈
 │       ├── GOAL.md           문제, 타깃, Goal/Non-goal, 성공 기준, 원칙
 │       ├── REQUIREMENTS.md   ID별 요구사항
@@ -100,42 +118,3 @@ Use Case와 기능 요구사항(FR)을 작성·보강할 때는 [앱 공통 템�
 
 3. 에이전트: Claude Code는 `CLAUDE.md`(→ `AGENTS.md`)를, Codex는 `AGENTS.md`를 자동으로 읽습니다. 따로 설정할 것은 없습니다.
 4. Android 개발 환경과 에뮬레이터 설치는 [docs/contest/dev-environment.md](docs/contest/dev-environment.md)를 참고하세요. 에뮬레이터를 돌리려면 외장 GPU(RTX 3060 Laptop급 이상)가 필요합니다.
-
-## 팀
-
-실명과 연락처는 이 저장소에 쓰지 않습니다(공모전 규정). 별칭과 역할만 적습니다.
-
-| 별칭 | 담당 프로젝트 | 역할 | 에뮬레이터 실행 가능 |
-|---|---|---|---|
-| M1 | | | |
-| M2 | | | |
-| M3 | | | |
-| M4 | | | |
-| M5 | | | |
-
-프로젝트 owner: grandma = M?, game = M?
-
-## 제출 정보
-
-> 이 저장소에는 출품작 두 개가 있고, 각각 따로 접수했습니다. 심사하시는 앱의 절을 봐 주세요.
-> 공모전은 README에 아래 5개 항목을 요구합니다([submission.md](docs/contest/submission.md) 5절). 2026-11-14 현재 사실로 채웠고, 구현 방식(ADR-0002)과 에뮬레이터 확인 결과가 나오면 고칩니다.
-
-### 다녀왔습니다 (GRD)
-
-| 항목 | 내용 |
-|---|---|
-| 앱 이름 및 한 줄 소개 | 다녀왔습니다: 가족과 나눈 "다음에"를 한 올씩 이어, "다녀왔습니다"로 매듭짓는 차 안의 동행 앱 |
-| 실행 방법 | 1차 제출물은 HTML 목업입니다(설치·빌드 없음). [`spikes/grandma-journey-context/journey-demo.html`](spikes/grandma-journey-context/journey-demo.html)을 브라우저로 엽니다. 첫 방문(SC-01~07)과 재방문(SC-08)이 한 화면 흐름으로 이어집니다. 시연 순서는 [SCENARIO.md](projects/grandma/SCENARIO.md) 4절 |
-| 테스트 환경 및 필요한 설정 | 최신 Chrome·Edge·Safari. 화면은 1920×1080(16:9) 기준. 차량 신호, 내비, 날씨, 장소 검색 결과는 차량 화면 밖 시연 도구로 바꾸며 Pleos SDK에는 아직 연결하지 않았습니다 |
-| Pleos Connect 에뮬레이터 버전과 화면 규격 | v2.1.0 / 화면 규격 TBD (`adb shell wm size`로 확인) |
-| APK 위치 | [`apk/`](apk/) (`팀명_다녀왔습니다_release.apk`) 또는 GitHub Release 링크 |
-
-### 내 차로 짓는 도시 (GAM)
-
-| 항목 | 내용 |
-|---|---|
-| 앱 이름 및 한 줄 소개 | 내 차로 짓는 도시: 주차할 때마다 방금 달린 거리와 안전운전 기록이 건축 자재로 도착해 섬 도시를 키우고, 정비 시기와 차량 경고도 알아차리는 차량용 도시 꾸미기 앱 |
-| 실행 방법 | 1차 제출물은 HTML 목업입니다. [`spikes/game-isometric/index.html`](spikes/game-isometric/index.html)을 브라우저로 엽니다(설치·빌드 없음). 시연 순서는 [SCENARIO.md](projects/game/SCENARIO.md) 4절 |
-| 테스트 환경 및 필요한 설정 | 최신 Chrome·Edge. 화면은 1920×1080(16:9) 기준. 차량 신호는 화면 오른쪽 시뮬레이터로 바꾸며 Pleos SDK에는 아직 연결하지 않았습니다. 녹화 전에는 시뮬레이터의 "처음 상태로"를 누릅니다 |
-| Pleos Connect 에뮬레이터 버전과 화면 규격 | v2.1.0 / 화면 규격 TBD (`adb shell wm size`로 확인) |
-| APK 위치 | [`apk/`](apk/) (`팀명_내차로짓는도시_release.apk`) 또는 GitHub Release 링크 |
