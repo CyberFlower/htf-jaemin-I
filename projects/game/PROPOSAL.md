@@ -167,8 +167,6 @@ Pleos Connect가 탑재된 차를 출퇴근, 장보기, 주말 외출에 쓰는 
 - GitHub 저장소: [내 차로 짓는 도시 프로젝트](https://github.com/CyberFlower/htf-jaemin-I)
 - HTML 목업: [HTML 파일](https://github.com/CyberFlower/htf-jaemin-I/blob/main/spikes/game-isometric/index.html). 저장소를 내려받아 `spikes/game-isometric/index.html`을 Chrome 또는 Edge에서 열면 조작할 수 있습니다. 차량 신호와 수치는 설명용 가상 데이터입니다.
 
-같은 저장소에 다른 출품작 "다녀왔습니다"도 함께 있으며, 이 앱의 목업은 `spikes/game-isometric/`에 있습니다.
-
 ## 8. 숏폼 링크 (선택, 가산점 없음)
 
 > 양식 안내: 게시한 세로 방향 영상의 링크를 기재해 이메일로 제출합니다.
