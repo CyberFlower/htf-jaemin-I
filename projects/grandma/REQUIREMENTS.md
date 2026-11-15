@@ -6,14 +6,14 @@
 ## 기능
 
 ### GRD-001 사람과 장소 등록
-- 관련 UC: [USE_CASES.md](USE_CASES.md)의 GRD-UC-001 / B1~B2, A1; GRD-UC-012 / B1~B2; GRD-UC-013 / B1; GRD-UC-014 / B1~B3 (부분 근거; 신규 동작은 GRD-Q18~Q20에서 정의)
+- 관련 UC: [USE_CASES.md](USE_CASES.md)의 GRD-UC-001 / B1~B2, A1; GRD-UC-012 / B1~B2; GRD-UC-013 / B1; GRD-UC-014 / B1~B3 (부분 근거; 신규 동작은 미정)
 - 상태: Draft · 우선순위: P0 · 심사: [차량특화] [사업] · 목표: GRD-G1
 - 이야기: 운전자로서 할머니(사람)와 할머니 댁(장소)을 따로 등록하고 연결하고 싶다. 그래야 여정마다 누구와 어디를 다시 입력하지 않는다.
 - 수용 기준:
   - 사람과 장소를 각각 만들고, 연결하거나 해제할 수 있다.
   - 연락처와 관계 정보를 위치 추정에 쓰지 않는다(전화번호로 위치를 알아내지 않는다).
 - 의존: 없음 (로컬 저장)
-- 데모: 사람·장소 관리(S12)에서 할머니와 할머니 댁을 연결하고, [SCENARIO.md](SCENARIO.md) SC-01에서 약속에 함께 갈 사람으로 고른다
+- 데모: [SCENARIO.md](SCENARIO.md) SC-01의 기억 남기기에서 장소(바다 카페)와 함께 갈 사람(할머니)을 고른다. 사람·장소를 따로 관리하는 화면(S12)은 계획 단계이며 목업에는 없다
 - 출처: draft §03 등록, §07 MVP-1
 
 ### GRD-002 다음 약속 저장
@@ -24,18 +24,18 @@
   - 정차 중에만 입력 화면을 연다. 주행 중이면 정차 후로 미룬다.
   - 음성이나 텍스트로 입력한다. 상시 녹음은 없고, 사용자가 직접 시작한다.
   - 장소 후보는 사용자가 확인해야 저장된다.
-- 의존: SpeechToText — 문서 확인, FusedLocation `getLastKnownLocation` (FUSED_LOCATION) — 문서 확인, 장소 검색 외부 API — 확인 필요 (GRD-Q5), 주행/정차 판단 — 확인 필요 (Q8)
+- 의존: SpeechToText — 문서 확인, FusedLocation `getLastKnownLocation` (FUSED_LOCATION) — 문서 확인, 장소 검색 외부 API — 확인 필요, 주행/정차 판단 — 확인 필요 (Q8)
 - 데모: 정차 상태에서 음성으로 한마디 → 장소 후보 확인 → 약속 카드 생성
 - 출처: draft §02-1 기억
 
 ### GRD-003 여정 초안 만들기
-- 관련 UC: [USE_CASES.md](USE_CASES.md)의 GRD-UC-003 / B1~B2, A1; GRD-UC-011 / B1~B2 (부분 근거; 추가 FR은 GRD-Q16~Q18)
+- 관련 UC: [USE_CASES.md](USE_CASES.md)의 GRD-UC-003 / B1~B2, A1; GRD-UC-011 / B1~B2 (부분 근거; 추가 FR은 미정)
 - 상태: Draft · 우선순위: P0 · 심사: [창의] [사업] · 목표: GRD-G1
 - 이야기: 운전자로서 저장한 약속과 원하는 날짜로 여정 초안(동행자, 목적지, 경유지, 시간)을 만들고, 날씨와 장소 정보를 출처·조회 시각과 함께 보고 싶다.
 - 수용 기준:
   - 정보가 없으면 "미확인"으로 표시하고 추측하지 않는다.
   - 일정은 수동 입력부터 지원한다. 캘린더 연동은 확장으로 둔다.
-- 의존: 날씨·장소 외부 API — 확인 필요 (GRD-Q5)
+- 의존: 날씨·장소 외부 API — 확인 필요
 - 데모: [SCENARIO.md](SCENARIO.md) SC-02. 약속 카드에서 [여정 만들기] → 일요일 10:30 → 날씨·장소 정보를 출처·조회 시각과 함께 확인
 - 출처: draft §02-2 조율, §06, §07 MVP-2
 
@@ -46,7 +46,7 @@
 - 수용 기준:
   - 공유하기 전에 가족에게 보일 내용을 미리 보여준다.
   - 실제 경로, 연락처, 주거지 주소는 기본 공유에서 뺀다.
-- 의존: 공유 웹페이지와 서버 — 범위 미정 (GRD-Q1)
+- 의존: 공유 웹페이지와 서버 — 범위 미정
 - 메모: 서버 개발 부담이 큽니다. 목업에서 시뮬레이션으로 대체할지 정해야 합니다.
 - 출처: draft §02-2, §06 COMMUNICATION
 
@@ -62,7 +62,7 @@
 - 출처: draft §02-2, §03 실행
 
 ### GRD-006 출발 준비 점검
-- 관련 UC: [USE_CASES.md](USE_CASES.md)의 GRD-UC-005 / B1, A1; GRD-UC-011 / B1~B2 (부분 근거; 추가 FR은 GRD-Q16~Q18)
+- 관련 UC: [USE_CASES.md](USE_CASES.md)의 GRD-UC-005 / B1, A1; GRD-UC-011 / B1~B2 (부분 근거; 추가 FR은 미정)
 - 상태: Draft · 우선순위: P0 · 심사: [차량특화] [기술] · 목표: GRD-G2
 - 이야기: 운전자로서 출발 전에 차량 상태(연료 또는 배터리)와 날씨를 새로 확인하고, 필요한 경유지(주유, 충전 등)를 제안받고 싶다.
 - 수용 기준:
@@ -79,18 +79,18 @@
 - 수용 기준:
   - 적용 결과를 콜백으로 확인하고, 실패하면 알린다.
   - 계획을 화면에 보여주는 것만으로 내비 연동을 대신하지 않는다.
-- 의존: NaviHelper `requestRouteWithWaypoints()` / `addWaypoint()` (NAVI_ROUTE_SEARCH) — 문서 확인, 에뮬레이터 동작 — 확인 필요 (GRD-Q3)
-- 데모: 가족이 고른 카페가 내비 경유지로 들어가는 장면
+- 의존: NaviHelper `requestRouteWithWaypoints()` / `addWaypoint()` (NAVI_ROUTE_SEARCH) — 문서 확인, 에뮬레이터 동작 — 확인 필요
+- 데모: SC-03(집 → 할머니 댁)과 SC-05(할머니 댁 → 바다 카페)에서 승인한 구간 경로가 내비게이션에 들어가고 결과를 알려 주는 장면
 - 출처: draft §05 Navi SDK, §07 MVP-3
 
 ### GRD-008 동행 확인
-- 관련 UC: [USE_CASES.md](USE_CASES.md)의 GRD-UC-006 / B1~B2, A1, E1; GRD-UC-011 / B1~B2 (부분 근거; 추가 FR은 GRD-Q16~Q18); GRD-UC-012 / B3~B4 (부분 근거; 신규 동작은 GRD-Q18~Q20에서 정의)
+- 관련 UC: [USE_CASES.md](USE_CASES.md)의 GRD-UC-006 / B1~B2, A1, E1; GRD-UC-011 / B1~B2 (부분 근거; 추가 FR은 미정); GRD-UC-012 / B3~B4 (부분 근거; 신규 동작은 미정)
 - 상태: Draft · 우선순위: P1 · 심사: [차량특화] [창의] · 목표: GRD-G2, GRD-G3
 - 이야기: 운전자로서 정차 중에 누군가 탄 것 같으면 "할머니와 함께 출발하시나요?"라고 확인받고 싶다. 그래야 동행 설정과 경유 계획이 맞게 적용된다.
 - 수용 기준:
   - 도어 열림·닫힘만으로 탑승이나 신원을 확정하지 않는다. 항상 사용자에게 확인한다.
   - 좌석 신호를 쓸 수 없으면 수동으로 동행자를 고른다.
-- 의존: Vehicle Door (CAR_DOORS) — 문서 확인, Seat 좌석 점유 `checkSeatOccupancyCapabilities`, `getCurrentSeatOccupancy`, `registerSeatOccupancy` (CAR_SEATS) — API 이름 문서 확인(dev-environment.md 4.2절), 값의 의미와 에뮬레이터 동작 — 확인 필요 (GRD-Q2, GAM-Q30)
+- 의존: Vehicle Door (CAR_DOORS) — 문서 확인, Seat 좌석 점유 `checkSeatOccupancyCapabilities`, `getCurrentSeatOccupancy`, `registerSeatOccupancy` (CAR_SEATS) — API 이름 문서 확인(dev-environment.md 4.2절), 값의 의미와 에뮬레이터 동작 — 확인 필요 ([dev-environment.md](../../docs/contest/dev-environment.md) 5절 "좌석 점유")
 - 출처: draft §02-4 동행, §03 확인
 
 ### GRD-009 동행자 공조 설정 적용
@@ -100,11 +100,11 @@
 - 수용 기준:
   - 적용 전에 확인을 받는다.
   - 제어할 수 없으면 준비 체크리스트로 줄이고, 실제 제어와 구분해 표시한다.
-- 의존: Vehicle HVAC 제어 (`CONTROL_CAR_*`, 이름 확인 필요) — 확인 필요 (GRD-Q4, Q6)
+- 의존: Vehicle HVAC 제어 (`CONTROL_CAR_*`, 이름 확인 필요) — 확인 필요
 - 출처: draft §02-4, §05 HVAC, §07 확장
 
 ### GRD-010 다녀옴 기록과 약속 완료
-- 관련 UC: [USE_CASES.md](USE_CASES.md)의 GRD-UC-008 / B1~B3, A1; GRD-UC-011 / B1~B2 (부분 근거; 추가 FR은 GRD-Q16~Q18); GRD-UC-012 / B1~B2; GRD-UC-013 / B1; GRD-UC-014 / B1~B3 (부분 근거; 신규 동작은 GRD-Q18~Q20에서 정의)
+- 관련 UC: [USE_CASES.md](USE_CASES.md)의 GRD-UC-008 / B1~B3, A1; GRD-UC-011 / B1~B2 (부분 근거; 추가 FR은 미정); GRD-UC-012 / B1~B2; GRD-UC-013 / B1; GRD-UC-014 / B1~B3 (부분 근거; 신규 동작은 미정)
 - 상태: Draft · 우선순위: P0 · 심사: [창의] [사업] · 목표: GRD-G1, GRD-G4
 - 이야기: 운전자로서 집에 돌아온 뒤 실제 이동과 확인한 방문으로 만든 기록 초안에 사진과 한마디를 더해 저장하고, 약속을 완료로 바꾸고 싶다.
 - 수용 기준:
@@ -144,16 +144,15 @@
   - "혼자"라고 답하면 과거 동행자의 선호를 이번 추천에 적용하지 않는다.
   - 목적지를 바꾸면 새 여정으로 보고 동행 예정을 다시 확인한다.
   - 관계명만으로 나이·취향·보행 능력을 추정하지 않는다.
-- 의존: 없음 (로컬에 저장한 방문 기억). 외부 제공처 사이의 동일 장소 매칭 — 확인 필요 (GRD-Q24)
+- 의존: 없음 (로컬에 저장한 방문 기억). 외부 제공처 사이의 동일 장소 매칭 — 확인 필요
 - 대체 동작: 장소 일치나 과거 동행이 불명확하면 특정 동행자를 단정해 묻지 않고 질문을 생략한다(UC-012 E1).
-- 데모: [SCENARIOS.md](SCENARIOS.md) 5절 1·2·6단계. '파도 서가'에서는 질문이 나오고 '모래빛 식탁'으로 바꾸면 나오지 않는다. 함께 / 혼자에 따라 추천 이유가 달라진다.
-- 출처: [목업 UC 보완안](../../spikes/grandma-journey-context/docs/UC-PROPOSAL.md) "시나리오 통합에서 도출한 보완안"의 UC-012·014 행, "기존 UC의 보완 지점"; [SCENARIOS.md](SCENARIOS.md) 1절, 3절 A·B·H
+- 데모: [SCENARIO.md](SCENARIO.md) SC-08 시연 방법 1·2·8단계. '파도 서가'에서는 질문이 나오고 '모래빛 식탁'으로 바꾸면 나오지 않는다. 함께 / 혼자에 따라 추천 이유가 달라진다.
+- 출처: [목업 UC 보완안](../../spikes/grandma-journey-context/docs/UC-PROPOSAL.md) "시나리오 통합에서 도출한 보완안"의 UC-012·014 행, "기존 UC의 보완 지점"; [SCENARIO.md](SCENARIO.md) SC-08
 - 관련 결정: 없음
-- 미결정: [OPEN_QUESTIONS.md](OPEN_QUESTIONS.md)의 GRD-Q16, GRD-Q19(장소 일치·재질문·동승자 앞 공개 범위), GRD-Q24
-- 메모: 범위는 GRD-Q26. 현재 목업은 내부 장소 ID가 같은 기록으로만 재방문을 판단합니다.
+- 메모: 재방문은 핵심 기능으로 다룹니다. 현재 목업은 내부 장소 ID가 같은 기록으로만 재방문을 판단합니다.
 
 ### GRD-014 목적지 주변 후보 두 곳 비교와 추천 이유
-- 관련 UC: [USE_CASES.md](USE_CASES.md)의 GRD-UC-011 / B1~B3, E1~E3; [목업 UC 보완안](../../spikes/grandma-journey-context/docs/UC-PROPOSAL.md)의 후보 UC-018 / B1~B4, A1~A2, E1~E3 (정식 편입 전)
+- 관련 UC: [USE_CASES.md](USE_CASES.md)의 GRD-UC-011 / B1~B3, E1~E3; [목업 UC 보완안](../../spikes/grandma-journey-context/docs/UC-PROPOSAL.md)의 후보 UC-C / B1~B4, A1~A2, E1~E3 (정식 편입 전)
 - 상태: Draft · 우선순위: P1 · 심사: [창의] [기술] · 목표: GRD-G1, GRD-G2
 - 이야기: 운전자로서 정차 중 목적지 주변에서 들를 곳 두 곳을 큰 카드로 비교하고, 왜 나와 이번 동행에게 맞는지 한 줄 이유를 보고 싶다. 그래야 많은 목록을 읽지 않고 고를 수 있다.
 - 수용 기준:
@@ -164,16 +163,15 @@
   - 장소를 여정에 담아도 방문 상태와 스탬프는 바뀌지 않는다.
   - 주제(예: 지역의 맛)는 앱의 예시 분류이며 공식 선정 목록으로 표현하지 않는다.
   - 주행 중에는 화면 조작을 막고 정차 후 이어간다(GRD-N01).
-- 의존: NaviHelper `getDestinationInfo()` → `onDestinationInfo` (NAVI_ROUTE) — 문서 확인, FusedLocation `isSupported()`, `getLastKnownLocation()` (FUSED_LOCATION, Dangerous) — 문서 확인, 외부 장소 검색(카카오 Local, TourAPI) — 확인 필요 (GRD-Q5, GRD-Q23~Q25), 주행/정차 판단 — 확인 필요 (Q8, Q11)
+- 의존: NaviHelper `getDestinationInfo()` → `onDestinationInfo` (NAVI_ROUTE) — 문서 확인, FusedLocation `isSupported()`, `getLastKnownLocation()` (FUSED_LOCATION, Dangerous) — 문서 확인, 외부 장소 검색(카카오 Local, TourAPI) — 확인 필요, 주행/정차 판단 — 확인 필요 (Q8, Q11)
 - 대체 동작: 외부 검색이 실패하면 저장된 방문 장소만 보여 주고 누락을 알린다. 결과가 없으면 빈 결과를 표시한다. 위치 권한 거부·오래된 위치면 사용자가 선택한 목적지를 쓰고, 과거 위치를 현재 위치라고 표시하지 않는다. 확정 계획과 개인 방문은 보존한다.
-- 데모: [SCENARIOS.md](SCENARIOS.md) 5절 2·3·7·8단계
-- 출처: [목업 UC 보완안](../../spikes/grandma-journey-context/docs/UC-PROPOSAL.md)의 UC-018, "14.6인치 차량 화면에서 추가로 드러난 요구" 표, "정보량과 터치 흐름 보완", "시나리오 통합" UC-018 행; [SCENARIOS.md](SCENARIOS.md) 3절 C·D, 6절
+- 데모: [SCENARIO.md](SCENARIO.md) SC-08 시연 방법 2·4·5·6단계
+- 출처: [목업 UC 보완안](../../spikes/grandma-journey-context/docs/UC-PROPOSAL.md)의 후보 UC-C, "14.6인치 차량 화면에서 추가로 드러난 요구" 표, "정보량과 터치 흐름 보완", "시나리오 통합" 후보 UC-C 행; [SCENARIO.md](SCENARIO.md) SC-08, [SDK.md](SDK.md) 6.3절
 - 관련 결정: 없음
-- 미결정: [OPEN_QUESTIONS.md](OPEN_QUESTIONS.md)의 GRD-Q5, GRD-Q16, GRD-Q17, GRD-Q23, GRD-Q24, GRD-Q26; [공통 질문](../../docs/open-questions.md) Q8, Q11
-- 메모: 범위는 GRD-Q26. 터치 기준(주요 조작 논리 높이 64 이상, 간격 16 이상)은 목업 보완안의 FR 후보이며, 실제 디스플레이에서 오터치·가독성·과업 완료를 확인한 뒤 확정합니다. '목적지 근처'의 기준(거리, 이동 시간, 우회 시간)은 정하지 않았습니다(목업 보완안 "새로 결정할 사항" 1).
+- 메모: 터치 기준(주요 조작 논리 높이 64 이상, 간격 16 이상)은 목업 보완안의 FR 후보이며, 실제 디스플레이에서 오터치·가독성·과업 완료를 확인한 뒤 확정합니다. '목적지 근처'의 기준(거리, 이동 시간, 우회 시간)은 정하지 않았습니다(목업 보완안 "새로 결정할 사항" 1).
 
 ### GRD-015 추천 근거와 정보 출처 확인
-- 관련 UC: [USE_CASES.md](USE_CASES.md)의 GRD-UC-011 / B3, E2; GRD-UC-014 / B1; [목업 UC 보완안](../../spikes/grandma-journey-context/docs/UC-PROPOSAL.md)의 후보 UC-017 / B1~B3, A1, E1 (정식 편입 전)
+- 관련 UC: [USE_CASES.md](USE_CASES.md)의 GRD-UC-011 / B3, E2; GRD-UC-014 / B1; [목업 UC 보완안](../../spikes/grandma-journey-context/docs/UC-PROPOSAL.md)의 후보 UC-B / B1~B3, A1, E1 (정식 편입 전)
 - 상태: Draft · 우선순위: P1 · 심사: [창의] · 목표: GRD-G3
 - 이야기: 운전자로서 추천 이유가 내 기록에서 왔는지, 장소 정보에서 왔는지, 확인된 것인지 보고 싶다. 그래야 추천을 믿고 고르거나 잘못된 기억을 고칠 수 있다.
 - 수용 기준:
@@ -183,36 +181,34 @@
   - 근거에서 기억 오류를 발견하면 기억 수정(GRD-017)으로 이어진다.
   - 전체 지식 그래프는 사용자 주 화면에 두지 않는다.
   - 외부 선정 목록(예: 대한민국 명소발굴 (100×100)) 표시는 목록·이용 권리·장소 일치가 확인된 장소에만 쓴다.
-- 의존: 없음 (앱의 장소 지식과 방문 기록). 장소 속성의 출처·갱신 — 확인 필요 (GRD-Q23, GRD-Q24)
+- 의존: 없음 (앱의 장소 지식과 방문 기록). 장소 속성의 출처·갱신 — 확인 필요
 - 대체 동작: 출처나 확인 시점이 없는 속성은 근거로 보여 주지 않고 미확인으로 둔다.
-- 데모: [SCENARIOS.md](SCENARIOS.md) 5절 7단계. 상세의 정보 출처에서 장소 예시와 개인 방문 기록이 구분된다.
-- 출처: [목업 UC 보완안](../../spikes/grandma-journey-context/docs/UC-PROPOSAL.md)의 UC-017, "14.6인치 차량 화면" 표의 UC-017 행, "정보량과 터치 흐름 보완"의 UC-017 B1~B2; [SCENARIOS.md](SCENARIOS.md) 3절 D
+- 데모: [SCENARIO.md](SCENARIO.md) SC-08 시연 방법 4단계. 상세의 정보 출처에서 장소 예시와 개인 방문 기록이 구분된다.
+- 출처: [목업 UC 보완안](../../spikes/grandma-journey-context/docs/UC-PROPOSAL.md)의 후보 UC-B, "14.6인치 차량 화면" 표의 후보 UC-B 행, "정보량과 터치 흐름 보완"의 후보 UC-B B1~B2; [SCENARIO.md](SCENARIO.md) SC-08
 - 관련 결정: 없음
-- 미결정: [OPEN_QUESTIONS.md](OPEN_QUESTIONS.md)의 GRD-Q17, GRD-Q23, GRD-Q24
-- 메모: 범위는 GRD-Q26. 속성의 만료·충돌 정책은 정하지 않았습니다. 목업은 미확인 속성의 가점 제외까지만 구현합니다.
+- 메모: 속성의 만료·충돌 정책은 정하지 않았습니다. 목업은 미확인 속성의 가점 제외까지만 구현합니다.
 
 ### GRD-016 사용자 확인으로만 방문 기록과 스탬프 남기기
-- 관련 UC: [USE_CASES.md](USE_CASES.md)의 GRD-UC-008 / B1~B3, E1; [목업 UC 보완안](../../spikes/grandma-journey-context/docs/UC-PROPOSAL.md)의 후보 UC-016 / B1~B3, A1, E1 (정식 편입 전)
+- 관련 UC: [USE_CASES.md](USE_CASES.md)의 GRD-UC-008 / B1~B3, E1; [목업 UC 보완안](../../spikes/grandma-journey-context/docs/UC-PROPOSAL.md)의 후보 UC-A / B1~B3, A1, E1 (정식 편입 전)
 - 상태: Draft · 우선순위: P1 · 심사: [차량특화] [사업] · 목표: GRD-G1, GRD-G4
 - 이야기: 운전자로서 정차한 차 안에서 다녀온 곳을 키보드 없이 큰 버튼과 음성으로 남기고, 내가 확인한 방문만 스탬프로 쌓이는 것을 보고 싶다.
 - 수용 기준:
-  - 날짜 → 실제 동행 → 한마디 → 최종 확인 순서로, 텍스트 입력 없이 기록을 마칠 수 있다. 한마디는 생략할 수 있다.
-  - 실제 동행은 사용자가 직접 고른다. 동행 예정값(GRD-013)을 자동으로 확정하지 않는다.
-  - 최종 저장 전에는 방문 기록과 스탬프가 생기지 않는다. 닫으면 저장하지 않은 변경을 버린다. 수정도 같은 흐름을 쓴다.
+  - 한 장짜리 기록에서 장소(정차 위치 근처), 날짜(차량 기록), 함께한 사람(출발 때 운전자가 답한 탑승 확인)을 미리 채워 보여 주고, 운전자는 틀린 칸만 `고치기`로 바꾼다. 텍스트 입력 없이 기록을 마칠 수 있고, 한마디는 마이크로 남기거나 생략한다.
+  - 탑승 확인 답이 없거나 재방문처럼 동행이 예정값(GRD-013)뿐이면 함께한 사람을 미리 채우지 않는다. 운전자가 직접 고르기 전에는 저장할 수 없다.
+  - `이대로 남기기`를 누르기 전에는 방문 기록과 스탬프가 생기지 않는다. 닫으면 저장하지 않은 변경을 버린다. 수정도 같은 시트를 쓴다.
   - 여정에 담기, 내비 적용 성공, 여정 마치기, 위치 근접, 경유지 도착은 방문을 확정하지 않는다.
   - 음성 인식 결과는 사용자가 채택해야 쓰이고, 채택해도 최종 저장과 별개다. 인식 실패·미지원·권한 거부·취소면 선택 입력으로 돌아가고 기록을 만들지 않는다.
   - 같은 장소를 다시 방문하면 경험 기록은 늘지만 고유 방문 장소 수는 늘지 않는다.
   - 정차 중에만 기록한다. 주행 중 음성 기록은 허용하지 않는다.
-- 의존: SpeechToText `initialize()`, `addListener()`, `setLocale()`, `request()`, `stop()` (STT_SERVICE) — 문서 확인, 한국어 인식·ON_DEVICE — 확인 필요 (GRD-Q6), 주행/정차 판단 — 확인 필요 (Q8)
+- 의존: SpeechToText `initialize()`, `addListener()`, `setLocale()`, `request()`, `stop()` (STT_SERVICE) — 문서 확인, 한국어 인식·ON_DEVICE — 확인 필요, 주행/정차 판단 — 확인 필요 (Q8)
 - 대체 동작: STT를 쓸 수 없으면 선택 문구와 생략만 제공한다.
-- 데모: [SCENARIOS.md](SCENARIOS.md) 5절 5단계. 날짜·실제 동행·한마디·최종 확인을 거친 뒤에만 스탬프가 늘어난다.
-- 출처: [목업 UC 보완안](../../spikes/grandma-journey-context/docs/UC-PROPOSAL.md) "키보드 없는 방문 기록", UC-016, "시나리오 통합" UC-008·016 행; [SCENARIOS.md](SCENARIOS.md) 3절 G, 6절
+- 데모: [SCENARIO.md](SCENARIO.md) SC-07. 미리 채운 장소·날짜·함께한 사람을 확인하고 한마디를 말한 뒤 `이대로 남기기`를 눌러야만 스탬프가 늘어난다.
+- 출처: [목업 UC 보완안](../../spikes/grandma-journey-context/docs/UC-PROPOSAL.md) "키보드 없는 방문 기록", 후보 UC-A, "시나리오 통합" UC-008·후보 UC-A 행; [SCENARIO.md](SCENARIO.md) SC-07·SC-08
 - 관련 결정: 없음
-- 미결정: [OPEN_QUESTIONS.md](OPEN_QUESTIONS.md)의 GRD-Q6, GRD-Q12, GRD-Q18; [공통 질문](../../docs/open-questions.md) Q8
-- 메모: 범위는 GRD-Q26. GRD-010(기록 초안과 약속 완료)의 입력 방식을 구체화합니다. 스탬프가 사용자 가치와 재방문에 도움이 되는지는 검증 전입니다(목업 보완안 "새로 결정할 사항" 5).
+- 메모: GRD-010(기록 초안과 약속 완료)의 입력 방식을 구체화합니다. 스탬프가 사용자 가치와 재방문에 도움이 되는지는 검증 전입니다(목업 보완안 "새로 결정할 사항" 5).
 
 ### GRD-017 기억 수정·활용 제외·삭제와 다음 안내 반영
-- 관련 UC: [USE_CASES.md](USE_CASES.md)의 GRD-UC-014 / B1~B3, A1~A2, E1~E2; GRD-UC-012 / E3; [목업 UC 보완안](../../spikes/grandma-journey-context/docs/UC-PROPOSAL.md)의 후보 UC-016 / A2, E2 (정식 편입 전)
+- 관련 UC: [USE_CASES.md](USE_CASES.md)의 GRD-UC-014 / B1~B3, A1~A2, E1~E2; GRD-UC-012 / E3; [목업 UC 보완안](../../spikes/grandma-journey-context/docs/UC-PROPOSAL.md)의 후보 UC-A / A2, E2 (정식 편입 전)
 - 상태: Draft · 우선순위: P1 · 심사: [창의] [사업] · 목표: GRD-G3, GRD-G4
 - 이야기: 운전자로서 잘못 연결된 기억을 고치거나 더 이상 쓰고 싶지 않은 기억을 안내에서 빼고 싶다. 그래야 다음 질문과 추천이 틀린 기억에 끌려가지 않는다.
 - 수용 기준:
@@ -224,11 +220,10 @@
   - 정차 중에만 수정한다.
 - 의존: 없음 (로컬 저장)
 - 대체 동작: 해당 없음. 외부 의존이 없습니다.
-- 데모: [SCENARIOS.md](SCENARIOS.md) 5절 6단계. 발자국에서 수정·활용 제외·삭제를 비교하고, 다시 가기에서 질문이 달라지는 것을 본다.
-- 출처: [USE_CASES.md](USE_CASES.md)의 GRD-UC-014 흐름; [목업 UC 보완안](../../spikes/grandma-journey-context/docs/UC-PROPOSAL.md)의 UC-016 A2·E2, "기존 UC의 보완 지점"의 UC-014, "시나리오 통합" UC-012·014 행; [SCENARIOS.md](SCENARIOS.md) 3절 H
+- 데모: [SCENARIO.md](SCENARIO.md) SC-08 시연 방법 8단계. 발자국에서 수정·활용 제외·삭제를 비교하고, 다시 가기에서 질문이 달라지는 것을 본다.
+- 출처: [USE_CASES.md](USE_CASES.md)의 GRD-UC-014 흐름; [목업 UC 보완안](../../spikes/grandma-journey-context/docs/UC-PROPOSAL.md)의 후보 UC-A A2·E2, "기존 UC의 보완 지점"의 UC-014, "시나리오 통합" UC-012·014 행; [SCENARIO.md](SCENARIO.md) SC-08
 - 관련 결정: 없음
-- 미결정: [OPEN_QUESTIONS.md](OPEN_QUESTIONS.md)의 GRD-Q18, GRD-Q19, GRD-Q20
-- 메모: 범위는 GRD-Q26. 저장·삭제 범위와 다른 장치 반영은 구현 전에 정의해야 합니다(GRD-Q18, GRD-Q20).
+- 메모: 저장·삭제 범위와 다른 장치 반영은 구현 전에 정의해야 합니다.
 
 ### GRD-018 홈의 지금 카드
 - 관련 UC: [USE_CASES.md](USE_CASES.md)의 GRD-UC-015 / B1~B3, A1~A3, E1~E3
@@ -242,12 +237,10 @@
   - 홈에서는 차량 실행이나 외부 전송을 하지 않는다. 카드를 무시해도 여정과 약속의 상태는 바뀌지 않는다.
   - 주행 중으로 판단되면 주행 모드로 바꾸고 조작을 받지 않는다.
 - 의존: Vehicle Door (CAR_DOORS) — 문서 확인, `CarUxRestrictionsManager` — 문서 확인 [Pleos 참고], 공모전 범위 확인 중(Q11), 권한 확인 필요, 주행/정차 판단 — 확인 필요 (Q8)
-- 대체 동작: 주행/정차를 판단할 수 없을 때의 기본값은 주행으로 간주하는 안이 제안되어 있습니다(GRD-UC-015 E2, GRD-Q22).
-- 데모: [SCENARIOS.md](SCENARIOS.md) 5절 1·5단계의 홈 '여정 준비', '여정 마치기'. 목업은 대표 여정의 최소 흐름이며 약속·도어 카드 같은 전체 순위는 구현하지 않았습니다.
+- 대체 동작: 주행/정차를 판단할 수 없을 때의 기본값은 주행으로 간주하는 안이 제안되어 있습니다(GRD-UC-015 E2).
+- 데모: [SCENARIO.md](SCENARIO.md) SC-01·03·05·07·08. 목업 홈의 지금 카드가 주행 > 도어 동행 후보 > 오늘 계획 > 귀가 확인 > 약속·기억 남기기 > 재방문 순으로 바뀝니다.
 - 출처: [USE_CASES.md](USE_CASES.md)의 "지금 카드 규칙", GRD-UC-015; [목업 UC 보완안](../../spikes/grandma-journey-context/docs/UC-PROPOSAL.md) "시나리오 통합" UC-015 행
 - 관련 결정: 없음
-- 미결정: [OPEN_QUESTIONS.md](OPEN_QUESTIONS.md)의 GRD-Q17, GRD-Q22, GRD-Q26; [공통 질문](../../docs/open-questions.md) Q8, Q11
-- 메모: 범위는 GRD-Q26.
 
 ### GRD-019 내 AI 연결
 - 관련 UC: [USE_CASES.md](USE_CASES.md)의 GRD-UC-016 / B1~B2, E1, E3
@@ -260,12 +253,11 @@
   - 연결 상태는 화면 위쪽 실의 별빛(내 AI)으로 보인다. 연결 전에는 점선 별빛이다.
   - 운전자는 언제든 연결을 끊을 수 있다. 끊으면 이후 추천은 규칙 기반으로 돌아가고, 앱에 저장된 기억은 그대로 남는다.
   - 연결·해제는 정차·주차 중에만 한다(GRD-N01).
-- 의존: 외부 LLM API(Claude, ChatGPT, Gemini) — 확인 필요 (GRD-Q37, GRD-Q38). Pleos LLM SDK는 공모전 기간에 제공되지 않음 — 문서 확인 ([dev-environment.md](../../docs/contest/dev-environment.md) 3절)
+- 의존: 외부 LLM API(Claude, ChatGPT, Gemini) — 확인 필요. 연결 방식은 D-001(API 키를 휴대폰에서 등록). Pleos LLM SDK는 공모전 기간에 제공되지 않음 — 문서 확인 ([dev-environment.md](../../docs/contest/dev-environment.md) 4절)
 - 대체 동작: 연결하지 않거나 연결이 끊기면 지금의 규칙 기반 추천(GRD-014)으로 동작한다.
 - 데모: 목업 "내 AI" 연결 화면(공급자 선택, 휴대폰 QR 시연). 실제 계정 연결은 하지 않는다.
-- 출처: 2026-11-15 팀 요청; [화면 콘셉트](../../spikes/grandma-ui-concepts/README.md) AI-1
-- 관련 결정: 없음
-- 미결정: [OPEN_QUESTIONS.md](OPEN_QUESTIONS.md)의 GRD-Q37, GRD-Q38, GRD-Q39
+- 출처: [SCREENS.md](SCREENS.md) 3절 "내 AI 연결"
+- 관련 결정: [DECISIONS.md](DECISIONS.md) D-001
 
 ### GRD-020 내 AI가 모은 후보 안에서 들를 곳 제안
 - 관련 UC: [USE_CASES.md](USE_CASES.md)의 GRD-UC-012 / A4, E5; GRD-UC-016 / B3, A2, E2
@@ -278,28 +270,26 @@
   - 후보 목록 밖의 장소, 근거 항목이 없는 이유, 미확인을 사실처럼 쓴 문장은 버린다. 남는 결과가 없으면 규칙 기반 추천을 보여 준다.
   - 고른 곳은 운전자가 승인한 뒤에만 경로에 들어간다(GRD-005, GRD-007).
   - 주행 중에는 AI를 호출하지 않는다. 출발 전에 정리한 결과만 음성 한 줄로 알린다.
-- 의존: 외부 LLM API — 확인 필요 (GRD-Q37~Q41), 외부 장소 검색 — 확인 필요 (GRD-Q5, GRD-Q23~Q25)
+- 의존: 외부 LLM API — 확인 필요, 외부 장소 검색 — 확인 필요
 - 대체 동작: AI 응답이 실패하거나 늦으면 규칙 기반 추천(GRD-014)을 보여 주고 실패를 알린다. 계획과 기록은 그대로 둔다.
 - 데모: 목업 둘러보기의 "살펴보는 중" 단계와 추천 카드. AI 응답은 미리 준비한 시연 데이터이며 "시연"으로 표시한다. 시연 도구의 AI 응답 실패로 대체 동작을 보여 준다.
-- 출처: 2026-11-15 팀 요청; [화면 콘셉트](../../spikes/grandma-ui-concepts/README.md) AI-2·AI-3; [PLACE-INTEGRATION.md](PLACE-INTEGRATION.md) 4·7절
-- 관련 결정: 없음
-- 미결정: [OPEN_QUESTIONS.md](OPEN_QUESTIONS.md)의 GRD-Q23, GRD-Q37~Q41
+- 출처: [SDK.md](SDK.md) 6.3·6.4절
+- 관련 결정: [DECISIONS.md](DECISIONS.md) D-001
 
 ### GRD-021 음성으로 이어 묻기와 취향 저장 동의
 - 관련 UC: [USE_CASES.md](USE_CASES.md)의 GRD-UC-016 / A1; GRD-UC-014 / A3
 - 상태: Draft · 우선순위: P1 · 심사: [차량특화] [창의] · 목표: GRD-G1, GRD-G4
-- 이야기: 운전자로서 추천을 본 뒤 "할머니가 따뜻한 차를 좋아하셔"처럼 한마디로 다시 묻고 싶다. 그리고 그 취향을 다음에도 쓰고 싶다.
+- 이야기: 운전자로서 추천을 본 뒤 "어머니가 따뜻한 차를 좋아하셔"처럼 한마디로 다시 묻고 싶다. 그리고 그 취향을 다음에도 쓰고 싶다.
 - 수용 기준:
   - 정차·주차 중 마이크를 누를 때만 듣는다. SpeechToText가 돌려준 텍스트만 AI에 보낸다(오디오는 보내지 않음).
   - 들은 말을 화면에 보여 주고, AI가 다시 고른 결과와 이유를 보여 준다.
-  - 새로 알게 된 취향은 "이 취향을 할머니 기억에 남길까요?"에 운전자가 [남기기]를 누를 때만 저장한다. [이번만 쓰기]면 이번 추천에만 쓴다.
+  - 새로 알게 된 취향은 "이 취향을 어머니 기억에 남길까요?"(이번 동행자 이름)에 운전자가 [남기기]를 누를 때만 저장한다. [이번만 쓰기]면 이번 추천에만 쓴다.
   - 저장한 취향은 차량 기기에 남고, 운전자가 언제든 지울 수 있다(GRD-017).
-- 의존: SpeechToText — 문서 확인, 외부 LLM API — 확인 필요 (GRD-Q37)
+- 의존: SpeechToText — 문서 확인, 외부 LLM API — 확인 필요
 - 대체 동작: 음성 인식이 어려우면 추천 문구를 고르는 방식으로 묻는다. AI가 연결되지 않았으면 고른 취향을 규칙 기반 추천에 반영한다.
 - 데모: 목업 추천 화면의 이어 묻기(시연 문장)와 취향 저장 동의
-- 출처: 2026-11-15 팀 요청; [화면 콘셉트](../../spikes/grandma-ui-concepts/README.md) AI-4
-- 관련 결정: 없음
-- 미결정: [OPEN_QUESTIONS.md](OPEN_QUESTIONS.md)의 GRD-Q19, GRD-Q37, GRD-Q39
+- 출처: [SCREENS.md](SCREENS.md) 3절 "이어 묻기와 취향 저장"
+- 관련 결정: [DECISIONS.md](DECISIONS.md) D-001
 
 ## 비기능·원칙
 

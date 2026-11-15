@@ -18,5 +18,5 @@ Confirmed 요구사항이나 Goal을 바꿀 때는 바꾸기 전에 여기에 �
 ## D-001 내 AI는 사용자가 발급한 API 키를 휴대폰에서 등록해 연결한다 (2026-11-15)
 - 결정: Claude, ChatGPT, Gemini 연결은 사용자가 각 공급자에서 발급한 API 키를 휴대폰에서 등록하는 방식으로 한다. 차 화면에서는 키를 입력하지 않는다.
 - 이유: 구독 계정을 다른 앱이 대신 쓰는 공식 연결 방법을 확인하지 못했다. API 키 방식은 세 공급자 모두에서 쓸 수 있고, 차에서 긴 문자열을 입력하지 않아도 된다.
-- 영향: GRD-019, GRD-Q37(Resolved), GRD-Q38(비용은 사용자 API 계정), PROPOSAL 5번, USE_CASES GRD-UC-016, SCREENS, SDK, 목업 내 AI 연결 화면
-- 합의: 팀 요청(별칭 미기재), PR 미정
+- 영향: GRD-019, GRD-Q37(Resolved), GRD-Q43(휴대폰에서 차로 키를 옮기는 방법), GRD-Q38(비용은 사용자 API 계정), PROPOSAL 5번, USE_CASES GRD-UC-016, SCREENS, SDK, 목업 내 AI 연결 화면
+- 합의: 팀 결정 (2026-11-15), PR #13

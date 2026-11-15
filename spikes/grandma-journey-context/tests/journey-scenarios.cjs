@@ -79,7 +79,10 @@ console.log('PASS: home journey, exact-place memory, exclusion/latest companion,
  assert.equal(S().ai.stage,'idle');assert(!$('.ai-card'));assert.equal(all('.place-card').length,2);assert($('#aiBar').textContent.includes('내 AI'));
  click('#tripSettings');click('#tripVoice');assert.equal(S().companion,'mom');assert($('#tripVoiceCopy').textContent.includes('파도 서가'));assert($('#tripVoiceCopy').textContent.includes('어머니와 함께'));
  click('#aiChip');assert($('[data-ai-confirm]').disabled);click('[data-ai-pick=claude]');click('[data-ai-confirm]');assert.equal(S().ai.provider,'claude');
- click('.side-nav [data-view=explore]');assert.equal(S().ai.stage,'research');assert($('.ai-research'));assert($('.ai-research').textContent.includes('대한민국 명소발굴 추천지'));
+ // The connected card leads straight to the recommendations.
+ click('#aiLink [data-view=explore]');assert.equal(S().view,'explore');assert.equal(S().ai.stage,'research');assert($('.ai-research'));
+ // Sent conditions come only from chosen/confirmed preferences, never from the relationship name.
+ {const sent=$('.ai-sent b').textContent;assert(!/어르신|어머니|할머니/.test(sent),'no tag derived from the relationship name: '+sent);assert(sent.includes('걷기 편함'),'confirmed companion preference is sent: '+sent);}assert($('.ai-research').textContent.includes('대한민국 명소발굴 추천지'));
  assert(!/100×100/.test($('#vehicleDisplay').textContent),'Screens say 대한민국 명소발굴 추천지, not 100×100');
  w.aiResearchDone();assert.equal(all('.ai-card').length,2);assert(all('.ai-card').every(c=>c.textContent.includes('정리한 이유')&&c.querySelector('.src.q')));
  // A follow-up preference is stored only with consent.

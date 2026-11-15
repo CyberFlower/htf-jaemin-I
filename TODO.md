@@ -2,10 +2,10 @@
 
 마감까지 해야 할 일과 빨리 정해야 할 결정을 모아 둔 곳입니다.
 
-- 질문의 자세한 내용은 원래 파일에 있습니다. 여기에는 ID와 링크만 적습니다: [공통 Q#](docs/open-questions.md) · [GRD-Q#](projects/grandma/OPEN_QUESTIONS.md)
+- 질문의 자세한 내용은 원래 파일에 있습니다. 여기에는 ID와 링크만 적습니다: [공통 Q#](docs/open-questions.md)
 - 담당은 별칭(M1~M5)으로 적습니다.
 - 끝난 일은 체크합니다. 결정된 것은 `DECISIONS.md`나 ADR에 기록하고, 여기에는 결과 링크만 남깁니다.
-- 새 질문이 생기면 해당 `OPEN_QUESTIONS.md`에 ID를 만들고, 기한이 있으면 아래 결정 표에 추가합니다.
+- 새 공통 질문이 생기면 [공통 질문](docs/open-questions.md)에 ID를 만들고, 기한이 있으면 아래 결정 표에 추가합니다.
 
 ## 1. 빨리 정할 것
 
@@ -19,7 +19,7 @@
 | 두 프로젝트의 Goal과 Non-goal 합의 | 11/13 | 요구사항 확정 | 각 `GOAL.md` | | Open |
 | P0 요구사항 Confirmed | 11/13 | 목업, PROPOSAL 3~5번 | 각 `REQUIREMENTS.md` | | Open |
 | 팀명과 참가 부문 | 11/13 | 양식 01, APK 파일명 | Q9 | | Open |
-| grandma: 가족 공유 웹을 넣을지, 시뮬레이션으로 대체할지 | 11/13 | GRD-004, 목업 범위 | GRD-Q1 | | Open |
+| grandma: 가족 공유 웹을 넣을지, 시뮬레이션으로 대체할지 | 11/13 | GRD-004, 목업 범위 | grandma `PROPOSAL.md` 3번 | | Resolved: 다음 단계로 (2026-11-15) |
 | game: 연료 사용 보상을 유지할지, 효율·안전 보상으로 바꿀지 | 11/13 | GAM-002, PROPOSAL 2·3번 | [D-002](projects/game/DECISIONS.md) | | Resolved: 보급 토큰 제외 (D-002) |
 | game: care 요소를 어디까지 넣을지 (특히 음성 차량 제어), 주 타깃을 누구로 할지 | 11/13 | GAM-013~016 우선순위, PROPOSAL 2·3·6번 | game `GOAL.md` 타깃 | | Open |
 | game: 도시 그래픽 자산을 만드는 방법 | 11/14 | 목업 화면 | `spikes/game-isometric` | | Open |
@@ -53,9 +53,9 @@
 - [ ] Virtual Console로 바꿀 수 있는 신호 (Odometer, Fuel, Safety, Tire, Door) → game `GOAL.md` 성공 기준
 - [ ] Safety 경고 종류와 Tire 공기압 항목 → GAM-009 (API Reference는 2026-11-14 확인. 남은 것: `PRIVATE_CAR_SAFETY`가 에뮬레이터에서 허용되는지)
 - [ ] 엔진오일·브레이크액 레벨, 워셔액 경고 값이 들어오는지와 바꾸는 방법 → GAM-048
-- [ ] Seat 점유 정보 → GRD-Q2
-- [ ] NaviHelper 경유지 추가 → GRD-Q3
-- [ ] STT 한국어 인식, ON_DEVICE 모드 → GRD-Q6
+- [ ] Seat 점유 정보 → GRD-008
+- [ ] NaviHelper 경유지 추가 → GRD-007
+- [ ] STT 한국어 인식, ON_DEVICE 모드 → GRD-002
 - [ ] 공회전·급제동 판단 신호(속도, 시동 상태, 브레이크 페달), 12V 배터리 → GAM-013, GAM-014
 
 ## 4. 날짜별 할 일
@@ -82,9 +82,9 @@
 - [ ] 목업 제작
 - [ ] 영상 콘티 (대표 시나리오를 처음부터 끝까지, 차량 신호가 바뀌는 장면 포함)
 - [ ] `PROPOSAL.md` 1~6번 초안. 특히 아래 TODO를 채웁니다
-  - [ ] Pain Point 근거 (GRD-Q9, game 2번)
+  - [ ] Pain Point 근거 (양쪽 2번)
   - [ ] "차량이어야 하는 이유" 한 문단 (양쪽 3번)
-  - [ ] 타깃 규모, 예상 MAU, Retention과 그 근거 (GRD-Q7, game 6번)
+  - [ ] 타깃 규모, 예상 MAU, Retention과 그 근거 (양쪽 6번)
 
 ### 11/15(일): 마감 (23:59)
 
@@ -106,7 +106,7 @@
 
 **결정이 먼저 필요한 것**
 
-- [x] grandma 대표 장면 정하기: 첫 방문(SC-01~07) 화면을 만들기로 함(2026-11-15). 같은 날 첫 방문 목업을 [HTML 목업](spikes/grandma-journey-context/README.md)에 통합해 한 앱의 하루 흐름으로 만듦(목업 틀 8/8). 홈·추천 화면의 통합 순서 등 GRD-Q26의 나머지는 남음
+- [x] grandma 대표 장면 정하기: 첫 방문(SC-01~07) 화면을 만들기로 함(2026-11-15). 같은 날 첫 방문 목업을 [HTML 목업](spikes/grandma-journey-context/README.md)에 통합해 한 앱의 하루 흐름으로 만듦(목업 틀 8/8)
 - [ ] game 장면 7(공기압 경고) 유지 여부: 경고등 API를 일반 앱이 쓸 수 있는지(3절 에뮬레이터 확인). 안 되면 장면 교체 (담당: )
 - [ ] game 새 기능(전국 지도·도시 확장, 운전 경험 퀘스트)을 대표 장면에 넣을지. 넣으면 SC-08 이후로 붙이고 캡처 (담당: )
 - [ ] 시나리오 가이드·SDK 활용 맵을 양식에 별지(PDF)로 붙일지 → Q12 (담당: )
@@ -116,7 +116,7 @@
 - [ ] 6절 영상 콘티의 길이·자막 확정, 1절 "전체 길이" 채우기 (두 앱, 담당: )
 - [ ] 영상 녹화 후 3절 "캡처·영상" 칸에 타임코드 적기 (담당: )
 - [x] grandma 장면 캡처: SC-01~08 캡처를 `projects/grandma/assets/scenes/`에 둠. 다시 찍기는 `node spikes/mockup-frame/capture/grandma.cjs` (2026-11-15)
-- [x] grandma 화면 디자인을 "실로 잇는 기억"(A+)으로 바꾸고 SC-01~08 다시 캡처. 근거는 [화면 콘셉트](spikes/grandma-ui-concepts/README.md) (2026-11-15)
+- [x] grandma 화면 디자인을 "실로 잇는 기억"(A+)으로 바꾸고 SC-01~08 다시 캡처. (2026-11-15)
 - [ ] 에뮬레이터 화면 규격 실측 뒤 1절 "화면 규격" 줄 고치기 → Q4 (담당: )
 
 **목업 틀 (`spikes/mockup-frame/`)**
