@@ -67,7 +67,7 @@
 
 ### 확인할 것
 
-- TODO: 요구사항이 모두 Draft입니다. 위 여섯 기능 가운데 P0은 GAM-001, 003, 004, 006, 007, 009와 N01, N02, N03, N05, N06이고 나머지는 P1입니다. P0 Confirmed 뒤 목록을 다시 맞춥니다.
+- TODO: 요구사항이 모두 Draft입니다. 위 기능 가운데 P0은 GAM-001, 003, 004, 006, 007, 009와 N01, N02, N03, N05, N06이고, 운전 경험 퀘스트·전국 지도·차량이 확인하는 관리 퀘스트는 P1(확장 제안 포함)입니다. P0 Confirmed 뒤 목록을 다시 맞춥니다.
 - TODO (GAM-Q11): "동승자와 같은 화면에서 고른다"는 주차 중을 전제로 썼습니다. 정차 중 조작을 허용할지는 열려 있습니다.
 - TODO (GAM-Q3): Safety·Tire 도메인이 공기압 경고를 주는지 확인되지 않았습니다. 확인 결과에 따라 "길이 일렁이는" 예시의 경고 종류를 바꿉니다.
 - TODO (GAM-Q23, Q11): 급가속·급감속·급제동 항목은 AAOS 속도 신호에 기댑니다. 쓸 수 없다고 정해지면 일일 퀘스트 설명에서 두 항목을 빼거나 "판정 불가로 표시"를 덧붙입니다.
@@ -117,11 +117,15 @@
 
 ### 제출 원고
 
+**Pleos SDK를 쓰는 방식**
+
+이 앱의 재미는 차량 신호에서 시작합니다. 주차하는 순간 Vehicle Odometer가 잰 거리가 택배 상자의 건축 자재가 되고, Brake·TurnSignal·Seat 신호로 판정한 안전운전 항목이 같은 상자에 담깁니다. 섬을 키우는 희소 재화는 이렇게 차량 신호로만 생깁니다. 차가 이상을 알리면 Vehicle Safety 신호가 섬의 이상 현상과 관리 퀘스트가 되고, 신호가 정상으로 돌아오면 입력 없이 끝납니다. 경로 안내 중 NaviHelper가 알려 준 공사·낙석 같은 주의 구간은 돌발 퀘스트가 되고, 지나온 뒤 섬의 길도 정리됩니다. 주행 중에는 기록만 하고 말하지 않습니다. 예외는 장거리 운행 중 쉬어 가기를 권하는 TextToSpeech 안내 한 줄입니다. 모든 신호는 지원 여부를 먼저 확인하고, 신호가 없으면 그 기능만 "판정 불가"로 둡니다. 값을 지어내지 않습니다.
+
 **개발 환경**
 
 - Pleos Connect(Android Automotive OS 기반)용 Android 앱으로 만듭니다. 공모전 요건인 minSdk 28 이상, Gradle 8.0 이상, Java 또는 Kotlin을 따르고, 공식 Vehicle 샘플 앱의 빌드 구성을 기준으로 시작합니다.
 - Pleos Connect Emulator v2.1.0(API 34)에서 실행하고, Virtual Console로 누적 주행 거리, 방향 지시등, 경고등 같은 차량 신호를 바꿔 가며 확인합니다.
-- 쓰는 SDK: Vehicle 2.3.2, TextToSpeech 3.3.1.
+- 쓰는 SDK: Vehicle 2.3.2(Odometer, Brake, TurnSignal, Seat, Safety, CarInfo), NaviHelper 3.0.5, TextToSpeech 3.3.1. 확장 기능에서 FusedLocation 1.1.3(도시 발자국), SpeechToText 3.3.1(음성 조회)을 씁니다.
 
 **단계**
 
@@ -142,15 +146,17 @@
 | Vehicle Odometer 트립 시간 (`CAR_DRIVE`) | 장면 3 운전 시간 항목, 쉬어 가기 퀘스트 | GAM-026, GAM-030 | 문서 확인. 초기화 시점과 정차 포함 여부는 확인 필요 | 항목을 "판정 불가"로 두고, 퀘스트를 만들지 않습니다 |
 | Vehicle TurnSignal `getCurrentTurnSignalState`, `registerTurnSignalState` (`CAR_LIGHTS`) | 장면 3 방향 지시등 항목 | GAM-029 | 문서 확인 | 항목을 "판정 불가"로 둡니다 |
 | Vehicle Brake `getCurrentBrakePedalStatus` (`CAR_DRIVE`) | 장면 3 급제동 항목 | GAM-028 | 문서 확인 | 항목을 "판정 불가"로 둡니다 |
-| Vehicle Safety, Tire (`CAR_SAFETY`) | 장면 7 실제 경고 카드와 도시 이상 현상 | GAM-009 | 문서 확인. 공기압·과열 경고등(`registerTelltales`)은 `PRIVATE_CAR_SAFETY`(signature\|privileged)가 필요해 검토 필요(GAM-Q3) | 신호로 받은 경고만 표시합니다. 경고를 추측하지 않습니다 |
+| Vehicle Safety 경고등 `registerTelltales` (`TPMS`, `ENGINE_TEMPERATURE`) (`PRIVATE_CAR_SAFETY`) | 장면 7 실제 경고 카드와 도시 이상 현상 | GAM-009 | 문서 확인. 일반 앱이 쓸 수 있는 권한인지 확인이 필요합니다 | 신호로 받은 경고만 표시합니다. 경고를 추측하지 않습니다 |
 | Vehicle CarInfo (`CAR_INFO`) | 장면 6 차종별 정비 주기 | GAM-006 | 문서 확인. 차종별 주기 데이터는 확인 필요 | 차종을 읽을 수 없으면 차종별 주기를 적용하지 않습니다 |
 | TextToSpeech (`TTS_SERVICE`) | 쉬어 가기 퀘스트의 주행 중 음성 안내 | GAM-030 | 문서 확인 | 음성 없이 퀘스트만 만들고, 주차 중 앱을 열 때 보여 줍니다 |
 | AAOS `CarPropertyManager` `PERF_VEHICLE_SPEED` (`Car.PERMISSION_SPEED`, Dangerous) | 장면 3 급가속·급감속·급제동 항목 | GAM-027, GAM-028 | 문서 확인. 공모전 범위는 주최측에 확인 중 | 권한 거부, 미지원이면 두 항목을 "판정 불가"로 두고 미달성으로 치지 않습니다 |
 | 주행·주차 판단: AAOS `GEAR_SELECTION`, `PARKING_BRAKE_ON` (`Car.PERMISSION_POWERTRAIN`), `CarUxRestrictionsManager` | 장면 2 주행 모드, 장면 3 주차 감지 | GAM-003, GAM-N01 | 확인 필요. 공모전 범위는 주최측에 확인 중 | 판단할 수 없으면 조작을 막는 쪽을 기본으로 합니다 |
 | Vehicle Seat 좌석 점유·안전벨트 체결 (`CAR_SEATS`) | 운전 경험 퀘스트: 섬 손님, "모두 안전벨트" | GAM-034, GAM-035 | 문서 확인. 값의 의미와 에뮬레이터 동작은 확인 필요 | 신호가 없으면 연출과 항목을 만들지 않습니다 |
-| NaviHelper `onCautionPointInfo`, `onCameraAlert`, `onReRouteEnded` (`NAVI_ROUTE`) | 운전 경험 퀘스트: 도로 주의 구간 | GAM-036 | 문서 확인. 에뮬레이터에서 이벤트가 오는지는 확인 필요 | 이벤트가 없으면 퀘스트를 만들지 않습니다 |
-| Vehicle Safety `getEngineOilLevelState`, `getBrakeFluidLevelState`, `getTransmissionOilLevelState`, `hasLowWasherFluidWarning`과 각 콜백 (`CAR_SAFETY`, normal) | 차량이 확인하는 관리 퀘스트 (확장 제안) | GAM-048 | 문서 확인. 에뮬레이터에서 값을 바꾸는 방법은 확인 필요(GAM-Q40) | 지원하지 않는 항목은 퀘스트를 만들지 않습니다. 값이 `ERROR`이면 판정하지 않습니다 |
-| FusedLocation `registerFusedLocationCallback`, `addProximityAlert` (`FUSED_LOCATION`, dangerous) | 전국 지도의 도시 발자국 (확장 제안) | GAM-043 | 문서 확인. 권역 판정 방법은 확인 필요(GAM-Q35) | 권한 거부·미지원이면 발자국 없이 지도와 도시 열기만 동작합니다 |
+| NaviHelper `onCautionPointInfo`, `onCameraAlert`, `onReRouteEnded`, `onDestinationArrived` | 운전 경험 퀘스트: 도로 주의 구간 | GAM-036 | 문서 확인. 에뮬레이터에서 이벤트가 오는지는 확인 필요 | 이벤트가 없으면 퀘스트를 만들지 않습니다 |
+| Vehicle Safety `getEngineOilLevelState`, `getBrakeFluidLevelState`, `getTransmissionOilLevelState`, `hasLowWasherFluidWarning`과 각 콜백 (`CAR_SAFETY`, normal) | 차량이 확인하는 관리 퀘스트 (확장 제안) | GAM-048 | 문서 확인. 에뮬레이터에서 값을 바꾸는 방법은 확인 필요 | 지원하지 않는 항목은 퀘스트를 만들지 않습니다. 값이 `ERROR`이면 판정하지 않습니다 |
+| FusedLocation `registerFusedLocationCallback`, `addProximityAlert` (`FUSED_LOCATION`, dangerous) | 전국 지도의 도시 발자국 (확장 제안) | GAM-043 | 문서 확인. 권역 판정 방법은 확인 필요 | 권한 거부·미지원이면 발자국 없이 지도와 도시 열기만 동작합니다 |
+
+API별 퍼미션, 장면별 신호 흐름, 쓰지 않는 API와 이유는 참고자료의 "Pleos SDK 활용 맵"에 정리했습니다.
 
 Pleos Connect SDK의 Vehicle 도메인에는 차량 속도, 기어, 주차 브레이크를 읽는 API가 없습니다. 그래서 주행·주차 판단과 급가속·급제동 판정은 Android Automotive OS 표준 API로 읽는 것으로 설계했고, 이 API를 출품작에 쓸 수 있는지는 주최측에 확인하고 있습니다. 쓸 수 없다면 Vehicle Odometer의 주행 거리 변화로 주행 여부를 어림하고, 속도가 필요한 두 항목은 "판정 불가"로 둡니다. 위 표의 "문서 확인"은 공식 문서에 적혀 있다는 뜻이고, 에뮬레이터에서의 동작은 2차 PT 전까지 확인합니다.
 
@@ -167,6 +173,9 @@ Pleos Connect SDK의 Vehicle 도메인에는 차량 속도, 기어, 주차 브�
 - TODO (GAM-Q5): CarInfo 행의 대체 동작("차종별 주기를 적용하지 않습니다")은 요구사항에 없는 문장입니다. GAM-006은 주기 데이터 출처를 "확인 필요"로만 두고, 차종을 읽을 수 없을 때 무엇을 보여 줄지는 정하지 않았습니다. 팀이 대체 동작을 정하고 이 칸을 고칩니다.
 - TODO: 2단계의 개발 순서(P0 먼저, P1 다음)는 [requirements-guide.md](../../docs/process/requirements-guide.md)의 우선순위 정의를 따른 것입니다. 팀 일정으로 확정된 것은 아닙니다.
 - TODO: 표의 "장면" 번호는 [SCENARIO.md](SCENARIO.md)의 SC-01~SC-07과 같습니다. SCENARIO 3절 "차량 신호·SDK"를 채울 때 이 표와 맞춥니다.
+- TODO: SDK 표와 "Pleos SDK를 쓰는 방식" 문단은 [SDK.md](SDK.md)(2026-11-14 신설, Pleos SDK 활용 맵)와 같은 내용입니다. 둘 중 하나를 고치면 다른 쪽도 고칩니다. SDK.md의 모든 항목은 문서 확인 수준이고 에뮬레이터 검증 전입니다.
+- TODO: NaviHelper 리스너(`onCautionPointInfo` 등)에 필요한 퍼미션은 [dev-environment.md](../../docs/contest/dev-environment.md) 4.4절 표에 없어 쓰지 않았습니다. 에뮬레이터에서 확인합니다(GAM-Q31).
+- TODO: Tire `getLowTirePressure`는 저압 기준값만 주므로 경고에 쓰지 않습니다. 공기압 경고는 경고등 API(`PRIVATE_CAR_SAFETY`)로만 읽을 수 있어, 일반 앱이 쓸 수 없으면 장면 7을 다른 경고로 바꾸거나 시뮬레이션으로 둡니다(GAM-Q3).
 
 ## 6. 기대효과 및 발전 가능성 `[사업]`
 
@@ -238,9 +247,11 @@ Pleos Connect가 탑재된 차를 출퇴근, 장보기, 주말 외출에 쓰는 
 - GitHub 저장소와 커밋 hash: (제출 시 기재)
 - 이 앱의 README 절과 APK 경로: (제출 시 기재) 같은 저장소에 저희 팀의 다른 출품작 "다녀왔습니다"도 함께 있습니다.
 - 코어 시나리오 가이드: (제출 시 기재)
+- Pleos SDK 활용 맵: (제출 시 기재)
 
 ### 확인할 것
 
+- TODO (Q12): Pleos SDK 활용 맵은 [SDK.md](SDK.md)입니다. 별지로 붙일지 저장소 링크로 적을지 정합니다.
 - TODO (Q12): 화면 시안. 장면 일곱 개의 캡처가 있습니다([assets/scenes](assets/scenes/), `node spikes/mockup-frame/capture/game.cjs`로 다시 만듦). 양식에 파일로 붙일지 링크로 적을지는 Q12에서 정합니다. 캡처의 숫자는 목업 가정값입니다.
 - TODO: 시연 영상 링크와 공개 범위(링크가 있는 사람만 볼 수 있게 하는 등). 영상은 [HTML 목업](../../spikes/game-isometric/README.md)을 [SCENARIO.md](SCENARIO.md) 4절 순서대로 조작해 녹화할 수 있습니다. 아직 녹화하지 않았습니다.
 - TODO: 저장소 주소와 최종 커밋 hash. 두 출품작의 메일에 같은 hash를 적습니다([submission.md](../../docs/contest/submission.md) 5절).

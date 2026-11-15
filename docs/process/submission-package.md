@@ -10,9 +10,10 @@
 | 1 | **목업 틀**: 차량 화면 비율로 목업을 장면 순서대로 보여 주는 화면 | [`spikes/mockup-frame/`](../../spikes/mockup-frame/README.md) (앱 2개 공용) | 시연 영상 녹화, 화면 시안 캡처 |
 | 2 | **코어 시나리오 가이드**: 대표 시나리오를 장면 단위로 처음부터 끝까지 설명한 문서 | `projects/<p>/SCENARIO.md` | 영상 콘티, 양식 02의 4번 원천, 양식 7번 참고자료 |
 | 3 | **접수양식 02 원고** | `projects/<p>/PROPOSAL.md` | 접수양식 DOCX에 옮겨 적습니다 |
+| 보조 | **Pleos SDK 활용 맵**: 장면별로 어떤 SDK API를 어떻게 쓰는지, 검증 상태 | `projects/<p>/SDK.md` | 양식 02의 5번 원천, 7번 참고자료, 심사 기준 "기술 활용성"의 근거 |
 
 - 양식 01(참가신청서)과 03·04(동의서)는 개인정보가 들어가므로 **저장소 밖에서** 씁니다([submission.md](../contest/submission.md) 4절).
-- 새 프로젝트 문서를 시작할 때는 [시나리오 가이드 양식](templates/scenario.md)과 [접수양식 원고 양식](templates/proposal.md)을 복사합니다.
+- 새 프로젝트 문서를 시작할 때는 [시나리오 가이드 양식](templates/scenario.md), [접수양식 원고 양식](templates/proposal.md), [SDK 활용 맵 양식](templates/sdk.md)을 복사합니다.
 
 ## 2. 장면이 세 가지를 잇습니다
 
@@ -28,6 +29,7 @@ REQUIREMENTS.md P0    ─┘        (장면의 원본)        ├─▶ SCENARIO
 - **장면의 원본은 `SCENARIO.md` 2절 장면 표 하나입니다.** 장면의 순서, 이름, 연결된 화면을 다른 곳에서 따로 정하지 않습니다.
 - 장면 ID는 문서 안에서 `SC-01`, 다른 문서에서는 `GRD-SC-01` / `GAM-SC-01`로 씁니다. 번호는 재사용하지 않습니다. 장면을 없애면 번호를 비워 둡니다.
 - 장면 하나는 영상의 한 컷입니다. 차량 상태가 바뀌거나 사용자 목표가 바뀌는 지점에서 나눕니다. 버튼 하나마다 나누지 않습니다. 7개 안팎이 알맞습니다.
+- 영상 콘티는 `SCENARIO.md` 6절에 둡니다. 장면마다 길이(제안), 화면에서 하는 것, 자막을 적고, 자막에는 그 장면의 차량 신호와 SDK 이름을 한 줄로 넣습니다.
 - 목업 틀의 데이터(`spikes/mockup-frame/data/<p>.js`)는 장면 표에서 **생성**합니다. 손으로 고치지 않습니다.
 
 ## 3. 무엇을 하면 무엇을 함께 채우나
@@ -39,7 +41,8 @@ REQUIREMENTS.md P0    ─┘        (장면의 원본)        ├─▶ SCENARIO
 | 대표 시나리오의 흐름이나 순서를 바꿈 (`GOAL.md`, `USE_CASES.md`, `SCREENS.md`) | `SCENARIO.md` 2절 장면 표 → `PROPOSAL.md` 4번 |
 | 목업 화면을 만들거나 고침 | 그 화면이 속한 장면의 "틀" 칸에 파일을 연결 → `build.mjs` 실행 → 틀에서 확인 → 3절 "시연 방법", "캡처·영상" |
 | P0 요구사항을 추가하거나 바꿈 | 장면 표의 "요구사항" 칸 → 3절 "앱 응답", "오판 방지·대체 동작" → `PROPOSAL.md` 3번 |
-| 요구사항의 "의존"이나 검증 태그를 바꿈 (에뮬레이터 확인 포함) | 3절 "차량 신호·SDK" → `PROPOSAL.md` 5번 표 |
+| 요구사항의 "의존"이나 검증 태그를 바꿈 (에뮬레이터 확인 포함) | `SDK.md` 해당 행 → 3절 "차량 신호·SDK" → `PROPOSAL.md` 5번 표 |
+| `dev-environment.md`에 새 API를 정리함 | 그 API를 쓰는 요구사항의 의존 → `SDK.md` |
 | 질문이 Resolved 되거나 결정을 기록함 | 그 질문 ID가 붙은 `TODO`를 찾아 채움 (`grep -rn "TODO.*GRD-Q9" projects/`) |
 | Pain Point 근거, 타깃 규모 같은 자료를 찾음 (출처 포함) | `PROPOSAL.md` 2번, 6번 → `SCENARIO.md` 5절 |
 | 심사 기준에 맞는 강점을 정리함 | `SCENARIO.md` 5절 → `PROPOSAL.md` 3번의 "차량이어야 하는 이유" |
@@ -53,7 +56,7 @@ REQUIREMENTS.md P0    ─┘        (장면의 원본)        ├─▶ SCENARIO
 | 2. 기획 배경 | `GOAL.md` 문제, 기획 의도 | 누가, 어떤 순간에, 왜 불편한지와 근거(출처) |
 | 3. 주요 기능 및 차량 특화 요소 | `REQUIREMENTS.md` P0, `SCENARIO.md` 5절 | P0 기능마다 요구사항 ID, "폰 앱이면 사라지는 것" 한 문단 |
 | 4. 주요 사용 시나리오 | `SCENARIO.md` 1절과 2절 | 장면 순서대로 쓴 흐름. 주행 중과 정차 중이 구분됨 |
-| 5. 개발 계획 | `REQUIREMENTS.md` 의존, [dev-environment.md](../contest/dev-environment.md), ADR-0002 | SDK 표의 모든 행에 장면과 검증 태그 |
+| 5. 개발 계획 | `SDK.md`(원천은 `REQUIREMENTS.md` 의존과 [dev-environment.md](../contest/dev-environment.md)), ADR-0002 | SDK 표의 모든 행에 장면과 검증 태그. `SDK.md` 1·2절과 일치 |
 | 6. 기대효과 및 발전 가능성 | `GOAL.md` 사업성 메모 | 타깃, MAU, Retention에 가정과 근거. 근거가 없으면 숫자를 쓰지 않습니다 |
 | 7. 참고자료 | 목업 틀, `SCENARIO.md`, 영상, 저장소 | 화면 시안, 영상 링크, 저장소 주소와 커밋 hash, 앱별 README 절 링크 |
 | 8. 숏폼 링크 | — | 링크 또는 "제출하지 않음" |
@@ -84,6 +87,7 @@ node spikes/mockup-frame/build.mjs
 
 - 틀은 장면마다 HTML 목업(iframe) 또는 캡처 이미지를 화면 규격 그대로 띄우고 창 크기에 맞게 줄입니다.
 - 틀에 보이는 글자는 앱 이름, 장면 번호, 장면 이름, 차량 상태뿐입니다. 장면 설명, 요구사항, 심사 태그는 틀에 넣지 않고 `SCENARIO.md`에 씁니다. 장면 이름은 짧게 씁니다.
+- 장면 표의 "SDK" 칸(선택)은 그 장면에서 쓰는 Pleos SDK 이름을 각 프로젝트 `SDK.md` 2절과 같게 짧게 씁니다. 틀에서 `S` 키로 켤 때만 보입니다(기본은 꺼짐).
 - 틀에 넣는 목업은 **차량 화면 영역만** 그립니다. 목업 안에 따로 둔 테두리나 시연 도구는 숨길 수 있어야 합니다(예: `?embed=1`).
 - 캡처는 `projects/<p>/assets/scenes/SC-01.png`에 둡니다. 화면 규격과 같은 비율로 찍습니다.
 - 화면 규격은 `SCENARIO.md` 1절의 "화면 규격" 줄을 따릅니다. 에뮬레이터 실측값이 나오면 그 줄을 고칩니다([open-questions.md](../open-questions.md) Q4).
@@ -97,6 +101,7 @@ node spikes/mockup-frame/build.mjs
 - [ ] `build.mjs` 결과에서 "화면이 연결된 장면"이 전체 장면 수와 같습니다
 - [ ] `SCENARIO.md`에 `TODO`가 없습니다
 - [ ] `PROPOSAL.md` 1~7번의 "확인할 것"에 `TODO`가 없고, "제출 원고"를 사람이 읽고 확인했습니다
+- [ ] `SDK.md`의 API 이름이 모두 `dev-environment.md`에 있고, 에뮬레이터에서 확인한 것만 "에뮬레이터 검증"으로 표시했습니다
 - [ ] 틀의 장면 순서대로 넘기면 영상 콘티가 됩니다. 주행 장면과 정차·주차 장면이 구분되어 보입니다
 - [ ] `SCENARIO.md` 5절의 심사 항목 4개에 근거 장면이 하나 이상 있습니다
 - [ ] `PROPOSAL.md`의 기능, 수치, SDK가 모두 원천 문서에 있습니다

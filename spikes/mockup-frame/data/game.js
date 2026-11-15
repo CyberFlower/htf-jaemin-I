@@ -12,6 +12,7 @@ window.MOCKUP_DATA["game"] = {
       "id": "SC-01",
       "title": "낮의 섬",
       "state": "주차",
+      "sdk": "주차 판단: AAOS 기어·주차 브레이크 (Q11)",
       "src": "../../projects/game/assets/scenes/SC-01.png",
       "kind": "image"
     },
@@ -19,6 +20,7 @@ window.MOCKUP_DATA["game"] = {
       "id": "SC-02",
       "title": "출발하면 주행 모드",
       "state": "주행",
+      "sdk": "주행 판단: AAOS (Q11) · Vehicle Odometer",
       "src": "../../projects/game/assets/scenes/SC-02.png",
       "kind": "image"
     },
@@ -26,6 +28,7 @@ window.MOCKUP_DATA["game"] = {
       "id": "SC-03",
       "title": "주차하면 택배가 온다",
       "state": "주차",
+      "sdk": "Vehicle Odometer · Brake · TurnSignal · AAOS 속도 (Q11)",
       "src": "../../projects/game/assets/scenes/SC-03.png",
       "kind": "image"
     },
@@ -33,6 +36,7 @@ window.MOCKUP_DATA["game"] = {
       "id": "SC-04",
       "title": "시장을 짓고 야시장으로",
       "state": "주차",
+      "sdk": "— (로컬 저장, 주차 판단만)",
       "src": "../../projects/game/assets/scenes/SC-04.png",
       "kind": "image"
     },
@@ -40,6 +44,7 @@ window.MOCKUP_DATA["game"] = {
       "id": "SC-05",
       "title": "거두고, 사고, 쓰다듬기",
       "state": "주차",
+      "sdk": "— (로컬 저장, 기기 시각)",
       "src": "../../projects/game/assets/scenes/SC-05.png",
       "kind": "image"
     },
@@ -47,6 +52,7 @@ window.MOCKUP_DATA["game"] = {
       "id": "SC-06",
       "title": "정비소 주민의 정비 알림",
       "state": "주차",
+      "sdk": "Vehicle Odometer · CarInfo",
       "src": "../../projects/game/assets/scenes/SC-06.png",
       "kind": "image"
     },
@@ -54,6 +60,7 @@ window.MOCKUP_DATA["game"] = {
       "id": "SC-07",
       "title": "공기압 경고와 일렁이는 길",
       "state": "경고 (공기압)",
+      "sdk": "Vehicle Safety 경고등 (GAM-Q3)",
       "src": "../../projects/game/assets/scenes/SC-07.png",
       "kind": "image"
     }
