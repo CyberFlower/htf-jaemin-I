@@ -1,8 +1,7 @@
 # 화면 구성 (제안): 다녀왔습니다 (`GRD`)
 
-> 상태: **Draft (제안)**, 2026-11-14 (2026-11-15: 목업 화면 대응 갱신, 화면 언어 "실로 잇는 기억" 추가). 공모전(1차 2026-11-15 제출, 2차 2026-12-03 PT)에서 보여줄 장면과 화면을 한곳에 모읍니다. 채택 여부는 팀이 정합니다.
-> 화면 ID(`S##`)는 [USE_CASES.md](USE_CASES.md) "화면 흐름 (제안)"의 표기를 그대로 씁니다. 화면 정의는 그 절에만 두고, 이 문서는 링크와 대응표만 둡니다.
-> 원천: [GOAL.md](GOAL.md), [USE_CASES.md](USE_CASES.md), [REQUIREMENTS.md](REQUIREMENTS.md), [SCENARIO.md](SCENARIO.md), [SCENARIOS.md](SCENARIOS.md), [목업 README](../../spikes/grandma-journey-context/README.md), [DISPLAY-SPEC.md](../../spikes/grandma-journey-context/docs/DISPLAY-SPEC.md). 어긋나면 원천을 따르고 이 파일을 고칩니다.
+> 상태: **Draft (제안)**. 보여 줄 장면과 화면을 모읍니다.
+> 화면 ID(`S##`)와 화면 정의는 [USE_CASES.md](USE_CASES.md) "화면 흐름"을 따릅니다. 목업은 [목업 README](../../spikes/grandma-journey-context/README.md)와 [DISPLAY-SPEC.md](../../spikes/grandma-journey-context/docs/DISPLAY-SPEC.md)에 있습니다.
 
 ## 1. 보여줄 것
 
@@ -24,15 +23,15 @@
 | 6 | 귀가 후 방문을 확인하고 기록을 남기면 약속이 완료되고 다음 약속으로 이어짐 | S10 (SC-07) | `[창의]` `[사업]` | GRD-010, GRD-016 |
 | 7 | 같은 카페를 다시 고르면 지난 동행을 근거로 이번 동행을 묻고, 답에 따라 추천 이유가 바뀜 | 목업 홈 → 여정 설정 → 둘러보기 (SC-08) | `[창의]` `[사업]` | GRD-013, GRD-014, GRD-017 |
 
-2026-11-15부터 장면 1~7 모두 [HTML 목업](../../spikes/grandma-journey-context/journey-demo.html) 하나의 하루 흐름으로 시연할 수 있습니다(같은 날 첫 방문 목업을 통합). 주소 `#SC-0N`이 장면의 처음 상태입니다.
+장면 1~7은 [HTML 목업](../../spikes/grandma-journey-context/journey-demo.html) 하나에서 하루 흐름으로 시연합니다. 주소 `#SC-0N`이 장면의 처음 상태입니다.
 
 ## 3. 화면 목록
 
 S01~S12의 진입·주요 행동·UC 연결은 [USE_CASES.md "화면 목록"](USE_CASES.md#화면-목록)에 있습니다. 홈의 카드 순위는 [지금 카드 규칙](USE_CASES.md#지금-카드-규칙)에 있습니다.
 
-### 화면 언어: 실로 잇는 기억 (2026-11-15)
+### 화면 언어: 실로 잇는 기억
 
-웹 대시보드(왼쪽 메뉴, 큰 카드, 타일)를 걷어 내고, 앱의 정의("기억을 다음 약속으로 잇는다")를 화면 위쪽의 실 한 줄로 보여 줍니다. 비교한 세 방향과 고른 이유는 [화면 콘셉트](../../spikes/grandma-ui-concepts/README.md)에 있습니다. 시각 규칙은 [DISPLAY-SPEC.md](../../spikes/grandma-journey-context/docs/DISPLAY-SPEC.md)를 따릅니다.
+앱의 정의("기억을 다음 약속으로 잇는다")를 화면 위쪽의 실 한 줄로 보여 줍니다. 비교한 방향과 고른 이유는 [화면 콘셉트](../../spikes/grandma-ui-concepts/README.md)에 있습니다. 시각 규칙은 [DISPLAY-SPEC.md](../../spikes/grandma-journey-context/docs/DISPLAY-SPEC.md)를 따릅니다.
 
 | 요소 | 화면 | 뜻 |
 |---|---|---|
@@ -51,7 +50,7 @@ S01~S12의 진입·주요 행동·UC 연결은 [USE_CASES.md "화면 목록"](US
 
 ### 목업 HTML 화면과 S## 대응
 
-목업은 첫 방문(SC-01~07)과 재방문(SC-08)을 한 앱의 하루 흐름으로 잇습니다(2026-11-15 통합). 첫 방문 화면은 S## 이름을 따르고, 재방문 화면 이름은 HTML 목업의 표기이며 S##를 다시 정의하지 않습니다([SCENARIO.md](SCENARIO.md) 2절). 홈과 추천 화면의 통합 순서는 GRD-Q26에서 검토 중입니다.
+목업은 첫 방문(SC-01~07)과 재방문(SC-08)을 한 앱의 하루 흐름으로 잇습니다. 첫 방문 화면은 S## 이름을 따르고, 재방문 화면 이름은 목업의 표기입니다. 홈과 추천 화면의 통합 순서는 GRD-Q26입니다.
 
 | 목업 화면 (`spikes/grandma-journey-context/src/index.html`) | 하는 일 | 가까운 S## | 대응 상태 | 요구사항 |
 |---|---|---|---|---|
@@ -84,14 +83,14 @@ S05 공유 미리보기, S12 사람·장소 관리는 목업에 대응 화면이
 | 주차 | S01과 모든 화면. 귀가 카드(S10 진입) | 입력, 확인, 승인 | 지금 카드 규칙 4순위 |
 | 주행 | S09 주행 모드. 다음 목적지, 남은 시간, 안내 한 줄 | 없음. 음성 안내만 | GRD-N01, GRD-UC-015 E1 |
 | 주행/정차 판단 불가 | S09와 같이 처리하는 안(제안) | 없음 | GRD-UC-015 E2, GRD-Q22, 공통 Q8 |
-| 입력 중 주행으로 바뀜 | 입력을 멈추고 S09. 목적지·후보·방문 기록과 입력 초안은 유지하고 정차 후 이어감 | 없음 | 목업 보완안 "공통 상태 전환", [API-ADOPTION.md](API-ADOPTION.md) 5절 1번 |
+| 입력 중 주행으로 바뀜 | 입력을 멈추고 S09. 목적지·후보·방문 기록과 입력 초안은 유지하고 정차 후 이어감 | 없음 | [API-ADOPTION.md](API-ADOPTION.md) 5절 1번 |
 | 실제 차량 경고 | 앱이 차량 경고와 안전 정보를 가리거나 늦추지 않음 | — | AGENTS.md 4절 공통 원칙. 화면 처리 방식은 정하지 않음 |
 
 차량 신호로 띄운 카드(탑승 후보, 귀가)는 관측 근거를 함께 보여 주고, 신호를 지원하지 않으면 띄우지 않습니다(지금 카드 규칙).
 
 ## 5. 시연 영상 순서
 
-장면 순서의 원본은 [SCENARIO.md](SCENARIO.md) 2절 장면 표입니다. 순서를 바꾸면 그 표를 고칩니다.
+장면 순서는 [SCENARIO.md](SCENARIO.md) 2절 장면 표를 따릅니다.
 
 | 장면 | 화면 | 목업 연결 |
 |---|---|---|
@@ -110,10 +109,10 @@ S05 공유 미리보기, S12 사람·장소 관리는 목업에 대응 화면이
 
 ## 7. FR 후보
 
-목업 보완안에서 FR 후보로 적었지만 아직 요구사항으로 옮기지 않은 것입니다.
+요구사항으로 정하지 않은 후보입니다.
 
 | 후보 | 화면 | 관련 |
 |---|---|---|
 | 주요 터치 영역 논리 높이 64 이상, 간격 16 이상 (실제 디스플레이 확인 후 확정) | 모든 정차 화면 | [목업 UC 보완안](../../spikes/grandma-journey-context/docs/UC-PROPOSAL.md) "정보량과 터치 흐름 보완", GRD-014 메모 |
-| 내비 적용 요청과 계획 버전을 묶어, 취소·변경 뒤 늦게 온 응답을 무시 | 담은 곳, S06 | 목업 보완안 "시나리오 통합" UC-005 행, [API-ADOPTION.md](API-ADOPTION.md) 4절, GRD-007, GRD-N05 |
+| 내비 적용 요청과 계획 버전을 묶어, 취소·변경 뒤 늦게 온 응답을 무시 | 담은 곳, S06 | [API-ADOPTION.md](API-ADOPTION.md) 4절, GRD-007, GRD-N05 |
 | 경유 후보는 실행 구간별 최대 두 곳 | 담은 곳, S06 | API-ADOPTION.md 4절, GRD-Q25 |
