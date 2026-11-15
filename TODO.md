@@ -2,7 +2,7 @@
 
 마감까지 해야 할 일과 빨리 정해야 할 결정을 모아 둔 곳입니다.
 
-- 질문의 자세한 내용은 원래 파일에 있습니다. 여기에는 ID와 링크만 적습니다: [공통 Q#](docs/open-questions.md) · [GRD-Q#](projects/grandma/OPEN_QUESTIONS.md) · [GAM-Q#](projects/game/OPEN_QUESTIONS.md)
+- 질문의 자세한 내용은 원래 파일에 있습니다. 여기에는 ID와 링크만 적습니다: [공통 Q#](docs/open-questions.md) · [GRD-Q#](projects/grandma/OPEN_QUESTIONS.md)
 - 담당은 별칭(M1~M5)으로 적습니다.
 - 끝난 일은 체크합니다. 결정된 것은 `DECISIONS.md`나 ADR에 기록하고, 여기에는 결과 링크만 남깁니다.
 - 새 질문이 생기면 해당 `OPEN_QUESTIONS.md`에 ID를 만들고, 기한이 있으면 아래 결정 표에 추가합니다.
@@ -14,20 +14,20 @@
 | 결정 | 기한 | 막히는 것 | 관련 | 담당 | 상태 |
 |---|---|---|---|---|---|
 | 프로젝트 owner 지정 | 11/12 | 모든 PR merge 판단 | [README 팀](README.md#팀) | | Open |
-| 출품작 수: 1개, 2개, 또는 통합 (주최측 답을 먼저 받음) | 11/13 | 문서 범위, PROPOSAL, 목업 범위 | Q1, Q2, GAM-Q10 | | Resolved: 2개 각각 접수 (Q1), 한 저장소 유지 (Q2). GAM-Q10은 Open |
+| 출품작 수: 1개, 2개, 또는 통합 (주최측 답을 먼저 받음) | 11/13 | 문서 범위, PROPOSAL, 목업 범위 | Q1, Q2 | | Resolved: 2개 각각 접수 (Q1), 한 저장소 유지 (Q2) |
 | 목업 구현 방식 | 11/13 | 목업 제작 전체 | Q3, [ADR-0002](docs/decisions/0002-mockup-implementation.md) | | Open |
 | 두 프로젝트의 Goal과 Non-goal 합의 | 11/13 | 요구사항 확정 | 각 `GOAL.md` | | Open |
 | P0 요구사항 Confirmed | 11/13 | 목업, PROPOSAL 3~5번 | 각 `REQUIREMENTS.md` | | Open |
 | 팀명과 참가 부문 | 11/13 | 양식 01, APK 파일명 | Q9 | | Open |
 | grandma: 가족 공유 웹을 넣을지, 시뮬레이션으로 대체할지 | 11/13 | GRD-004, 목업 범위 | GRD-Q1 | | Open |
-| game: 연료 사용 보상을 유지할지, 효율·안전 보상으로 바꿀지 | 11/13 | GAM-002, PROPOSAL 2·3번 | GAM-Q6 | | Open |
-| game: care 요소를 어디까지 넣을지 (특히 음성 차량 제어), 주 타깃을 누구로 할지 | 11/13 | GAM-013~016 우선순위, PROPOSAL 2·3·6번 | GAM-Q16, GAM-Q19 | | Open |
-| game: 도시 그래픽 자산을 만드는 방법 | 11/14 | 목업 화면 | GAM-Q12 | | Open |
+| game: 연료 사용 보상을 유지할지, 효율·안전 보상으로 바꿀지 | 11/13 | GAM-002, PROPOSAL 2·3번 | [D-002](projects/game/DECISIONS.md) | | Resolved: 보급 토큰 제외 (D-002) |
+| game: care 요소를 어디까지 넣을지 (특히 음성 차량 제어), 주 타깃을 누구로 할지 | 11/13 | GAM-013~016 우선순위, PROPOSAL 2·3·6번 | game `GOAL.md` 타깃 | | Open |
+| game: 도시 그래픽 자산을 만드는 방법 | 11/14 | 목업 화면 | `spikes/game-isometric` | | Open |
 | 시나리오 가이드와 화면 시안을 양식에 붙이는 방법 (별지 또는 링크) | 11/15 | 양식 02의 7번, 양식에 옮기는 작업 | Q12 | | Open |
 | 목업을 둘 위치 (`spikes/` 규칙과 grandma `mockup/`의 차이) | 11/15 | 제출 저장소 구조, README 실행 방법 | Q13 | | Resolved: grandma 목업을 `spikes/`로 옮김 (PR #11) |
-| game: 전국 지도 확장에서 폰 연동을 어느 단계에 넣을지 (재화 역할은 정함) | 11/15 | GAM-045~047, PROPOSAL 3·6번, 목업 범위 | GAM-Q36 | | Resolved ([D-004](projects/game/DECISIONS.md)). GAM-Q33도 Resolved ([D-003](projects/game/DECISIONS.md)) |
-| game: 경고 이상 현상에 쓸 신호(공기압·과열 경고등을 못 읽을 때), 정비 퀘스트를 두 갈래로 나눌지 | 11/15 | GAM-009, GAM-048, 시연 영상 7번 장면 | GAM-Q3, GAM-Q40 | | 정비 두 갈래는 Resolved ([D-004](projects/game/DECISIONS.md)). GAM-Q3은 기한 없이 검토 필요(3절 에뮬레이터 확인) |
-| game: 운행 자재 주간 상한 수식 제안 확인 | 11/15 | GAM-001, GAM-039, 목업 `CFG` | GAM-Q27 | | Open (제안 확인 대기) |
+| game: 전국 지도 확장에서 폰 연동을 어느 단계에 넣을지 (재화 역할은 정함) | 11/15 | GAM-045~047, PROPOSAL 3·6번, 목업 범위 | [D-004](projects/game/DECISIONS.md) | | Resolved (D-004). 재화 역할은 [D-003](projects/game/DECISIONS.md) |
+| game: 경고 이상 현상에 쓸 신호(공기압·과열 경고등을 못 읽을 때), 정비 퀘스트를 두 갈래로 나눌지 | 11/15 | GAM-009, GAM-048, 시연 영상 7번 장면 | [D-004](projects/game/DECISIONS.md) | | 정비 두 갈래는 Resolved (D-004). 경고등 신호는 3절 에뮬레이터 확인 뒤 정함 |
+| game: 운행 자재 주간 상한 수식 제안 확인 | 11/15 | GAM-001, GAM-039, 목업 `CFG` | GAM-001 | | Open (제안 확인 대기) |
 | 저장소 공개 시 개인정보 처리 (저장소 이름, 계정, 커밋 author) | 11/15 | 11/16 공개 전환 | Q5 | | Open |
 
 ## 2. 주최측 문의 (메일 한 통으로)
@@ -49,14 +49,14 @@
 
 - [ ] 에뮬레이터를 실행할 수 있는 팀원 PC 수 확인 → 담당 지정 (담당: )
 - [ ] 화면 규격 (`adb shell wm size`, `adb shell wm density`) → Q4, README 제출 정보
-- [ ] 주행/정차, 주차를 판단할 신호 → Q8, GAM-Q1
-- [ ] Virtual Console로 바꿀 수 있는 신호 (Odometer, Fuel, Safety, Tire, Door) → GAM-Q2
-- [ ] Safety 경고 종류와 Tire 공기압 항목 → GAM-Q3 (API Reference는 2026-11-14 확인. 남은 것: `PRIVATE_CAR_SAFETY`가 에뮬레이터에서 허용되는지)
-- [ ] 엔진오일·브레이크액 레벨, 워셔액 경고 값이 들어오는지와 바꾸는 방법 → GAM-Q40
+- [ ] 주행/정차, 주차를 판단할 신호 → Q8, GAM-003, GAM-N01
+- [ ] Virtual Console로 바꿀 수 있는 신호 (Odometer, Fuel, Safety, Tire, Door) → game `GOAL.md` 성공 기준
+- [ ] Safety 경고 종류와 Tire 공기압 항목 → GAM-009 (API Reference는 2026-11-14 확인. 남은 것: `PRIVATE_CAR_SAFETY`가 에뮬레이터에서 허용되는지)
+- [ ] 엔진오일·브레이크액 레벨, 워셔액 경고 값이 들어오는지와 바꾸는 방법 → GAM-048
 - [ ] Seat 점유 정보 → GRD-Q2
 - [ ] NaviHelper 경유지 추가 → GRD-Q3
 - [ ] STT 한국어 인식, ON_DEVICE 모드 → GRD-Q6
-- [ ] 공회전·급제동 판단 신호(속도, 시동 상태, 브레이크 페달), 12V 배터리 → GAM-Q17, GAM-Q14
+- [ ] 공회전·급제동 판단 신호(속도, 시동 상태, 브레이크 페달), 12V 배터리 → GAM-013, GAM-014
 
 ## 4. 날짜별 할 일
 
@@ -84,7 +84,7 @@
 - [ ] `PROPOSAL.md` 1~6번 초안. 특히 아래 TODO를 채웁니다
   - [ ] Pain Point 근거 (GRD-Q9, game 2번)
   - [ ] "차량이어야 하는 이유" 한 문단 (양쪽 3번)
-  - [ ] 타깃 규모, 예상 MAU, Retention과 그 근거 (GRD-Q7, GAM-Q8)
+  - [ ] 타깃 규모, 예상 MAU, Retention과 그 근거 (GRD-Q7, game 6번)
 
 ### 11/15(일): 마감 (23:59)
 
@@ -107,7 +107,7 @@
 **결정이 먼저 필요한 것**
 
 - [x] grandma 대표 장면 정하기: 첫 방문(SC-01~07) 화면을 만들기로 함(2026-11-15). [첫 방문 목업](spikes/grandma-first-visit/README.md)으로 목업 틀 8/8. 두 목업을 합칠지는 GRD-Q26에 남음
-- [ ] game 장면 7(공기압 경고) 유지 여부: 경고등 API를 일반 앱이 쓸 수 있는지 → GAM-Q3. 안 되면 장면 교체 (담당: )
+- [ ] game 장면 7(공기압 경고) 유지 여부: 경고등 API를 일반 앱이 쓸 수 있는지(3절 에뮬레이터 확인). 안 되면 장면 교체 (담당: )
 - [ ] game 새 기능(전국 지도·도시 확장, 운전 경험 퀘스트)을 대표 장면에 넣을지. 넣으면 SC-08 이후로 붙이고 캡처 (담당: )
 - [ ] 시나리오 가이드·SDK 활용 맵을 양식에 별지(PDF)로 붙일지 → Q12 (담당: )
 
