@@ -1,9 +1,7 @@
 # REQUIREMENTS: 다녀왔습니다 (`GRD`)
 
 > 형식, 상태, 우선순위 정의는 [requirements-guide.md](../../docs/process/requirements-guide.md)를 따릅니다.
-> 아래 항목은 모두 **후보(Draft)**입니다. 팀 리뷰를 거쳐 Review, Confirmed로 올립니다.
-> GRD-001~012와 원칙 항목은 draft v0.1에서 뽑았습니다. GRD-013~018은 2026-11-14 [목업 UC 보완안](../../spikes/grandma-journey-context/docs/UC-PROPOSAL.md)과 [SCENARIOS.md](SCENARIOS.md)에서 옮긴 제안이며, 우선순위 P1은 에이전트 제안입니다.
-> 목록 보기: `grep -n "^### GRD-" projects/grandma/REQUIREMENTS.md`
+> 모든 항목은 **후보(Draft)**입니다.
 
 ## 기능
 
@@ -92,7 +90,7 @@
 - 수용 기준:
   - 도어 열림·닫힘만으로 탑승이나 신원을 확정하지 않는다. 항상 사용자에게 확인한다.
   - 좌석 신호를 쓸 수 없으면 수동으로 동행자를 고른다.
-- 의존: Vehicle Door (CAR_DOORS) — 문서 확인, Seat 좌석 점유 `checkSeatOccupancyCapabilities`, `getCurrentSeatOccupancy`, `registerSeatOccupancy` (CAR_SEATS) — API 이름 문서 확인(dev-environment.md 4.2절, 2026-11-14), 값의 의미와 에뮬레이터 동작 — 확인 필요 (GRD-Q2, GAM-Q30)
+- 의존: Vehicle Door (CAR_DOORS) — 문서 확인, Seat 좌석 점유 `checkSeatOccupancyCapabilities`, `getCurrentSeatOccupancy`, `registerSeatOccupancy` (CAR_SEATS) — API 이름 문서 확인(dev-environment.md 4.2절), 값의 의미와 에뮬레이터 동작 — 확인 필요 (GRD-Q2, GAM-Q30)
 - 출처: draft §02-4 동행, §03 확인
 
 ### GRD-009 동행자 공조 설정 적용
@@ -152,7 +150,7 @@
 - 출처: [목업 UC 보완안](../../spikes/grandma-journey-context/docs/UC-PROPOSAL.md) "시나리오 통합에서 도출한 보완안"의 UC-012·014 행, "기존 UC의 보완 지점"; [SCENARIOS.md](SCENARIOS.md) 1절, 3절 A·B·H
 - 관련 결정: 없음
 - 미결정: [OPEN_QUESTIONS.md](OPEN_QUESTIONS.md)의 GRD-Q16, GRD-Q19(장소 일치·재질문·동승자 앞 공개 범위), GRD-Q24
-- 메모: 우선순위 P1은 에이전트 제안입니다. 사람이 확정합니다. 범위는 GRD-Q26. 현재 목업은 내부 장소 ID가 같은 기록으로만 재방문을 판단합니다.
+- 메모: 범위는 GRD-Q26. 현재 목업은 내부 장소 ID가 같은 기록으로만 재방문을 판단합니다.
 
 ### GRD-014 목적지 주변 후보 두 곳 비교와 추천 이유
 - 관련 UC: [USE_CASES.md](USE_CASES.md)의 GRD-UC-011 / B1~B3, E1~E3; [목업 UC 보완안](../../spikes/grandma-journey-context/docs/UC-PROPOSAL.md)의 후보 UC-018 / B1~B4, A1~A2, E1~E3 (정식 편입 전)
@@ -172,7 +170,7 @@
 - 출처: [목업 UC 보완안](../../spikes/grandma-journey-context/docs/UC-PROPOSAL.md)의 UC-018, "14.6인치 차량 화면에서 추가로 드러난 요구" 표, "정보량과 터치 흐름 보완", "시나리오 통합" UC-018 행; [SCENARIOS.md](SCENARIOS.md) 3절 C·D, 6절
 - 관련 결정: 없음
 - 미결정: [OPEN_QUESTIONS.md](OPEN_QUESTIONS.md)의 GRD-Q5, GRD-Q16, GRD-Q17, GRD-Q23, GRD-Q24, GRD-Q26; [공통 질문](../../docs/open-questions.md) Q8, Q11
-- 메모: 우선순위 P1은 에이전트 제안입니다. 사람이 확정합니다. 범위는 GRD-Q26. 터치 기준(주요 조작 논리 높이 64 이상, 간격 16 이상)은 목업 보완안의 FR 후보이며, 실제 디스플레이에서 오터치·가독성·과업 완료를 확인한 뒤 확정합니다. '목적지 근처'의 기준(거리, 이동 시간, 우회 시간)은 정하지 않았습니다(목업 보완안 "새로 결정할 사항" 1).
+- 메모: 범위는 GRD-Q26. 터치 기준(주요 조작 논리 높이 64 이상, 간격 16 이상)은 목업 보완안의 FR 후보이며, 실제 디스플레이에서 오터치·가독성·과업 완료를 확인한 뒤 확정합니다. '목적지 근처'의 기준(거리, 이동 시간, 우회 시간)은 정하지 않았습니다(목업 보완안 "새로 결정할 사항" 1).
 
 ### GRD-015 추천 근거와 정보 출처 확인
 - 관련 UC: [USE_CASES.md](USE_CASES.md)의 GRD-UC-011 / B3, E2; GRD-UC-014 / B1; [목업 UC 보완안](../../spikes/grandma-journey-context/docs/UC-PROPOSAL.md)의 후보 UC-017 / B1~B3, A1, E1 (정식 편입 전)
@@ -191,7 +189,7 @@
 - 출처: [목업 UC 보완안](../../spikes/grandma-journey-context/docs/UC-PROPOSAL.md)의 UC-017, "14.6인치 차량 화면" 표의 UC-017 행, "정보량과 터치 흐름 보완"의 UC-017 B1~B2; [SCENARIOS.md](SCENARIOS.md) 3절 D
 - 관련 결정: 없음
 - 미결정: [OPEN_QUESTIONS.md](OPEN_QUESTIONS.md)의 GRD-Q17, GRD-Q23, GRD-Q24
-- 메모: 우선순위 P1은 에이전트 제안입니다. 사람이 확정합니다. 범위는 GRD-Q26. 속성의 만료·충돌 정책은 정하지 않았습니다. 목업은 미확인 속성의 가점 제외까지만 구현합니다.
+- 메모: 범위는 GRD-Q26. 속성의 만료·충돌 정책은 정하지 않았습니다. 목업은 미확인 속성의 가점 제외까지만 구현합니다.
 
 ### GRD-016 사용자 확인으로만 방문 기록과 스탬프 남기기
 - 관련 UC: [USE_CASES.md](USE_CASES.md)의 GRD-UC-008 / B1~B3, E1; [목업 UC 보완안](../../spikes/grandma-journey-context/docs/UC-PROPOSAL.md)의 후보 UC-016 / B1~B3, A1, E1 (정식 편입 전)
@@ -211,7 +209,7 @@
 - 출처: [목업 UC 보완안](../../spikes/grandma-journey-context/docs/UC-PROPOSAL.md) "키보드 없는 방문 기록", UC-016, "시나리오 통합" UC-008·016 행; [SCENARIOS.md](SCENARIOS.md) 3절 G, 6절
 - 관련 결정: 없음
 - 미결정: [OPEN_QUESTIONS.md](OPEN_QUESTIONS.md)의 GRD-Q6, GRD-Q12, GRD-Q18; [공통 질문](../../docs/open-questions.md) Q8
-- 메모: 우선순위 P1은 에이전트 제안입니다. 사람이 확정합니다. 범위는 GRD-Q26. GRD-010(기록 초안과 약속 완료)의 입력 방식을 구체화합니다. 스탬프가 사용자 가치와 재방문에 도움이 되는지는 검증 전입니다(목업 보완안 "새로 결정할 사항" 5).
+- 메모: 범위는 GRD-Q26. GRD-010(기록 초안과 약속 완료)의 입력 방식을 구체화합니다. 스탬프가 사용자 가치와 재방문에 도움이 되는지는 검증 전입니다(목업 보완안 "새로 결정할 사항" 5).
 
 ### GRD-017 기억 수정·활용 제외·삭제와 다음 안내 반영
 - 관련 UC: [USE_CASES.md](USE_CASES.md)의 GRD-UC-014 / B1~B3, A1~A2, E1~E2; GRD-UC-012 / E3; [목업 UC 보완안](../../spikes/grandma-journey-context/docs/UC-PROPOSAL.md)의 후보 UC-016 / A2, E2 (정식 편입 전)
@@ -230,7 +228,7 @@
 - 출처: [USE_CASES.md](USE_CASES.md)의 GRD-UC-014 흐름; [목업 UC 보완안](../../spikes/grandma-journey-context/docs/UC-PROPOSAL.md)의 UC-016 A2·E2, "기존 UC의 보완 지점"의 UC-014, "시나리오 통합" UC-012·014 행; [SCENARIOS.md](SCENARIOS.md) 3절 H
 - 관련 결정: 없음
 - 미결정: [OPEN_QUESTIONS.md](OPEN_QUESTIONS.md)의 GRD-Q18, GRD-Q19, GRD-Q20
-- 메모: 우선순위 P1은 에이전트 제안입니다. 사람이 확정합니다. 범위는 GRD-Q26. 저장·삭제 범위와 다른 장치 반영은 구현 전에 정의해야 합니다(GRD-Q18, GRD-Q20).
+- 메모: 범위는 GRD-Q26. 저장·삭제 범위와 다른 장치 반영은 구현 전에 정의해야 합니다(GRD-Q18, GRD-Q20).
 
 ### GRD-018 홈의 지금 카드
 - 관련 UC: [USE_CASES.md](USE_CASES.md)의 GRD-UC-015 / B1~B3, A1~A3, E1~E3
@@ -249,7 +247,7 @@
 - 출처: [USE_CASES.md](USE_CASES.md)의 "지금 카드 규칙", GRD-UC-015; [목업 UC 보완안](../../spikes/grandma-journey-context/docs/UC-PROPOSAL.md) "시나리오 통합" UC-015 행
 - 관련 결정: 없음
 - 미결정: [OPEN_QUESTIONS.md](OPEN_QUESTIONS.md)의 GRD-Q17, GRD-Q22, GRD-Q26; [공통 질문](../../docs/open-questions.md) Q8, Q11
-- 메모: 우선순위 P1은 에이전트 제안입니다. 사람이 확정합니다. 범위는 GRD-Q26.
+- 메모: 범위는 GRD-Q26.
 
 ## 비기능·원칙
 

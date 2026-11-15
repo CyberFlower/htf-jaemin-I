@@ -1,9 +1,8 @@
 # Pleos SDK 활용: 다녀왔습니다 (`GRD`)
 
-> 상태: **Draft / 2026-11-14**. 심사자가 "Pleos SDK를 어디에 어떻게 쓰는가"를 한눈에 보도록 정리한 요약입니다.
-> 원천: [REQUIREMENTS.md](REQUIREMENTS.md)의 "의존" 줄, [dev-environment.md](../../docs/contest/dev-environment.md) 4절, [API-ADOPTION.md](API-ADOPTION.md). 어긋나면 원천을 따르고 이 파일을 고칩니다.
-> 역할 구분: 이 문서는 **심사자용 요약**입니다. API별 실패 처리, 내비 연결의 경계, 실험 순서 같은 **구현 검증 상세**는 [API-ADOPTION.md](API-ADOPTION.md)에 있습니다.
-> 검증 태그: "문서 확인"은 공식 Pleos 문서에 API가 적혀 있다는 뜻입니다. **에뮬레이터에서 동작을 확인한 항목은 아직 없습니다.** "확인 필요"는 질문 ID와 함께 적습니다. 요구사항은 모두 Draft입니다.
+> 상태: **Draft**. Pleos SDK를 어디에 어떻게 쓰는지 정리한 요약입니다.
+> 근거는 [REQUIREMENTS.md](REQUIREMENTS.md)의 "의존" 줄과 [dev-environment.md](../../docs/contest/dev-environment.md) 4절입니다. API별 실패 처리, 내비 연결의 경계, 실험 순서는 [API-ADOPTION.md](API-ADOPTION.md)에 있습니다.
+> 검증 태그: "문서 확인"은 공식 Pleos 문서에 API가 있다는 뜻입니다. **에뮬레이터에서 동작을 확인한 항목은 아직 없습니다.** "확인 필요"는 질문 ID와 함께 적습니다.
 
 ## 1. 한눈에 보기
 
@@ -41,7 +40,7 @@
 | SC-07 다녀옴 | 주차 | FusedLocation 이동 기록 (`FUSED_LOCATION`), SpeechToText (`STT_SERVICE`) | 실제 이동과 사용자가 확인한 방문으로 기록 초안. 한마디를 더해 약속 완료 | 위치·음성이 없으면 선택 입력으로 기록. 정차·경유지 도착만으로 방문을 확정하지 않음 | GRD-010, GRD-016 |
 | SC-08 다시 가는 여정 | 정차 | NaviHelper `getDestinationInfo()` → `onDestinationInfo` (`NAVI_ROUTE`), FusedLocation, SpeechToText, NaviHelper 경로 적용 | 같은 장소의 기억으로 이번 동행을 묻고, 주변 후보 두 곳과 이유를 보여 준 뒤, 승인한 경유지를 적용 | 목적지 조회 실패면 저장 장소나 수동 선택. 검색 실패면 저장된 방문 장소만 표시 | GRD-013~018 |
 
-지금 HTML 목업(SC-01~07 첫 방문, SC-08 재방문)은 위 신호를 실제로 읽지 않는 시연입니다(6절).
+HTML 목업은 위 신호를 실제로 읽지 않는 시연입니다(6절).
 
 ## 3. 기능별 API 목록
 
@@ -116,7 +115,7 @@
 
 ## 6. 검증 계획과 현재 상태
 
-- **현재:** [첫 방문 목업](../../spikes/grandma-first-visit/README.md)은 SC-01~07을, [재방문 목업](../../spikes/grandma-journey-context/README.md)은 SC-08을 가상 데이터로 시연합니다. 첫 방문 목업의 시연 도구가 주행/정차, 도어 열림→닫힘, 연료, 내비 응답을 대신 넣습니다. 내비 적용, 음성, 차량 상태, 날씨, 외부 검색은 모두 **SDK에 연결하지 않은 시연**입니다.
+- **현재:** [HTML 목업](../../spikes/grandma-journey-context/README.md) 하나가 SC-01~08을 가상 데이터로 시연합니다. 차량 화면 밖 시연 도구가 주행/정차, 도어 열림→닫힘, 연료, 위치, 내비 응답, 날씨, 외부 장소 검색 결과를 대신 넣습니다. 내비 적용, 음성, 차량 상태, 날씨, 외부 검색은 모두 **SDK에 연결하지 않은 시연**입니다.
 - **다음:** [API-ADOPTION.md](API-ADOPTION.md) 5절의 최소 실험 순서를 에뮬레이터 v2.1.0에서 진행합니다.
   1. 주행 제한·권한 (입력 차단, 권한 거부)
   2. STT·TTS (한국어 한마디 → 채택 → 저장)

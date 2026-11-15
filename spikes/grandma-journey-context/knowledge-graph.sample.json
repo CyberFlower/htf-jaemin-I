@@ -148,6 +148,53 @@
       ]
     },
     {
+      "id": "p10",
+      "type": "place",
+      "label": "바다 카페",
+      "name": "바다 카페",
+      "category": "cafe",
+      "destination": "해변 마을",
+      "minutes": 2,
+      "description": "창 너머로 바다가 보이는 작은 카페",
+      "art": "seacafe",
+      "features": [
+        "sea",
+        "quiet",
+        "indoor"
+      ]
+    },
+    {
+      "id": "p11",
+      "type": "place",
+      "label": "파도 베이커리",
+      "name": "파도 베이커리",
+      "category": "food",
+      "destination": "해변 마을",
+      "minutes": 4,
+      "description": "갓 구운 빵 냄새가 나는 골목 빵집",
+      "art": "bowl",
+      "features": [
+        "light",
+        "local"
+      ]
+    },
+    {
+      "id": "p12",
+      "type": "place",
+      "label": "해변 공원",
+      "name": "해변 공원",
+      "category": "visit",
+      "destination": "해변 마을",
+      "minutes": 6,
+      "description": "모래사장 옆으로 이어지는 평평한 산책길",
+      "art": "tree",
+      "features": [
+        "easy",
+        "outdoor",
+        "sea"
+      ]
+    },
+    {
       "id": "t-quiet",
       "type": "trait",
       "label": "조용한 분위기"
@@ -206,6 +253,11 @@
       "label": "어머니"
     },
     {
+      "id": "grandma",
+      "type": "person",
+      "label": "할머니"
+    },
+    {
       "id": "d1",
       "type": "destination",
       "label": "안목해변"
@@ -214,6 +266,11 @@
       "id": "d2",
       "type": "destination",
       "label": "청초호"
+    },
+    {
+      "id": "d3",
+      "type": "destination",
+      "label": "해변 마을"
     },
     {
       "id": "v1",
@@ -523,6 +580,91 @@
     {
       "from": "p9",
       "to": "t-parking",
+      "type": "HAS_TRAIT",
+      "source": "s-demo",
+      "asOf": "2026-11-13",
+      "confidence": "sample"
+    },
+    {
+      "from": "p10",
+      "to": "d3",
+      "type": "NEAR",
+      "minutes": 2,
+      "source": "s-demo"
+    },
+    {
+      "from": "p10",
+      "to": "t-sea",
+      "type": "HAS_TRAIT",
+      "source": "s-demo",
+      "asOf": "2026-11-13",
+      "confidence": "sample"
+    },
+    {
+      "from": "p10",
+      "to": "t-quiet",
+      "type": "HAS_TRAIT",
+      "source": "s-demo",
+      "asOf": "2026-11-13",
+      "confidence": "sample"
+    },
+    {
+      "from": "p10",
+      "to": "t-indoor",
+      "type": "HAS_TRAIT",
+      "source": "s-demo",
+      "asOf": "2026-11-13",
+      "confidence": "sample"
+    },
+    {
+      "from": "p11",
+      "to": "d3",
+      "type": "NEAR",
+      "minutes": 4,
+      "source": "s-demo"
+    },
+    {
+      "from": "p11",
+      "to": "t-light",
+      "type": "HAS_TRAIT",
+      "source": "s-demo",
+      "asOf": "2026-11-13",
+      "confidence": "sample"
+    },
+    {
+      "from": "p11",
+      "to": "t-local",
+      "type": "HAS_TRAIT",
+      "source": "s-demo",
+      "asOf": "2026-11-13",
+      "confidence": "sample"
+    },
+    {
+      "from": "p12",
+      "to": "d3",
+      "type": "NEAR",
+      "minutes": 6,
+      "source": "s-demo"
+    },
+    {
+      "from": "p12",
+      "to": "t-easy",
+      "type": "HAS_TRAIT",
+      "source": "s-demo",
+      "asOf": "2026-11-13",
+      "confidence": "sample"
+    },
+    {
+      "from": "p12",
+      "to": "t-outdoor",
+      "type": "HAS_TRAIT",
+      "source": "s-demo",
+      "asOf": "2026-11-13",
+      "confidence": "sample"
+    },
+    {
+      "from": "p12",
+      "to": "t-sea",
       "type": "HAS_TRAIT",
       "source": "s-demo",
       "asOf": "2026-11-13",

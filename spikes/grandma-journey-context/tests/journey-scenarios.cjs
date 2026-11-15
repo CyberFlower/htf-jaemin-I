@@ -9,14 +9,17 @@ function harness(saved,search=''){
  const responses=[],timeout=w.setTimeout.bind(w);
  w.setTimeout=(fn,ms,...args)=>ms===800?(responses.push(fn),responses.length):timeout(fn,ms,...args);
  w.eval(fs.readFileSync(path.join(root,'core.js'),'utf8'));
- w.eval(fs.readFileSync(path.join(root,'app.js'),'utf8')+'\nwindow.inspect=()=>structuredClone(state);window.seedVisits=visits=>{state.visits=visits;render();};');
+ w.eval(fs.readFileSync(path.join(root,'trip.js'),'utf8')+'\n'+fs.readFileSync(path.join(root,'app.js'),'utf8')+'\nwindow.inspect=()=>structuredClone(state);window.seedVisits=visits=>{state.visits=visits;render();};');
  const $=s=>w.document.querySelector(s);
  const click=s=>{assert($(s),'Missing '+s);assert(!$(s).disabled,'Disabled '+s);$(s).click();};
  const change=(s,value)=>{$(s).value=value;$(s).dispatchEvent(new w.Event('change',{bubbles:true}));};
- const scenario=fields=>{click('#demoBtn');for(const [key,value]of Object.entries(fields))$('#demoForm [name='+key+']').value=value;$('#demoForm').dispatchEvent(new w.Event('submit',{bubbles:true,cancelable:true}));};
+ // Demo rail buttons outside the vehicle screen replace the former settings dialog.
+ const RAIL={nav:'navi',source:'source',driving:'gear',weather:'weather'};
+ const scenario=fields=>{for(const [key,value]of Object.entries(fields))click(`[data-rail=${RAIL[key]}][data-value=${value}]`);};
  return {dom,w,$,click,change,scenario,responses};
 }
-const {dom,w,$,click,change,scenario,responses}=harness();
+// SC-08 starts the revisit journey after the first visit was recorded.
+const {dom,w,$,click,change,scenario,responses}=harness(null,'#SC-08');
 assert(!$('#home').classList.contains('hidden'));
 click('[data-action=prepare-trip]');
 
@@ -25,7 +28,7 @@ assert($('#memoryPrompt').textContent.includes('파도 서가'));assert($('#memo
 click('#exactDestination');click('[data-destination=p1]');assert(!$('#memoryPrompt').textContent.includes('이번에도'));
 assert.equal(w.inspect().companion,'unknown');
 click('#exactDestination');click('[data-destination=p2]');click('[data-comp=mom]');
-assert.equal(w.inspect().companion,'mom');assert.equal(w.inspect().visits.length,2);
+assert.equal(w.inspect().companion,'mom');assert.equal(w.inspect().visits.length,3);
 // Exclusion and the most recent actual companion both affect the question.
 const original=w.inspect().visits;
 w.seedVisits(original.map(v=>({...v,use:false})));click('#exactDestination');click('[data-destination=p2]');assert(!$('#memoryPrompt').textContent.includes('이번에도'));

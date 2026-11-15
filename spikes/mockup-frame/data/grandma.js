@@ -13,7 +13,7 @@ window.MOCKUP_DATA["grandma"] = {
       "title": "기억",
       "state": "정차",
       "sdk": "SpeechToText · FusedLocation",
-      "src": "../grandma-first-visit/index.html?embed=1#SC-01",
+      "src": "../grandma-journey-context/journey-demo.html?embed=1#SC-01",
       "kind": "html"
     },
     {
@@ -21,7 +21,7 @@ window.MOCKUP_DATA["grandma"] = {
       "title": "조율·확정",
       "state": "정차",
       "sdk": "— (외부 날씨·장소 API, 확인 필요)",
-      "src": "../grandma-first-visit/index.html?embed=1#SC-02",
+      "src": "../grandma-journey-context/journey-demo.html?embed=1#SC-02",
       "kind": "html"
     },
     {
@@ -29,7 +29,7 @@ window.MOCKUP_DATA["grandma"] = {
       "title": "출발",
       "state": "정차",
       "sdk": "Vehicle Fuel/EvBattery · NaviHelper",
-      "src": "../grandma-first-visit/index.html?embed=1#SC-03",
+      "src": "../grandma-journey-context/journey-demo.html?embed=1#SC-03",
       "kind": "html"
     },
     {
@@ -37,7 +37,7 @@ window.MOCKUP_DATA["grandma"] = {
       "title": "주행 (1구간)",
       "state": "주행",
       "sdk": "TextToSpeech · 주행 판단: AAOS (Q11)",
-      "src": "../grandma-first-visit/index.html?embed=1#SC-04",
+      "src": "../grandma-journey-context/journey-demo.html?embed=1#SC-04",
       "kind": "html"
     },
     {
@@ -45,7 +45,7 @@ window.MOCKUP_DATA["grandma"] = {
       "title": "동행",
       "state": "정차",
       "sdk": "Vehicle Door · Seat · NaviHelper",
-      "src": "../grandma-first-visit/index.html?embed=1#SC-05",
+      "src": "../grandma-journey-context/journey-demo.html?embed=1#SC-05",
       "kind": "html"
     },
     {
@@ -53,7 +53,7 @@ window.MOCKUP_DATA["grandma"] = {
       "title": "주행 (2구간)",
       "state": "주행",
       "sdk": "TextToSpeech",
-      "src": "../grandma-first-visit/index.html?embed=1#SC-06",
+      "src": "../grandma-journey-context/journey-demo.html?embed=1#SC-06",
       "kind": "html"
     },
     {
@@ -61,7 +61,7 @@ window.MOCKUP_DATA["grandma"] = {
       "title": "다녀옴",
       "state": "주차",
       "sdk": "FusedLocation · SpeechToText",
-      "src": "../grandma-first-visit/index.html?embed=1#SC-07",
+      "src": "../grandma-journey-context/journey-demo.html?embed=1#SC-07",
       "kind": "html"
     },
     {
@@ -69,7 +69,7 @@ window.MOCKUP_DATA["grandma"] = {
       "title": "다시 가는 여정",
       "state": "정차",
       "sdk": "NaviHelper · FusedLocation · SpeechToText (목업은 시연)",
-      "src": "../grandma-journey-context/journey-demo.html?embed=1",
+      "src": "../grandma-journey-context/journey-demo.html?embed=1#SC-08",
       "kind": "html"
     }
   ]
