@@ -2,7 +2,7 @@
   "name": "journey-context-lab",
   "private": true,
   "scripts": {
-    "test": "node tests/app-smoke.cjs && node tests/journey-scenarios.cjs",
+    "test": "node tests/app-smoke.cjs && node tests/journey-scenarios.cjs && node tests/first-visit.cjs",
     "build": "node scripts/build.mjs"
   },
   "devDependencies": {

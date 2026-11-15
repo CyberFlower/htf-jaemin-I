@@ -4,15 +4,15 @@
 .vehicle-display #home{display:grid;grid-template-rows:64px minmax(0,1fr) 72px;gap:24px}
 #home .page-heading{margin:0;height:64px}
 #home .eyebrow{margin:0 0 8px;font-size:15px;letter-spacing:1px}
-.home-date{font-size:18px;color:#6c7d6c}
-.now-card{display:grid;grid-template-columns:1.25fr 1fr;border:1px solid #cbd7c1;border-radius:24px;background:#eef1e4;overflow:hidden}
+.home-date{font-size:18px;color:#776253}
+.now-card{display:grid;grid-template-columns:1.25fr 1fr;border:1px solid #ddc9bb;border-radius:24px;background:#f3ebe2;overflow:hidden}
 .now-copy{padding:24px;display:flex;flex-direction:column;align-items:flex-start;justify-content:center}
 .now-copy h1{font-size:30px;line-height:1.3;letter-spacing:-1px;margin:4px 0 12px;word-break:keep-all}
-.now-copy>p:not(.eyebrow){font-size:20px;line-height:1.55;color:#64765f;margin:0 0 16px;word-break:keep-all}
+.now-copy>p:not(.eyebrow){font-size:20px;line-height:1.55;color:#6f5748;margin:0 0 16px;word-break:keep-all}
 .now-copy .primary{min-width:240px;display:flex;justify-content:space-between;gap:32px}
-.now-art{display:flex;flex-direction:column;justify-content:center;background:#dde6d4;padding:28px 24px}
+.now-art{display:flex;flex-direction:column;justify-content:center;background:#eaded0;padding:28px 24px}
 .now-art svg{width:100%;height:210px;border-radius:18px}
-.now-art>span{text-align:center;font-size:17px;color:#64765f;margin-top:18px}
+.now-art>span{text-align:center;font-size:17px;color:#6f5748;margin-top:18px}
 .home-shortcuts{display:grid;grid-template-columns:1fr 1.2fr;gap:24px}
 .home-shortcuts button{display:flex;justify-content:space-between;align-items:center}
 .vehicle-display #settings .contextbar{grid-template-columns:1fr 1fr 1.25fr;min-height:64px;gap:16px;margin-bottom:12px}
@@ -22,23 +22,20 @@
 .vehicle-display #settings .contextbar label{padding:4px 14px}
 .vehicle-display #settings .contextbar select{font-size:21px;min-height:54px;width:160px}
 #exactDestination{display:flex;width:100%;align-items:center;gap:24px;margin-bottom:12px;min-height:64px}
-#exactDestination strong{font-size:25px;color:#244d3d}
+#exactDestination strong{font-size:25px;color:#b4532a}
 #exactDestination span{margin-left:auto}
 .vehicle-display #settings .recall{height:96px;margin:0}
 .vehicle-display #settings .filters{margin:12px 0}
 #themeBtn{min-height:64px;font-size:19px;padding:12px 24px}
 .vehicle-display #explore.has-source-notice{grid-template-rows:70px 40px minmax(0,1fr) 64px;gap:12px}
-.source-banner{font-size:18px;line-height:24px;margin:0;padding:8px 16px;background:#eee6d3;border-radius:8px;color:#6b593c}
+.source-banner{font-size:18px;line-height:24px;margin:0;padding:8px 16px;background:#eee2d3;border-radius:8px;color:#6b533c}
 .vehicle-display #explore.has-source-notice .place-card .art{height:102px;flex-basis:102px}
 .vehicle-display #explore.has-source-notice .card-body{padding:14px 24px;gap:4px}
 .vehicle-display .memory-actions{flex-wrap:wrap}
 .vehicle-display .memory-actions button{padding:12px 16px;font-size:18px}
-.route-destination{padding:20px 24px;background:#e8efdf;border-radius:14px;margin:16px 0;display:flex;align-items:center;gap:24px}
-.route-destination small{font-size:18px;color:#687761}
+.route-destination{padding:20px 24px;background:#f2e8dc;border-radius:14px;margin:16px 0;display:flex;align-items:center;gap:24px}
+.route-destination small{font-size:18px;color:#70594a}
 .route-destination strong{font-size:27px}
-#demoForm{display:grid;grid-template-columns:1fr 1fr;gap:16px 24px}
-#demoForm .field{margin:0}
-#demoForm .primary{grid-column:1/-1}
 .vehicle-display .route-item{padding:12px 16px}
 .vehicle-display .route-item h4{font-size:23px;margin:0 0 6px}
 .vehicle-display .route-item small{font-size:17px}

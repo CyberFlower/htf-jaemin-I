@@ -9,12 +9,17 @@ const places=[
  ['p6','흰돌 정원','cafe','안목해변',9,'정원과 실내를 함께 즐기는 공간','leaf',['quiet','easy','indoor','parking']],
  ['p7','호수 옆 식탁','food','청초호',4,'호수를 바라보며 가볍게 먹기','bowl',['light','sea','indoor']],
  ['p8','물결 산책로','visit','청초호',6,'호숫가를 따라 걷는 느린 오후','tree',['easy','quiet','outdoor']],
- ['p9','작은 기록실','cafe','청초호',5,'여행의 한 장면을 남기는 카페','coffee',['quiet','indoor','parking']]
+ ['p9','작은 기록실','cafe','청초호',5,'여행의 한 장면을 남기는 카페','coffee',['quiet','indoor','parking']],
+ ['p10','바다 카페','cafe','해변 마을',2,'창 너머로 바다가 보이는 작은 카페','seacafe',['sea','quiet','indoor']],
+ ['p11','파도 베이커리','food','해변 마을',4,'갓 구운 빵 냄새가 나는 골목 빵집','bowl',['light','local']],
+ ['p12','해변 공원','visit','해변 마을',6,'모래사장 옆으로 이어지는 평평한 산책길','tree',['easy','outdoor','sea']]
 ].map(([id,name,category,destination,minutes,description,art,features])=>({id,name,category,destination,minutes,description,art,features}));
+const areas=['안목해변','청초호','해변 마을'];
+const people={mom:'어머니',grandma:'할머니'};
 const sources=[{id:'s-demo',label:'목업용 장소 편집 데이터',kind:'sample',date:'2026-11-13',note:'실재 업체·현장 조사 결과가 아닙니다. 방문 전 확인용으로 사용할 수 없습니다.'}];
-const nodes=[...places.map(p=>({id:p.id,type:'place',label:p.name,...p})),...Object.entries(tags).map(([id,label])=>({id:'t-'+id,type:'trait',label})),...sources.map(s=>({...s,type:'source'})),{id:'u',type:'person',label:'나'},{id:'mom',type:'person',label:'어머니'},{id:'d1',type:'destination',label:'안목해변'},{id:'d2',type:'destination',label:'청초호'}];
+const nodes=[...places.map(p=>({id:p.id,type:'place',label:p.name,...p})),...Object.entries(tags).map(([id,label])=>({id:'t-'+id,type:'trait',label})),...sources.map(s=>({...s,type:'source'})),{id:'u',type:'person',label:'나'},{id:'mom',type:'person',label:'어머니'},{id:'grandma',type:'person',label:'할머니'},...areas.map((label,i)=>({id:'d'+(i+1),type:'destination',label}))];
 const edges=[];
-for(const p of places){edges.push({from:p.id,to:p.destination==='안목해변'?'d1':'d2',type:'NEAR',minutes:p.minutes,source:'s-demo'});for(const t of p.features)edges.push({from:p.id,to:'t-'+t,type:'HAS_TRAIT',source:'s-demo',asOf:'2026-11-13',confidence:p.id==='p6'&&t==='parking'?'unknown':'sample'});}
+for(const p of places){edges.push({from:p.id,to:'d'+(areas.indexOf(p.destination)+1),type:'NEAR',minutes:p.minutes,source:'s-demo'});for(const t of p.features)edges.push({from:p.id,to:'t-'+t,type:'HAS_TRAIT',source:'s-demo',asOf:'2026-11-13',confidence:p.id==='p6'&&t==='parking'?'unknown':'sample'});}
 const initialVisits=[{id:'v1',place:'p2',date:'2026-10-18',companions:['mom'],note:'다음에는 바다 근처에서 가볍게 점심도 먹자.',use:true},{id:'v2',place:'p3',date:'2026-10-18',companions:['mom'],note:'바람이 좋았던 짧은 산책.',use:true}];
 const initialProfile={preferences:['quiet','light','sea'],momPreferences:['easy'],companion:'unknown'};
 function traits(id){return edges.filter(e=>e.from===id&&e.type==='HAS_TRAIT');}
@@ -32,5 +37,5 @@ function rank(context,visits,profile){
  }).sort((a,b)=>b.score-a.score||a.minutes-b.minutes);
 }
 function graph(visits,profile){return {schemaVersion:1,description:'목업용 로컬 지식 그래프. 장소 사실과 개인 기억은 별도 출처를 유지한다.',nodes:[...nodes,...visits.map(v=>({id:v.id,type:'visit',label:v.date+' 방문',...v}))],edges:[...edges,...profile.preferences.map(t=>({from:'u',to:'t-'+t,type:'PREFERS',source:'사용자 명시 입력'})),...profile.momPreferences.map(t=>({from:'mom',to:'t-'+t,type:'PREFERS',source:'동행자 확인 선호 — 데모'})),...visits.flatMap(v=>[{from:'u',to:v.id,type:'CONFIRMED_VISIT',use:v.use},{from:v.id,to:v.place,type:'AT_PLACE'},...v.companions.map(c=>({from:v.id,to:c,type:'WITH_PERSON'}))])]};}
-const api={places,tags,sources,nodes,edges,initialVisits,initialProfile,traits,rank,graph};root.KB=api;if(typeof module!=='undefined')module.exports=api;
+const api={places,areas,people,tags,sources,nodes,edges,initialVisits,initialProfile,traits,rank,graph};root.KB=api;if(typeof module!=='undefined')module.exports=api;
 })(globalThis);
