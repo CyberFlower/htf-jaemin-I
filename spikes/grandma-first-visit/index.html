@@ -1,0 +1,518 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>다녀왔습니다 · 첫 방문 여정 목업</title>
+<style>
+:root{
+  --bg:#f5f3ec;--paper:#fffef9;--ink:#243d34;--green:#244d3d;--muted:#798279;--line:#dedfd4;
+  --orange:#c96c46;--sage:#e8eddf;--blue:#c9ded9;--sys:#183e35;--warn:#b5483a;
+  --lab:#1b1f24;--lab2:#262b32;--labline:#353b44;--labtext:#e6e9ee;--labmuted:#9aa3ad;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:var(--lab);color:var(--ink);font-family:"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;overflow:hidden}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer;touch-action:manipulation}
+button:disabled{opacity:.45;cursor:not-allowed}
+button:focus-visible{outline:3px solid #d1955f;outline-offset:3px}
+
+/* 바깥 레이아웃: 차량 화면 + 시연 도구 */
+#app{display:grid;grid-template-columns:1fr 300px;height:100%}
+#stage{position:relative;min-width:0;display:grid;place-items:center;padding:18px}
+#sizer{position:relative}
+#display{position:absolute;left:0;top:0;width:1280px;height:720px;transform-origin:0 0;background:var(--bg);display:grid;grid-template-rows:72px 584px 64px;overflow:hidden;border-radius:14px;box-shadow:0 0 0 10px #000,0 30px 80px rgba(0,0,0,.5)}
+html.embedded #app{grid-template-columns:1fr}
+html.embedded #lab{display:none}
+html.embedded #stage{padding:0}
+html.embedded #display{border-radius:0;box-shadow:none}
+
+/* 차량 화면 위 줄 */
+.top{display:flex;align-items:center;justify-content:space-between;padding:0 32px;border-bottom:1px solid var(--line);background:var(--paper)}
+.brand{font-size:22px;font-weight:800;letter-spacing:-1px;display:flex;align-items:center;gap:10px}
+.brand i{display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--green);color:#f2edc9;font-style:normal;font-size:18px}
+.brand b{color:var(--orange)}
+.top-r{display:flex;align-items:center;gap:18px;font-weight:700}
+.gear{font-size:14px;padding:7px 14px;border-radius:999px;background:#e5eadc;color:#45604f}
+.gear.drive{background:#f4d9cd;color:#8a3a20}
+.clock{font-size:20px}
+.iconbtn{width:52px;height:52px;border-radius:50%;background:var(--sage);font-size:22px}
+
+/* 본문 */
+main{position:relative;overflow:hidden}
+.view{position:absolute;inset:0;padding:28px 40px;display:none;flex-direction:column;gap:20px}
+.view.on{display:flex}
+h1{font-size:30px;margin:0;letter-spacing:-1px}
+h2{font-size:22px;margin:0}
+.sub{color:var(--muted);font-size:17px}
+.row{display:flex;gap:16px;align-items:center}
+.grow{flex:1}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:22px 26px}
+.now{border:2px solid var(--green);display:flex;gap:24px;align-items:center}
+.now .txt{flex:1}
+.now .t1{font-size:26px;font-weight:800;letter-spacing:-.5px}
+.now .t2{font-size:17px;color:var(--muted);margin-top:6px}
+.basis{display:inline-block;margin-top:10px;font-size:14px;color:#5d6b62;background:var(--sage);padding:4px 10px;border-radius:8px}
+.btn{min-height:64px;padding:0 28px;border-radius:16px;font-size:20px;font-weight:700;background:var(--sage)}
+.btn.primary{background:var(--green);color:#fff}
+.btn.ghost{background:transparent;border:2px solid var(--line)}
+.btn.small{min-height:56px;font-size:18px;padding:0 22px}
+.promises{display:flex;gap:16px}
+.promise{width:260px;text-align:left;background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:18px 20px}
+.promise .who{font-size:15px;color:var(--muted)}
+.promise .where{font-size:22px;font-weight:800;margin-top:4px}
+.promise .tag{font-size:13px;margin-top:10px;color:var(--orange);font-weight:700}
+.promise.done .tag{color:#3f7a57}
+.dock{margin-top:auto;display:flex;gap:16px}
+.dock .btn{flex:1;font-size:22px}
+.chips{display:flex;gap:14px;flex-wrap:wrap}
+.chip{min-height:64px;padding:0 26px;border-radius:16px;border:2px solid var(--line);background:var(--paper);font-size:20px;font-weight:700}
+.chip.sel{border-color:var(--green);background:#e2ece4}
+.steps{display:flex;gap:10px;font-size:14px;color:var(--muted)}
+.steps span{padding:4px 12px;border-radius:999px;background:#ecebe2}
+.steps span.on{background:var(--green);color:#fff}
+.mic{width:150px;height:150px;border-radius:50%;background:var(--green);color:#fff;font-size:56px;align-self:center}
+.mic.listen{animation:pulse 1s infinite}
+@keyframes pulse{50%{box-shadow:0 0 0 22px rgba(36,77,61,.15)}}
+.heard{font-size:28px;font-weight:800;text-align:center}
+.demo-note{font-size:13px;color:#8a6a3c;background:#f7ecd9;border-radius:8px;padding:4px 10px;align-self:center}
+.places{display:flex;gap:16px}
+.place{flex:1;text-align:left;background:var(--paper);border:2px solid var(--line);border-radius:18px;padding:20px 22px;min-height:120px}
+.place.sel{border-color:var(--green);background:#e2ece4}
+.place .n{font-size:22px;font-weight:800}
+.place .m{font-size:15px;color:var(--muted);margin-top:8px}
+.kv{display:grid;grid-template-columns:150px 1fr;gap:12px 20px;font-size:19px}
+.kv .k{color:var(--muted)}
+.src{font-size:13px;color:var(--muted)}
+.unknown{color:var(--orange);font-weight:700}
+.route{display:flex;align-items:center;gap:12px;font-size:20px;font-weight:700}
+.route .pt{padding:8px 16px;border-radius:12px;background:var(--sage)}
+.route .pt.cur{background:var(--green);color:#fff}
+.route .ar{color:var(--muted)}
+.checks{display:flex;flex-direction:column;gap:14px}
+.check{display:flex;align-items:center;gap:18px;min-height:72px;padding:0 22px;border:2px solid var(--line);border-radius:16px;background:var(--paper);text-align:left;font-size:20px}
+.check .box{width:34px;height:34px;border-radius:9px;border:3px solid var(--muted);display:grid;place-items:center;font-size:22px;color:#fff;flex:none}
+.check.on .box{background:var(--green);border-color:var(--green)}
+.check .why{font-size:14px;color:var(--muted);display:block;margin-top:2px}
+.status{font-size:18px;font-weight:700;padding:10px 16px;border-radius:12px;background:var(--sage)}
+.status.ok{background:#dfeee3;color:#2f6a46}
+.status.wait{background:#f3ead6;color:#7d5a1d}
+.status.fail{background:#f6dcd6;color:var(--warn)}
+.meter{height:14px;border-radius:7px;background:#e4e3d8;overflow:hidden;width:260px}
+.meter i{display:block;height:100%;background:var(--green)}
+
+/* 주행 모드 */
+#drive{position:absolute;inset:0;background:#18382f;color:#f2efe2;display:none;flex-direction:column;align-items:center;justify-content:center;gap:18px}
+#drive.on{display:flex}
+#drive .to{font-size:24px;opacity:.75}
+#drive .dest{font-size:72px;font-weight:800;letter-spacing:-2px}
+#drive .eta{font-size:40px;font-weight:700}
+#drive .say{margin-top:18px;font-size:24px;background:rgba(255,255,255,.08);padding:14px 26px;border-radius:16px;display:flex;gap:14px;align-items:center}
+#drive .lock{position:absolute;bottom:22px;font-size:15px;opacity:.6}
+
+/* 차량 시스템 줄 */
+.sys{display:flex;align-items:center;justify-content:space-between;padding:0 32px;background:var(--sys);color:#e9f0e8;font-size:16px}
+.sys .m{opacity:.6;font-size:13px}
+.sys b{font-size:22px}
+
+#toast{position:absolute;left:50%;bottom:86px;transform:translateX(-50%);background:#243d34;color:#fff;padding:14px 24px;border-radius:14px;font-size:18px;display:none;z-index:5}
+#toast.on{display:block}
+
+/* 시연 도구 (차량 화면 밖) */
+#lab{background:var(--lab2);border-left:1px solid var(--labline);color:var(--labtext);padding:18px;overflow:auto;font-size:13px}
+#lab h3{margin:0 0 4px;font-size:15px}
+#lab small{color:var(--labmuted);display:block;margin-bottom:14px}
+#lab section{border-top:1px solid var(--labline);padding:12px 0}
+#lab h4{margin:0 0 8px;font-size:12px;color:var(--labmuted);font-weight:600}
+#lab button{background:#323844;border:1px solid #434a56;border-radius:8px;padding:8px 10px;color:var(--labtext);margin:0 6px 6px 0;font-size:13px}
+#lab button.on{background:#2f6a52;border-color:#3d8a6a}
+#lab .scenes button{display:block;width:100%;text-align:left;margin:0 0 6px}
+#lab p{margin:6px 0 0;color:var(--labmuted);line-height:1.5}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="stage"><div id="sizer"><div id="display">
+    <header class="top">
+      <div class="brand"><i>↗</i>다녀왔습니다<b>.</b></div>
+      <div class="top-r"><span class="gear" id="gear">P 정차 중</span><span class="clock" id="clock">10:02</span><button class="iconbtn" aria-label="사람·장소 관리" data-go="home">⚙</button></div>
+    </header>
+    <main>
+      <!-- S01 홈 -->
+      <section class="view" id="v-home">
+        <div class="card now" id="nowCard"></div>
+        <div><div class="sub" style="margin-bottom:12px">약속</div><div class="promises" id="promises"></div></div>
+        <div class="dock">
+          <button class="btn primary" data-go="memo">🎙 기억 남기기</button>
+          <button class="btn" data-go="home" disabled>📖 다녀온 곳</button>
+        </div>
+      </section>
+
+      <!-- S02 기억 남기기 -->
+      <section class="view" id="v-memo">
+        <div class="row"><h1 class="grow">기억 남기기</h1><div class="steps" id="memoSteps"><span>한마디</span><span>장소</span><span>함께 갈 사람</span></div></div>
+        <div id="memoBody" style="display:flex;flex-direction:column;gap:20px;flex:1"></div>
+      </section>
+
+      <!-- S03 약속 상세 -->
+      <section class="view" id="v-promise">
+        <div class="sub">할머니와 다음에 갈 곳</div>
+        <h1>바다 카페</h1>
+        <div class="card kv">
+          <div class="k">남긴 말</div><div id="pSaid">"할머니가 저 카페 가보고 싶대"</div>
+          <div class="k">남긴 때</div><div>지난 외출 · 바다 카페 앞 정차 중</div>
+          <div class="k">상태</div><div id="pState">아직 가지 않음</div>
+        </div>
+        <div class="dock"><button class="btn ghost" data-go="home">홈으로</button><button class="btn primary" data-go="plan">여정 만들기</button></div>
+      </section>
+
+      <!-- S04 여정 계획 -->
+      <section class="view" id="v-plan">
+        <div class="row"><h1 class="grow">할머니와 바다 카페</h1><span class="sub">여정 초안</span></div>
+        <div class="row" style="gap:24px;align-items:flex-start">
+          <div style="display:flex;flex-direction:column;gap:14px">
+            <div class="sub">날짜</div>
+            <div class="chips" id="dayChips"></div>
+            <div class="sub">출발 시각</div>
+            <div class="chips" id="timeChips"></div>
+          </div>
+          <div class="card grow kv" style="align-self:stretch">
+            <div class="k">동선</div><div>집 → 할머니 댁 → 바다 카페 → 집</div>
+            <div class="k">날씨</div><div>맑음 <span class="src">· 예보 · 10:02 조회 · 시연 데이터</span></div>
+            <div class="k">바다 카페</div><div>10:00~21:00 영업 <span class="src">· 장소 정보 · 시연 데이터</span></div>
+            <div class="k">주차</div><div class="unknown">미확인 <span class="src">· 정보가 없어 추측하지 않아요</span></div>
+          </div>
+        </div>
+        <div class="dock"><button class="btn ghost" data-go="promise">뒤로</button><button class="btn primary" data-go="approve">승인할 작업 확인</button></div>
+      </section>
+
+      <!-- S06 승인 -->
+      <section class="view" id="v-approve">
+        <h1>무엇을 실행할까요?</h1>
+        <div class="sub">체크한 것만, 그 시점에 실행합니다. 확정해도 지금 바로 실행하지 않아요.</div>
+        <div class="checks" id="checks"></div>
+        <div class="dock"><button class="btn ghost" data-go="plan">뒤로</button><button class="btn primary" id="confirmPlan">계획 확정</button></div>
+      </section>
+
+      <!-- S07 출발 준비 -->
+      <section class="view" id="v-prep">
+        <div class="row"><h1 class="grow">출발 준비</h1><span class="sub">오늘 10:30 · 할머니와 바다 카페</span></div>
+        <div class="row" style="gap:20px;align-items:stretch">
+          <div class="card grow">
+            <h2>차량 상태</h2>
+            <div class="row" style="margin-top:14px"><span style="font-size:20px">연료</span><div class="meter"><i id="fuelBar"></i></div><b id="fuelTxt" style="font-size:22px">40%</b></div>
+            <div class="src" style="margin-top:10px">차량에서 방금 읽은 값 · 잔량만으로 도착 가능 여부는 판단하지 않아요</div>
+          </div>
+          <div class="card grow">
+            <h2>날씨</h2>
+            <div style="font-size:22px;margin-top:14px">맑음</div>
+            <div class="src" style="margin-top:10px">10:02 다시 조회 · 시연 데이터</div>
+          </div>
+        </div>
+        <div class="card row" id="fuelSuggest">
+          <div class="grow"><b style="font-size:20px">가는 길에 주유소를 들를까요?</b><div class="src">연료가 절반보다 적어 제안해요. 결정은 직접 하세요.</div></div>
+          <button class="btn small" id="addFuel">경유 추가</button><button class="btn small ghost" id="skipFuel">건너뛰기</button>
+        </div>
+        <div class="row">
+          <div class="route grow" id="leg1"></div>
+          <span class="status" id="naviStatus">아직 적용하지 않음</span>
+          <button class="btn primary" id="applyLeg1">1구간 경로 적용</button>
+        </div>
+      </section>
+
+      <!-- S08 동행 확인 -->
+      <section class="view" id="v-board">
+        <h1>할머니와 함께 출발하시나요?</h1>
+        <span class="basis" style="align-self:flex-start">관측: 오른쪽 뒷문 열림 → 닫힘 · 11:02. 누가 탔는지는 직접 확인해 주세요</span>
+        <div class="chips" id="boardChips">
+          <button class="chip" data-board="yes">네, 함께 가요</button>
+          <button class="chip" data-board="no">아니요</button>
+          <button class="chip" data-board="later">나중에</button>
+        </div>
+        <div class="card" id="leg2Card" style="display:none">
+          <div class="row"><div class="route grow" id="leg2"></div><span class="status" id="navi2Status">아직 적용하지 않음</span><button class="btn primary" id="applyLeg2">2구간 경로 적용</button></div>
+          <div class="src" style="margin-top:12px">공조: 이 차량에서 지원 여부를 확인하지 못해 적용하지 않아요(체크리스트로 대신).</div>
+        </div>
+      </section>
+
+      <!-- S10 다녀옴 회고 -->
+      <section class="view" id="v-recap">
+        <div class="row"><h1 class="grow">바다 카페에 다녀오셨나요?</h1><div class="steps" id="recapSteps"><span>방문</span><span>함께한 사람</span><span>한마디</span><span>확인</span></div></div>
+        <div id="recapBody" style="display:flex;flex-direction:column;gap:20px;flex:1"></div>
+      </section>
+
+      <div id="drive"><div class="to">다음 목적지</div><div class="dest" id="dDest">할머니 댁</div><div class="eta" id="dEta">20분</div><div class="say">🔊 <span id="dSay">할머니 댁까지 20분 남았어요.</span></div><div class="lock">주행 중에는 화면 조작을 받지 않습니다</div></div>
+      <div id="toast" role="status"></div>
+    </main>
+    <footer class="sys"><span>⌂ &nbsp; 운전석 <b>22°</b></span><span class="m">차량 시스템 영역 · 표시 예시</span><span>동승석 <b>22°</b></span></footer>
+  </div></div></div>
+
+  <aside id="lab">
+    <h3>시연 도구</h3>
+    <small>차량 화면 밖입니다. 장소, 날씨, 차량 신호, 내비 응답, 음성은 모두 시연용 값이고 Pleos SDK에 연결하지 않았습니다.</small>
+    <section class="scenes"><h4>장면 (SCENARIO.md)</h4><div id="sceneBtns"></div></section>
+    <section><h4>차량 상태</h4><button data-gear="P">P 정차·주차</button><button data-gear="D">D 주행</button><p>주행이면 주행 모드로 바뀌고 입력을 받지 않습니다.</p></section>
+    <section><h4>차량 신호</h4><button id="doorBtn">도어 열림 → 닫힘</button><button id="fuelLow">연료 40%</button><button id="fuelHigh">연료 80%</button></section>
+    <section><h4>내비 응답</h4><button id="naviOk" class="on">성공</button><button id="naviFail">실패</button><p>경로 적용 요청에 돌아올 응답입니다.</p></section>
+    <section><button id="reset">처음 상태로</button></section>
+  </aside>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  var $ = function (s) { return document.querySelector(s); };
+  var embedded = new URLSearchParams(location.search).get('embed') === '1';
+  document.documentElement.classList.toggle('embedded', embedded);
+
+  var SCENES = [
+    ['SC-01', '기억'], ['SC-02', '조율·확정'], ['SC-03', '출발'], ['SC-04', '주행 (1구간)'],
+    ['SC-05', '동행'], ['SC-06', '주행 (2구간)'], ['SC-07', '다녀옴']
+  ];
+
+  function fresh() {
+    return {
+      view: 'home', gear: 'P', clock: '10:02', fuel: 40, naviOk: true,
+      promise: null,          // null | 'saved' | 'planned' | 'done'
+      plan: { day: '이번 일요일', time: '10:30' },
+      checks: { route: true, hvac: false, share: false },
+      fuelStop: null,         // null | 'add' | 'skip'
+      leg1: 'idle', leg2: 'idle', // idle | wait | ok | fail
+      companion: null,        // null | 'yes' | 'no' | 'later'
+      doorSeen: false, trip: 'none', // none | today | leg1 | atGrandma | leg2 | back
+      memo: { step: 0, heard: false, place: null, who: null },
+      recap: { step: 0, visited: null, who: null, words: null }
+    };
+  }
+  var S = fresh();
+
+  // ---------- 화면 맞춤 ----------
+  function fit() {
+    var st = $('#stage'), w = st.clientWidth - (embedded ? 0 : 36), h = st.clientHeight - (embedded ? 0 : 36);
+    var k = Math.min(w / 1280, h / 720);
+    $('#display').style.transform = 'scale(' + k + ')';
+    $('#sizer').style.width = 1280 * k + 'px'; $('#sizer').style.height = 720 * k + 'px';
+  }
+  window.addEventListener('resize', fit);
+
+  function toast(t) { var el = $('#toast'); el.textContent = t; el.classList.add('on'); clearTimeout(toast.t); toast.t = setTimeout(function () { el.classList.remove('on'); }, 2600); }
+  function go(v) { if (S.gear === 'D') return; S.view = v; render(); }
+
+  // ---------- 홈 ----------
+  function nowCard() {
+    var c = $('#nowCard');
+    if (S.trip === 'atGrandma' && S.doorSeen && !S.companion) {
+      c.innerHTML = '<div class="txt"><div class="t1">할머니와 함께 출발하시나요?</div><div class="t2">오늘 여정에 할머니가 함께하기로 되어 있어요</div><span class="basis">관측: 도어 열림 → 닫힘 · 11:02</span></div><button class="btn primary" data-go="board">확인하기</button><button class="btn small ghost" data-act="later">나중에</button>';
+    } else if (S.trip === 'back') {
+      c.innerHTML = '<div class="txt"><div class="t1">바다 카페에 다녀오셨나요?</div><div class="t2">오늘 여정을 기록으로 남길 수 있어요</div><span class="basis">관측: 바다 카페 근처 정차 · 방문은 직접 확인해 주세요</span></div><button class="btn primary" data-go="recap">기록하기</button><button class="btn small ghost" data-act="later">나중에</button>';
+    } else if (S.promise === 'planned' && S.trip === 'atGrandma') {
+      c.innerHTML = '<div class="txt"><div class="t1">할머니 댁에 도착했어요</div><div class="t2">다음 구간: 할머니 댁 → 바다 카페</div></div><button class="btn primary" data-go="board">동행 확인</button>';
+    } else if (S.promise === 'planned' && (S.trip === 'today' || S.trip === 'leg1')) {
+      c.innerHTML = '<div class="txt"><div class="t1">오늘 10:30 할머니와 바다 카페</div><div class="t2">연료 ' + S.fuel + '% · 맑음 (10:02 조회)</div></div><button class="btn primary" data-go="prep">준비 점검</button>';
+    } else if (S.promise === 'saved') {
+      c.innerHTML = '<div class="txt"><div class="t1">할머니와 다음에 갈 곳: 바다 카페</div><div class="t2">약속으로 여정을 만들 수 있어요</div></div><button class="btn primary" data-go="promise">여정 만들기</button>';
+    } else if (S.promise === 'done') {
+      c.innerHTML = '<div class="txt"><div class="t1">바다 카페에 다녀왔어요 ✓</div><div class="t2">다음에 함께 갈 곳을 남겨 볼까요?</div></div><button class="btn primary" data-go="memo">다음 약속 남기기</button>';
+    } else {
+      c.innerHTML = '<div class="txt"><div class="t1">남길 기억이 있나요?</div><div class="t2">정차 중에 한마디로 "다음에 갈 곳"을 남길 수 있어요</div></div><button class="btn primary" data-go="memo">🎙 기억 남기기</button>';
+    }
+    var ps = '';
+    if (S.promise) ps += '<button class="promise' + (S.promise === 'done' ? ' done' : '') + '" data-go="promise"><div class="who">할머니</div><div class="where">바다 카페</div><div class="tag">' + ({ saved: '약속', planned: '이번 일요일 10:30', done: '다녀옴 ✓' })[S.promise] + '</div></button>';
+    ps += '<div class="promise"><div class="who">엄마</div><div class="where">꽃 시장</div><div class="tag">약속</div></div>';
+    $('#promises').innerHTML = ps;
+  }
+
+  // ---------- S02 기억 남기기 ----------
+  function memo() {
+    var m = S.memo, b = $('#memoBody');
+    [].forEach.call($('#memoSteps').children, function (el, i) { el.classList.toggle('on', i === m.step); });
+    if (m.step === 0) {
+      b.innerHTML = m.heard
+        ? '<div class="heard">"할머니가 저 카페 가보고 싶대"</div><div class="row" style="justify-content:center"><button class="btn primary" data-memo="useText">이대로 쓰기</button><button class="btn ghost" data-memo="again">다시 말하기</button></div><span class="demo-note">음성 인식 시연: 마이크를 쓰지 않고 예시 문장을 보여 줍니다</span>'
+        : '<div class="sub" style="text-align:center">버튼을 누르면 그때만 듣습니다</div><button class="mic" data-memo="listen">🎙</button><div class="row" style="justify-content:center"><button class="btn ghost small" data-memo="typeText">글로 쓰기</button></div>';
+    } else if (m.step === 1) {
+      var pl = [['바다 카페', '120m · 카페', 'sea'], ['파도 베이커리', '260m · 빵집', 'bakery'], ['해변 공원', '400m · 공원', 'park']];
+      b.innerHTML = '<div class="sub">지금 위치 주변의 장소예요 (위치: 차량 위치 · 시연 데이터)</div><div class="places">' +
+        pl.map(function (p) { return '<button class="place' + (m.place === p[2] ? ' sel' : '') + '" data-place="' + p[2] + '"><div class="n">' + p[0] + '</div><div class="m">' + p[1] + '</div></button>'; }).join('') +
+        '</div><div class="dock"><button class="btn ghost" data-memo="back">뒤로</button><button class="btn primary" data-memo="next" ' + (m.place ? '' : 'disabled') + '>다음</button></div>';
+    } else {
+      var who = ['할머니', '엄마', '아빠', '아직 몰라요'];
+      b.innerHTML = '<div class="sub">누구와 다음에 갈까요?</div><div class="chips">' +
+        who.map(function (w) { return '<button class="chip' + (m.who === w ? ' sel' : '') + '" data-who="' + w + '">' + w + '</button>'; }).join('') +
+        '</div><div class="card" style="font-size:19px">저장할 약속: <b>' + (m.who || '…') + '</b>와(과) 다음에 갈 곳 · <b>' + ({ sea: '바다 카페', bakery: '파도 베이커리', park: '해변 공원' })[m.place] + '</b></div>' +
+        '<div class="dock"><button class="btn ghost" data-memo="back">뒤로</button><button class="btn primary" data-memo="save" ' + (m.who ? '' : 'disabled') + '>약속 저장</button></div>';
+    }
+  }
+
+  // ---------- S04·S06 ----------
+  function plan() {
+    $('#dayChips').innerHTML = ['이번 토요일', '이번 일요일', '다음 주'].map(function (d) { return '<button class="chip' + (S.plan.day === d ? ' sel' : '') + '" data-day="' + d + '">' + d + '</button>'; }).join('');
+    $('#timeChips').innerHTML = ['10:00', '10:30', '11:00'].map(function (t) { return '<button class="chip' + (S.plan.time === t ? ' sel' : '') + '" data-time="' + t + '">' + t + '</button>'; }).join('');
+  }
+  function approve() {
+    var rows = [
+      ['route', '내비게이션 경로 적용', '출발할 때 구간마다 다시 확인한 뒤 적용합니다', false],
+      ['hvac', '할머니 공조 설정', '이 차량에서 지원 여부를 확인하지 못했어요', true],
+      ['share', '가족에게 출발 소식 보내기', '실제 출발 뒤 초안만 만들고, 보내기 전에 다시 묻습니다', false]
+    ];
+    $('#checks').innerHTML = rows.map(function (r) {
+      return '<button class="check' + (S.checks[r[0]] ? ' on' : '') + '" data-check="' + r[0] + '"' + (r[3] ? ' disabled' : '') + '><span class="box">' + (S.checks[r[0]] ? '✓' : '') + '</span><span>' + r[1] + '<span class="why">' + r[2] + '</span></span></button>';
+    }).join('');
+  }
+
+  // ---------- S07·S08 ----------
+  function routeHtml(pts, cur) { return pts.map(function (p, i) { return '<span class="pt' + (i === cur ? ' cur' : '') + '">' + p + '</span>'; }).join('<span class="ar">→</span>'); }
+  function statusEl(el, st) {
+    el.className = 'status' + ({ wait: ' wait', ok: ' ok', fail: ' fail' }[st] || '');
+    el.textContent = { idle: '아직 적용하지 않음', wait: '내비게이션 응답 기다리는 중…', ok: '적용됨 · 내비게이션 응답 확인', fail: '적용하지 못했어요 · 계획은 그대로예요' }[st];
+  }
+  function prep() {
+    $('#fuelBar').style.width = S.fuel + '%'; $('#fuelTxt').textContent = S.fuel + '%';
+    $('#fuelSuggest').style.display = S.fuel < 50 && !S.fuelStop ? 'flex' : 'none';
+    var pts = ['집'].concat(S.fuelStop === 'add' ? ['주유소'] : []).concat(['할머니 댁']);
+    $('#leg1').innerHTML = '1구간 ' + routeHtml(pts, -1);
+    statusEl($('#naviStatus'), S.leg1);
+    $('#applyLeg1').disabled = S.leg1 === 'wait' || S.leg1 === 'ok';
+    $('#applyLeg1').textContent = S.leg1 === 'fail' ? '다시 적용' : '1구간 경로 적용';
+  }
+  function board() {
+    [].forEach.call($('#boardChips').children, function (b) { b.classList.toggle('sel', b.dataset.board === S.companion); });
+    $('#leg2Card').style.display = S.companion === 'yes' ? 'block' : 'none';
+    $('#leg2').innerHTML = '2구간 ' + routeHtml(['할머니 댁', '바다 카페'], -1);
+    statusEl($('#navi2Status'), S.leg2);
+    $('#applyLeg2').disabled = S.leg2 === 'wait' || S.leg2 === 'ok';
+  }
+  function apply(leg) {
+    S[leg] = 'wait'; render();
+    setTimeout(function () {
+      S[leg] = S.naviOk ? 'ok' : 'fail';
+      if (S[leg] === 'ok') toast(leg === 'leg1' ? '1구간 경로가 내비게이션에 들어갔어요' : '2구간 경로가 내비게이션에 들어갔어요');
+      render();
+    }, 1200);
+  }
+
+  // ---------- S10 ----------
+  function recap() {
+    var r = S.recap, b = $('#recapBody');
+    [].forEach.call($('#recapSteps').children, function (el, i) { el.classList.toggle('on', i === r.step); });
+    if (r.step === 0) {
+      b.innerHTML = '<div class="card kv"><div class="k">오늘 이동</div><div>집 → 할머니 댁 → 바다 카페 → 할머니 댁 → 집</div><div class="k">바다 카페</div><div>근처 정차 42분 관측 <span class="src">· 차량 위치 기록 · 시연 데이터</span></div></div>' +
+        '<div class="sub">정차만으로 방문을 확정하지 않아요. 직접 확인해 주세요.</div>' +
+        '<div class="chips"><button class="chip" data-visit="yes">네, 다녀왔어요</button><button class="chip" data-visit="no">들르지 못했어요</button></div>';
+    } else if (r.step === 1) {
+      var who = ['할머니', '엄마', '아빠'];
+      b.innerHTML = '<div class="sub">함께한 사람을 골라 주세요 (출발 때 확인한 동행: 할머니)</div><div class="chips">' +
+        who.map(function (w) { return '<button class="chip' + (r.who === w ? ' sel' : '') + '" data-rwho="' + w + '">' + w + '</button>'; }).join('') +
+        '</div><div class="dock"><button class="btn ghost" data-recap="back">뒤로</button><button class="btn primary" data-recap="next" ' + (r.who ? '' : 'disabled') + '>다음</button></div>';
+    } else if (r.step === 2) {
+      var words = ['바다가 잘 보였어요', '할머니가 좋아하셨어요', '다음엔 저녁에 가요'];
+      b.innerHTML = '<div class="sub">한마디를 고르거나 말로 남겨요. 건너뛰어도 됩니다</div><div class="chips">' +
+        words.map(function (w) { return '<button class="chip' + (r.words === w ? ' sel' : '') + '" data-words="' + w + '">' + w + '</button>'; }).join('') +
+        '<button class="chip" data-words="🎙">🎙 말로 남기기</button></div><span class="demo-note" style="align-self:flex-start">음성은 시연입니다. 고른 문장만 기록돼요</span>' +
+        '<div class="dock"><button class="btn ghost" data-recap="back">뒤로</button><button class="btn" data-recap="skip">건너뛰기</button><button class="btn primary" data-recap="next">다음</button></div>';
+    } else {
+      b.innerHTML = '<div class="card kv"><div class="k">장소</div><div>바다 카페</div><div class="k">날짜</div><div>이번 일요일</div><div class="k">함께</div><div>' + r.who + '</div><div class="k">한마디</div><div>' + (r.words || '없음') + '</div><div class="k">사진</div><div class="src">차량에서 사진을 고르는 방법은 정하는 중이에요</div></div>' +
+        '<div class="sub">저장하면 "할머니와 바다 카페" 약속이 완료됩니다. 저장 전에는 아무것도 기록하지 않아요.</div>' +
+        '<div class="dock"><button class="btn ghost" data-recap="back">뒤로</button><button class="btn primary" data-recap="save">확인하고 저장</button></div>';
+    }
+  }
+
+  // ---------- 그리기 ----------
+  function render() {
+    var drive = S.gear === 'D';
+    $('#gear').textContent = drive ? 'D 주행 중' : 'P 정차 중';
+    $('#gear').classList.toggle('drive', drive);
+    $('#clock').textContent = S.clock;
+    $('#drive').classList.toggle('on', drive);
+    if (drive) {
+      var leg2 = S.trip === 'leg2';
+      $('#dDest').textContent = leg2 ? '바다 카페' : '할머니 댁';
+      $('#dEta').textContent = leg2 ? '25분' : '20분';
+      $('#dSay').textContent = leg2 ? '바다 카페까지 25분. 할머니가 가보고 싶다고 하신 곳이에요.' : '할머니 댁까지 20분 남았어요.';
+    }
+    document.querySelectorAll('.view').forEach(function (v) { v.classList.toggle('on', v.id === 'v-' + S.view); });
+    ({ home: nowCard, memo: memo, plan: plan, approve: approve, prep: prep, board: board, recap: recap }[S.view] || function () {})();
+    if (S.view === 'promise') $('#pState').textContent = { saved: '아직 가지 않음', planned: '이번 일요일 10:30 계획 확정', done: '다녀옴 ✓' }[S.promise] || '아직 가지 않음';
+    document.querySelectorAll('[data-gear]').forEach(function (b) { b.classList.toggle('on', b.dataset.gear === S.gear); });
+    $('#naviOk').classList.toggle('on', S.naviOk); $('#naviFail').classList.toggle('on', !S.naviOk);
+    try { localStorage.setItem('grd-first-visit', JSON.stringify(S)); } catch (e) { /* 저장 불가 환경 */ }
+  }
+
+  // ---------- 장면으로 바로 열기 ----------
+  function scene(id) {
+    S = fresh();
+    if (id >= 'SC-02') { S.promise = 'saved'; }
+    if (id === 'SC-01') { S.view = 'home'; S.clock = '15:40'; }
+    if (id === 'SC-02') { S.view = 'promise'; S.clock = '15:42'; }
+    if (id >= 'SC-03') { S.promise = 'planned'; S.trip = 'today'; S.clock = '10:02'; S.view = 'home'; }
+    if (id === 'SC-04') { S.trip = 'leg1'; S.leg1 = 'ok'; S.gear = 'D'; S.clock = '10:12'; }
+    if (id === 'SC-05') { S.trip = 'atGrandma'; S.leg1 = 'ok'; S.doorSeen = true; S.clock = '11:02'; }
+    if (id === 'SC-06') { S.trip = 'leg2'; S.leg1 = 'ok'; S.companion = 'yes'; S.leg2 = 'ok'; S.gear = 'D'; S.clock = '11:10'; }
+    if (id === 'SC-07') { S.trip = 'back'; S.leg1 = 'ok'; S.companion = 'yes'; S.leg2 = 'ok'; S.clock = '16:20'; }
+    render();
+  }
+
+  // ---------- 입력 ----------
+  document.addEventListener('click', function (e) {
+    var t = e.target.closest('button'); if (!t) return;
+    if (t.closest('#display') && S.gear === 'D') return;
+    var d = t.dataset;
+    if (d.go) return go(d.go);
+    if (d.act === 'later') { toast('나중에 다시 보여 드릴게요'); if (S.trip === 'atGrandma') { S.companion = 'later'; } render(); return; }
+    // 기억 남기기
+    if (d.memo === 'listen') { t.classList.add('listen'); setTimeout(function () { S.memo.heard = true; render(); }, 1100); return; }
+    if (d.memo === 'again') { S.memo.heard = false; return render(); }
+    if (d.memo === 'typeText') { S.memo.heard = true; toast('글로 쓰기: 시연에서는 예시 문장을 씁니다'); return render(); }
+    if (d.memo === 'useText') { S.memo.step = 1; return render(); }
+    if (d.memo === 'back') { S.memo.step = Math.max(0, S.memo.step - 1); return render(); }
+    if (d.memo === 'next') { S.memo.step = 2; return render(); }
+    if (d.place) { S.memo.place = d.place; return render(); }
+    if (d.who) { S.memo.who = d.who; return render(); }
+    if (d.memo === 'save') { S.promise = 'saved'; S.memo = fresh().memo; S.view = 'promise'; toast('약속을 저장했어요'); return render(); }
+    // 여정 계획·승인
+    if (d.day) { S.plan.day = d.day; return render(); }
+    if (d.time) { S.plan.time = d.time; return render(); }
+    if (d.check) { S.checks[d.check] = !S.checks[d.check]; return render(); }
+    if (t.id === 'confirmPlan') { S.promise = 'planned'; S.trip = 'today'; S.view = 'home'; S.clock = '10:02'; toast('계획을 확정했어요. 아직 아무것도 실행하지 않았어요'); return render(); }
+    // 출발 준비
+    if (t.id === 'addFuel') { S.fuelStop = 'add'; return render(); }
+    if (t.id === 'skipFuel') { S.fuelStop = 'skip'; return render(); }
+    if (t.id === 'applyLeg1') { if (!S.checks.route) { toast('경로 적용을 승인하지 않았어요'); return; } return apply('leg1'); }
+    // 동행
+    if (d.board) { S.companion = d.board; if (d.board !== 'yes') { toast(d.board === 'no' ? '이번 여정의 동행을 바꾸지 않았어요' : '나중에 다시 물을게요'); } return render(); }
+    if (t.id === 'applyLeg2') return apply('leg2');
+    // 다녀옴
+    if (d.visit) { if (d.visit === 'no') { toast('방문으로 기록하지 않았어요. 약속은 그대로예요'); S.view = 'home'; S.trip = 'none'; return render(); } S.recap.step = 1; S.recap.who = S.companion === 'yes' ? '할머니' : null; return render(); }
+    if (d.rwho) { S.recap.who = d.rwho; return render(); }
+    if (d.words) { S.recap.words = d.words === '🎙' ? '할머니가 좋아하셨어요' : d.words; if (d.words === '🎙') toast('음성 시연: 예시 문장을 골랐어요'); return render(); }
+    if (d.recap === 'back') { S.recap.step = Math.max(0, S.recap.step - 1); return render(); }
+    if (d.recap === 'next' || d.recap === 'skip') { if (d.recap === 'skip') S.recap.words = null; S.recap.step++; return render(); }
+    if (d.recap === 'save') { S.promise = 'done'; S.trip = 'none'; S.recap = fresh().recap; S.view = 'home'; toast('기록을 저장하고 약속을 완료했어요'); return render(); }
+    // 시연 도구
+    if (d.gear) {
+      S.gear = d.gear;
+      if (d.gear === 'D') { S.view = 'home'; if (S.trip === 'today') { S.trip = 'leg1'; S.clock = '10:12'; } else if (S.trip === 'atGrandma') { S.trip = 'leg2'; S.clock = '11:10'; } }
+      else if (S.trip === 'leg1') { S.trip = 'atGrandma'; S.clock = '11:00'; }
+      else if (S.trip === 'leg2') { S.trip = 'back'; S.clock = '16:20'; }
+      return render();
+    }
+    if (t.id === 'doorBtn') { S.doorSeen = true; toast('관측: 도어 열림 → 닫힘'); return render(); }
+    if (t.id === 'fuelLow') { S.fuel = 40; return render(); }
+    if (t.id === 'fuelHigh') { S.fuel = 80; return render(); }
+    if (t.id === 'naviOk') { S.naviOk = true; return render(); }
+    if (t.id === 'naviFail') { S.naviOk = false; return render(); }
+    if (t.id === 'reset') { location.hash = ''; S = fresh(); return render(); }
+    if (d.scene) { location.hash = d.scene; }
+  });
+
+  $('#sceneBtns').innerHTML = SCENES.map(function (s) { return '<button data-scene="' + s[0] + '">' + s[0] + ' ' + s[1] + '</button>'; }).join('');
+  window.addEventListener('hashchange', function () { var id = location.hash.slice(1); if (/^SC-0[1-7]$/.test(id)) scene(id); });
+
+  var start = location.hash.slice(1);
+  if (/^SC-0[1-7]$/.test(start)) scene(start);
+  else { try { var saved = JSON.parse(localStorage.getItem('grd-first-visit')); if (saved && saved.view) S = Object.assign(fresh(), saved); } catch (e) { /* 무시 */ } render(); }
+  fit();
+})();
+</script>
+</body>
+</html>
