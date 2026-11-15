@@ -14,7 +14,7 @@ function harness(saved,search=''){
  const click=s=>{assert($(s),'Missing '+s);assert(!$(s).disabled,'Disabled '+s);$(s).click();};
  const change=(s,value)=>{$(s).value=value;$(s).dispatchEvent(new w.Event('change',{bubbles:true}));};
  // Demo rail buttons outside the vehicle screen replace the former settings dialog.
- const RAIL={nav:'navi',source:'source',driving:'gear',weather:'weather'};
+ const RAIL={nav:'navi',source:'source',driving:'gear',weather:'weather',ai:'ai'};
  const scenario=fields=>{for(const [key,value]of Object.entries(fields))click(`[data-rail=${RAIL[key]}][data-value=${value}]`);};
  return {dom,w,$,click,change,scenario,responses};
 }
@@ -53,8 +53,8 @@ click('[data-action=review-route]');assert.equal(w.inspect().navigation.status,'
 scenario({nav:'success'});click('#routeBtn');click('[data-action=approve-route]');responses.shift()();
 assert.equal(w.inspect().navigation.status,'applied');assert.equal(w.inspect().visits.length,before);assert(!$('#home').classList.contains('hidden'));
 click('[data-action=finish-trip]');assert.equal(w.inspect().tripPhase,'review');assert.equal(w.inspect().visits.length,before);
-click('[data-action=record-trip]');click('[data-visit-place=p1]');click('[data-visit-date="2026-11-14"]');click('[data-visit-next]');assert($('[data-visit-next]').disabled);
-click('[data-visit-comp=solo]');click('[data-visit-next]');click('[data-visit-next]');assert.equal(w.inspect().visits.length,before);
+click('[data-action=record-trip]');assert($('[data-visit-save]').disabled);click('[data-visit-place=p1]');assert($('[data-visit-save]').disabled);
+click('[data-visit-comp=solo]');assert.equal(w.inspect().visits.length,before);
 click('[data-visit-save]');assert.equal(w.inspect().visits.length,before+1);assert.equal(w.inspect().tripPhase,'recorded');assert($('#nowCard').textContent.includes('기억을 남겼어요'));
 // Source outage preserves memories and plan, shows only saved places and can recover.
 scenario({source:'failed'});click('[data-view=explore]');assert(!$('#sourceBanner').hidden);assert.equal($('#resultCount').textContent,'3');assert.equal(w.inspect().route.length,2);
@@ -71,6 +71,29 @@ const saved=w.inspect();dom.window.close();
 delete saved.destinationPlace;saved.destination='청초호';saved.route=['p7','p8','p9'];
 const old=harness(saved);assert.equal(old.w.inspect().destinationPlace,null);assert.equal(old.w.inspect().route.length,3);assert.equal(old.w.inspect().visits.length,before+1);old.click('#routeBtn');assert(old.$('[data-action=approve-route]').disabled);old.dom.window.close();
 console.log('PASS: home journey, exact-place memory, exclusion/latest companion, theme provenance, waypoint limit, explicit approval, pending/cancel/error/success, stale responses, no automatic visits, source failure/recovery, unknown vehicle guard, legacy state.');
+
+// 내 AI 연결 (demo): voice-first trip settings, connection, research, sourced picks, consent, fallback, no AI while driving.
+{
+ const {dom,w,$,click,scenario}=harness(null,'#SC-08'),all=s=>[...w.document.querySelectorAll(s)],S=()=>w.inspect();
+ click('[data-action=prepare-trip]');click('#settings [data-view=explore]');
+ assert.equal(S().ai.stage,'idle');assert(!$('.ai-card'));assert.equal(all('.place-card').length,2);assert($('#aiBar').textContent.includes('내 AI'));
+ click('#tripSettings');click('#tripVoice');assert.equal(S().companion,'mom');assert($('#tripVoiceCopy').textContent.includes('파도 서가'));assert($('#tripVoiceCopy').textContent.includes('어머니와 함께'));
+ click('#aiChip');assert($('[data-ai-confirm]').disabled);click('[data-ai-pick=claude]');click('[data-ai-confirm]');assert.equal(S().ai.provider,'claude');
+ click('.side-nav [data-view=explore]');assert.equal(S().ai.stage,'research');assert($('.ai-research'));assert($('.ai-research').textContent.includes('대한민국 명소발굴 추천지'));
+ assert(!/100×100/.test($('#vehicleDisplay').textContent),'Screens say 대한민국 명소발굴 추천지, not 100×100');
+ w.aiResearchDone();assert.equal(all('.ai-card').length,2);assert(all('.ai-card').every(c=>c.textContent.includes('정리한 이유')&&c.querySelector('.src.q')));
+ // A follow-up preference is stored only with consent.
+ click('[data-ai-ask]');assert($('#modalBody').textContent.includes('따뜻한 차'));click('[data-ai-once]');assert.equal(S().profile.likes.length,0);assert.equal($('.ai-card strong').textContent,'흰돌 정원');
+ click('[data-ai-ask]');click('[data-ai-keep]');assert.equal(S().profile.likes.length,1);assert.equal(S().profile.likes[0].who,'mom');
+ // While driving no AI step starts; a running one is cancelled.
+ scenario({ai:'fail'});assert.equal(S().ai.stage,'research');scenario({driving:'drive'});assert.equal(S().ai.stage,'idle');w.aiResearchDone();assert.equal(S().ai.stage,'idle');
+ assert($('#driveView').textContent.includes('내 AI에도 묻지 않아요'));
+ // AI failure falls back to the rule-based cards.
+ scenario({driving:'park'});assert.equal(S().ai.stage,'research');w.aiResearchDone();assert(!$('.ai-card'));assert.equal(all('.place-card').length,2);assert($('#aiBar').textContent.includes('기본 추천'));
+ // Disconnect returns to the plain recommendations.
+ click('#aiChip');click('[data-ai-disconnect]');assert.equal(S().ai.provider,null);dom.window.close();
+}
+console.log('PASS: 내 AI 연결 — voice-first trip settings, demo connection, research step, sourced picks with unknowns, consent-only preference, failure fallback, no AI while driving.');
 
 // Embedded submission frames must use the full 16:9 surface without preview margins.
 const embed=harness(null,'?embed=1'),ew=embed.w;

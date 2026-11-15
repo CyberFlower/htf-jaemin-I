@@ -92,7 +92,7 @@ function renderPromise(){
 function renderPlan(){
  const f=state.first,p=promisePlace(f);if(!p){$('#plan').innerHTML='';return;}
  const failed=state.sourceState==='failed';
- $('#plan').innerHTML=head(`${f.promise.who==='unknown'?'':esc(whoName(f))+'와 '}${esc(p.name)}`,'여정 초안 · 확정해도 바로 실행하지 않아요')+`<div class="trip-body plan-grid"><div class="plan-pick"><p class="label">날짜</p><div class="chips">${Object.entries(PLAN_DAYS).map(([k,d])=>`<button class="chip ${f.plan.day===k?'sel':''}" data-plan-day="${k}" aria-pressed="${f.plan.day===k}">${d.label}<small>${dateShort(d.date)}</small></button>`).join('')}</div><p class="label">출발 시각</p><div class="chips">${PLAN_TIMES.map(t=>`<button class="chip ${f.plan.time===t?'sel':''}" data-plan-time="${t}" aria-pressed="${f.plan.time===t}">${t}</button>`).join('')}</div></div><div class="kv"><span class="k">동선</span><span>${routeStops(f).map(esc).join(' → ')}</span><span class="k">날씨</span><span>${state.weather==='rain'?'비':'맑음'} <span class="src">· 예보 · ${state.clock} 조회 · 시연 데이터</span></span><span class="k">${esc(p.name)}</span><span>${failed?'<span class="unknown">미확인</span> <span class="src">· 장소 정보를 불러오지 못했어요</span>':p.id==='p10'?'10:00~21:00 영업 <span class="src">· 장소 정보 · 시연 데이터</span>':'<span class="unknown">영업 정보 미확인</span>'}</span><span class="k">주차</span><span><span class="unknown">미확인</span> <span class="src">· 정보가 없어 추측하지 않아요</span></span></div></div><div class="trip-dock"><button class="outline spacer" data-view="promise">← 뒤로</button><button class="primary" data-view="approve">승인할 작업 확인</button></div>`;
+ $('#plan').innerHTML=head(`${f.promise.who==='unknown'?'':esc(whoName(f))+'와 '}${esc(p.name)}`,'여정 초안 · 확정해도 바로 실행하지 않아요')+`<div class="trip-body plan-grid"><div class="plan-pick">${f.planHeard?`<p class="plan-heard"><span>이렇게 들었어요 · 음성 인식 시연</span>“이번 일요일 열 시 반에 가자”</p>`:`<button class="mic-pill" data-plan-voice>${icon('mic')} 언제 갈지 말로 정하기</button>`}<p class="label">날짜</p><div class="chips">${Object.entries(PLAN_DAYS).map(([k,d])=>`<button class="chip ${f.plan.day===k?'sel':''}" data-plan-day="${k}" aria-pressed="${f.plan.day===k}">${d.label}<small>${dateShort(d.date)}</small></button>`).join('')}</div><p class="label">출발 시각</p><div class="chips">${PLAN_TIMES.map(t=>`<button class="chip ${f.plan.time===t?'sel':''}" data-plan-time="${t}" aria-pressed="${f.plan.time===t}">${t}</button>`).join('')}</div></div><div class="kv"><span class="k">동선</span><span>${routeStops(f).map(esc).join(' → ')}</span><span class="k">날씨</span><span>${state.weather==='rain'?'비':'맑음'} <span class="src">· 예보 · ${state.clock} 조회 · 시연 데이터</span></span><span class="k">${esc(p.name)}</span><span>${failed?'<span class="unknown">미확인</span> <span class="src">· 장소 정보를 불러오지 못했어요</span>':p.id==='p10'?'10:00~21:00 영업 <span class="src">· 장소 정보 · 시연 데이터</span>':'<span class="unknown">영업 정보 미확인</span>'}</span><span class="k">주차</span><span><span class="unknown">미확인</span> <span class="src">· 정보가 없어 추측하지 않아요</span></span></div></div><div class="trip-dock"><button class="outline spacer" data-view="promise">← 뒤로</button><button class="primary" data-view="approve">승인할 작업 확인</button></div>`;
 }
 function renderApprove(){
  const f=state.first,rows=[['route','내비게이션 경로 적용','출발할 때 구간마다 다시 확인한 뒤 적용해요',false],['hvac',`${whoName(f)} 자리 공조 설정`,'이 차량에서 지원 여부를 확인하지 못했어요',true],['share','가족에게 출발 소식 보내기','실제 출발 뒤 초안만 만들고, 보내기 전에 다시 물어요',false]];
@@ -117,11 +117,11 @@ function renderDrive(){
  else if(f.trip==='leg2'){to=p.name;eta='25분';say=f.promise.who==='unknown'?`${p.name}까지 25분. 지난번에 남겨 둔 약속의 장소예요.`:`${p.name}까지 25분. ${whoName(f)}가 가보고 싶다고 하신 곳이에요.`;cur=stops.length-2;}
  else if(f.trip==='return'){to='집';eta='안내 중';say='집으로 가는 길이에요. 다녀온 기록은 정차한 뒤에 남겨요.';cur=stops.length-1;}
  else if(state.navigation?.status==='applied'){to=place(state.navigation.destination)?.name||to;say='들를 곳은 내비게이션 안내를 따라가요. 기록은 정차한 뒤에 남겨요.';}
- const trip=cur>=0&&f.promise;$('#driveView').innerHTML=`<div class="drive-thread">${threadHtml(trip?tripModel(f,true):{progress:640,items:[{kind:'light',x:640,label:'나'}]},{night:true,id:'drive',y0:36})}</div><div class="drive-main"><p class="drive-to">${eta?esc(to)+'까지':'다음 목적지 · '+esc(to)}</p>${eta?`<p class="drive-eta">${eta}</p>`:''}<p class="drive-say">${icon('speaker')}<span>${esc(say)}</span></p><p class="drive-lock">주행 중에는 화면 조작을 받지 않아요 · 음성 안내 시연</p></div>`;
+ const trip=cur>=0&&f.promise;const aiReady=state.ai?.provider&&state.ai.stage==='done'&&state.ai.result==='ok';$('#driveView').innerHTML=`<div class="drive-thread">${threadHtml(withAiStar(trip?tripModel(f,true):{progress:640,items:[{kind:'light',x:640,label:'나'}]}),{night:true,id:'drive',y0:36})}</div><div class="drive-main"><p class="drive-to">${eta?esc(to)+'까지':'다음 목적지 · '+esc(to)}</p>${eta?`<p class="drive-eta">${eta}</p>`:''}<p class="drive-say">${icon('speaker')}<span>${esc(say)}</span></p>${aiReady?`<p class="drive-ai">${STAR}<span>근처에 들를 곳 두 곳을 정리해 뒀어요. 도착하면 보여 드릴게요.</span></p>`:''}<p class="drive-lock">주행 중에는 화면 조작을 받지 않아요${state.ai?.provider?' · 내 AI에도 묻지 않아요':''} · 음성 안내 시연</p></div>`;
 }
 function renderRail(){
  const pressed=(sel,val)=>document.querySelectorAll(`[data-rail="${sel}"]`).forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.value===String(val))));
- pressed('gear',state.vehicleState);pressed('fuel',state.fuel);pressed('location',state.location);pressed('navi',state.navOutcome);pressed('weather',state.weather);pressed('source',state.sourceState);
+ pressed('gear',state.vehicleState);pressed('fuel',state.fuel);pressed('location',state.location);pressed('navi',state.navOutcome);pressed('weather',state.weather);pressed('source',state.sourceState);pressed('ai',state.aiOutcome);
  const d=$('#railDoor');if(d)d.textContent=state.doorAt?`마지막 관측 ${state.doorAt}`:'관측 없음';
 }
 function renderTrip(){renderThread();renderShortcuts();renderMemo();renderPromise();renderPlan();renderApprove();renderPrep();renderBoard();renderDrive();renderRail();$('#homeDate').textContent=dateLong(state.today);$('#clock').textContent=state.clock;}
@@ -160,6 +160,7 @@ function tripAction(b){
  }
  if(d.memoPlace){m.place=d.memoPlace;render();return true;}
  if(d.memoWho){m.who=d.memoWho;render();return true;}
+ if(b.hasAttribute('data-plan-voice')){f.plan.day='sun1';f.plan.time='10:30';f.planHeard=true;render();toast('말한 대로 채웠어요. 틀리면 아래에서 고쳐 주세요.');return true;}
  if(d.planDay){f.plan.day=d.planDay;render();return true;}
  if(d.planTime){f.plan.time=d.planTime;render();return true;}
  if(d.check){if(d.check==='hvac')return true;f.checks[d.check]=!f.checks[d.check];if(!f.checks.route)cancelLegs();render();return true;}
@@ -182,7 +183,7 @@ function tripAction(b){
 // Demo rail outside the vehicle screen. Vehicle state controls only; no scene jumps.
 function railGear(v){
  const f=state.first,was=state.vehicleState;state.vehicleState=v;state.driving=v!=='park';
- if(v!=='park'){close();cancelLegs();}
+ if(v!=='park'){close();cancelLegs();if(state.ai?.stage==='research'){state.ai.stage='idle';aiSerial++;}}
  if(v==='drive'&&was!=='drive'){
   const next={today:hasPickup(f)?'leg1':'leg2',atGrandma:'leg2',atPlace:'return'}[f.trip];
   if(next){f.trip=next;state.clock=tripClock(next);state.view='home';}
@@ -203,6 +204,7 @@ function railAction(b){
  case 'navi':state.navOutcome=v;break;
  case 'weather':state.weather=v;state.page=0;break;
  case 'source':state.sourceState=v;state.page=0;break;
+ case 'ai':state.aiOutcome=v;aiReset();break;
  case 'reset':resetDemo();return;
  }
  render();
@@ -230,6 +232,7 @@ function threadItem(it,y0){
  if(it.kind==='tag')return `<div class="hang" style="${pos(-8)}"><i class="pin"></i><div class="tag${it.ghost?' ghost':''}${it.who&&FACE[it.who]?' signed':''}" style="--r:${it.r||0}deg">${it.ghost?esc(it.text):`<q>${esc(it.text)}</q><small>${esc(it.meta)}</small>${it.who&&FACE[it.who]?`<span class="sig">${face(it.who)}</span>`:''}`}</div></div>`;
  if(it.kind==='stop')return `<div class="stop${it.future?' future':''}" style="${pos()}"><i></i>${it.label?`<span>${it.who&&FACE[it.who]?`<b class="mini">${face(it.who)}</b>`:''}${esc(it.label)}</span>`:''}</div>`;
  if(it.kind==='light')return `<div class="light ${it.who?'companion':'me'}${it.wait?' wait':''}" style="${pos(it.dy)}"><i>${it.who?face(it.who):''}</i>${it.label?`<span>${esc(it.label)}</span>`:''}</div>`;
+ if(it.kind==='ai')return `<div class="light ai${it.wait?' wait':''}" style="${pos(it.dy)}" aria-label="내 AI"><i>${STAR}</i>${it.label?`<span>${esc(it.label)}</span>`:''}</div>`;
  if(it.kind==='knot')return `<svg class="knot" style="${pos()}" viewBox="0 0 46 30" aria-hidden="true"><path d="M8 15c0-8 14-8 15 0s15 8 15 0-14-8-15 0-15 8-15 0z" fill="none" stroke="#8e3a1a" stroke-width="5"/></svg>`;
  return '';
 }
@@ -263,8 +266,9 @@ function homeModel(){
  if(f.stage==='saved'||f.stage==='planned'){items.push({kind:'light',x:620,label:'지금'});items.push(promiseTag(f,900));return {progress:620,items};}
  items.push({kind:'light',x:860,label:'오늘'});items.push({kind:'tag',x:1110,ghost:true,text:'다음 약속',r:4});return {progress:860,items};
 }
+function withAiStar(m){if(!state.ai?.provider)return m;const me=m.items.filter(it=>it.kind==='light').map(it=>it.x);const x=me.length?Math.max(...me)+(me.length>1?70:90):m.progress+90;m.items.push({kind:'ai',x:Math.min(x,1230),dy:-34});return m;}
 function skyClass(){const h=Number(String(state.clock||'12:00').slice(0,2));return h<11?'sky-morning':h<15?'sky-day':h<18?'sky-golden':'sky-evening';}
 function renderThread(){
- const el=$('#thread');if(el)el.innerHTML=threadHtml(homeModel(),{id:'home',y0:36});
+ const el=$('#thread');if(el)el.innerHTML=threadHtml(withAiStar(homeModel()),{id:'home',y0:36});
  const vd=$('#vehicleDisplay');['sky-morning','sky-day','sky-golden','sky-evening'].forEach(c=>vd.classList.toggle(c,c===skyClass()));
 }

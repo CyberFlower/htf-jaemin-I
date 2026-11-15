@@ -53,13 +53,22 @@ function harness(url='',saved){
  rail('gear','drive');rail('gear','park');assert.equal(F().trip,'back');assert(now().includes('바다 카페에 다녀오셨나요'));assert(now().includes('정차 1시간 15분'));
  // A long stop is not a visit: nothing is recorded until the final save.
  assert.equal(S().visits.length,visits);
- click('[data-first=record]');assert($('[data-trip-visited]'));click('[data-trip-visited]');
- assert($('[data-visit-date="2026-11-08"]').getAttribute('aria-pressed')==='true');click('[data-visit-next]');
- assert.equal($('[data-visit-comp=grandma]').getAttribute('aria-pressed'),'true');click('[data-visit-next]');
- click('[data-visit-note="1"]');click('[data-visit-next]');assert($('#modalBody').textContent.includes('할머니와 함께'));assert.equal(S().visits.length,visits);
+ click('[data-first=record]');assert($('[data-trip-visited]'));assert(!$('[data-visit-save]'));click('[data-trip-visited]');
+ // Observations prefill the sheet; the driver only fixes what is wrong.
+ assert($('[data-row=date]').textContent.includes('11월 8일'));assert($('[data-row=who]').textContent.includes('할머니와 함께'));assert($('[data-row=who]').textContent.includes('출발 때'));
+ click('[data-visit-note="1"]');assert($('#modalBody').textContent.includes('할머니와 바다 카페'));assert.equal(S().visits.length,visits);
  click('[data-visit-save]');
  const v=S().visits.at(-1);assert.deepEqual([v.place,v.date,v.companions[0],v.note],['p10','2026-11-08','grandma','할머니가 좋아하셨어요']);
  assert.equal(F().stage,'done');assert($('[data-action=prepare-trip]'),'After the first visit the revisit card continues.');
+ dom.window.close();
+}
+
+// 1b. Without a confirmed companion the sheet asks; closing saves nothing.
+{
+ const {dom,$,click,S,w}=harness('#SC-07');const before=S().visits.length;
+ w.mutate(s=>{s.first.companion='no';});click('[data-first=record]');click('[data-trip-visited]');
+ assert($('[data-row=who]').textContent.includes('골라 주세요'));assert($('[data-visit-save]').disabled);
+ click('[data-visit-comp=grandma]');assert(!$('[data-visit-save]').disabled);click('[data-action=close]');assert.equal(S().visits.length,before);
  dom.window.close();
 }
 
@@ -101,7 +110,7 @@ function harness(url='',saved){
  const {dom,$,all,rail,S}=harness('#SC-05');
  assert($('#labRail'));assert(!$('#vehicleDisplay').contains($('#labRail')));
  assert(!all('#labRail [data-scene]').length);assert(!/SC-\d/.test($('#labRail').textContent));
- assert.deepEqual([...new Set(all('#labRail button').map(b=>b.dataset.rail))].sort(),['door','fuel','gear','location','navi','reset','source','weather']);
+ assert.deepEqual([...new Set(all('#labRail button').map(b=>b.dataset.rail))].sort(),['ai','door','fuel','gear','location','navi','reset','source','weather']);
  assert($('#labRail').textContent.includes('가상 데이터'));
  assert(!$('#demoBtn'));assert(!$('#demoForm'));assert.deepEqual(all('.lab-actions button').map(b=>b.id||b.dataset.view),['knowledge','exportBtn','fullscreenBtn']);
  assert(source('trip.css').includes('.embedded .lab-rail{display:none}'));

@@ -420,16 +420,203 @@ body{background:#211915}
 .vehicle-display .pagination button,.vehicle-display #settings .segmented button,.vehicle-display .recall .pill{border-radius:999px}
 .vehicle-display .pagination button{background:rgba(255,250,242,.6)}
 .mic-wrap{gap:44px}.mic-wrap .trip-sub{margin-top:8px}
+
+/* ---------- Voice first "이번 여정", 내 AI 연결, one-sheet visit record ---------- */
+.star{width:1em;height:1em;flex:0 0 auto;display:inline-block;vertical-align:-.12em}
+.vehicle-display .view.has-thread{position:relative;margin:-16px -44px -20px;height:584px;padding:0;overflow:hidden}
+.vehicle-display .view.has-thread.hidden{display:none}
+.mini-thread{height:130px}
+.light.ai>i{width:36px;height:36px;padding:8px;background:radial-gradient(circle at 40% 35%,#eef2ff,#a9b9f0 55%,#6f86d6);box-shadow:0 0 0 7px rgba(130,150,230,.2),0 0 30px 9px rgba(120,140,225,.42);color:#fffaf2}
+.light.ai>i .star{width:100%;height:100%;display:block}
+.light.ai.wait>i{background:rgba(255,248,240,.5);box-shadow:none;border:3px dashed rgba(111,134,214,.75);color:#a9b9f0}
+.light.ai>span{color:#3b4a86;font-size:15px}
+.light.ai.wait>span{color:#5d6fb0}
+.drive-thread .light.ai>span{color:#c8d2f6}
+
+/* 이번 여정 */
+.settings-main{position:absolute;left:40px;right:40px;top:126px;bottom:8px;padding:6px 24px 10px;display:flex;flex-direction:column;gap:14px;overflow-y:auto}
+.voice-ask{display:flex;align-items:center;gap:34px;min-height:132px}
+.vehicle-display #settings .mic{flex:0 0 112px;width:112px;height:112px;box-shadow:0 0 0 14px rgba(180,83,42,.14),0 0 0 30px rgba(180,83,42,.07),0 14px 30px rgba(180,83,42,.3)}
+.vehicle-display #settings .mic .icon{width:44px;height:44px}
+.voice-copy .obs{display:flex;align-items:center;gap:10px;margin:0;font:400 17px var(--sans);color:var(--ink2)}
+.voice-copy .obs:before{content:"";width:10px;height:10px;border-radius:50%;background:#7d8a5f}
+.voice-copy h2{font:700 40px/1.2 var(--serif);letter-spacing:-1px;margin:8px 0 6px}
+.voice-copy .hint{font:400 17px var(--sans);color:var(--ink2);margin:0}
+.heard-line{font:400 40px/1.2 var(--hand);color:#5b3a2a;margin:6px 0 12px;background:none;border:0;padding:0}
+.said-chips{display:flex;flex-wrap:wrap;gap:12px}
+.said-chip{display:inline-flex;align-items:center;gap:10px;min-height:56px;padding:0 20px;border:0;border-radius:999px;background:var(--paper-glass);box-shadow:var(--soft);font:400 18px var(--sans);color:var(--ink)}
+.said-chip span{font-size:15px;color:var(--ink2)}
+.said-chip b{font-weight:700}
+.said-chip i{font-style:normal;font-size:14px;color:var(--primary-deep);text-decoration:underline;text-underline-offset:3px}
+.said-chip.again{background:none;box-shadow:inset 0 0 0 2px #dcc7ac;color:var(--ink2)}
+.vehicle-display #settings #memoryPrompt .recall{height:auto;min-height:84px;padding:12px 22px}
+.vehicle-display #settings .recall strong{font:700 21px var(--serif)}
+.vehicle-display #settings .recall p{font-size:15px}
+.settings-actions{display:flex;align-items:center;justify-content:space-between;gap:16px}
+.ai-chip{display:inline-flex;align-items:center;gap:10px;min-height:56px;padding:0 22px;border:0;border-radius:999px;background:rgba(238,242,255,.8);box-shadow:inset 0 0 0 2px rgba(111,134,214,.3);font:500 18px var(--sans);color:#3b4a86}
+.ai-chip .star{color:#6f86d6;width:22px;height:22px}
+.manual-pick{border-radius:24px;background:rgba(255,250,242,.45)}
+.manual-pick summary{list-style:none;cursor:pointer;min-height:52px;display:flex;align-items:center;gap:12px;padding:0 22px;font:500 18px var(--sans);color:var(--ink2)}
+.manual-pick summary::-webkit-details-marker{display:none}
+.manual-pick summary:before{content:"＋";font-weight:700;color:var(--primary-deep)}
+.manual-pick[open] summary:before{content:"－"}
+.manual-pick summary small{font-size:15px;color:#9b836f}
+.manual-body{display:flex;flex-direction:column;gap:12px;padding:4px 16px 16px}
+.manual-row{display:flex;gap:12px}
+
+/* 내 AI 연결 */
+.ai-link{position:absolute;left:64px;right:64px;top:126px;bottom:14px;display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:44px;align-items:start}
+.ai-left h2{font:700 40px/1.2 var(--serif);letter-spacing:-1px;margin:8px 0 6px}
+.ai-left .obs{display:flex;align-items:center;gap:10px;margin:0;font:400 17px var(--sans);color:var(--ink2)}
+.ai-left .obs:before{content:"";width:10px;height:10px;border-radius:50%;background:#7d8a5f}
+.ai-left .lead{font:400 19px/1.5 var(--sans);color:var(--ink2);margin:0 0 20px}
+.provs{display:flex;gap:14px}
+.prov{display:inline-flex;align-items:center;gap:12px;min-height:66px;padding:0 28px;border:0;border-radius:999px;font:600 22px var(--sans);color:var(--ink);background:rgba(255,250,242,.7);box-shadow:inset 0 0 0 2px #dcc7ac}
+.prov i{width:18px;height:18px;border-radius:50%;box-shadow:inset 0 0 0 2px #b9a184}
+.prov.sel{background:#fffaf2;box-shadow:inset 0 0 0 3px #6f86d6,0 10px 22px rgba(111,134,214,.2)}
+.prov.sel i{background:#6f86d6;box-shadow:inset 0 0 0 4px #fffaf2,0 0 0 2px #6f86d6}
+.prov:disabled{opacity:1}
+.prov:disabled:not(.sel){opacity:.45}
+.sendrow{display:flex;gap:16px;margin-top:24px}
+.sendrow div{flex:1;font:400 16px/1.5 var(--sans);color:var(--ink2);background:rgba(255,250,242,.6);border-radius:18px;padding:14px 18px}
+.sendrow b{display:block;font:700 17px var(--sans);color:var(--ink);margin-bottom:4px}
+.sendrow div+div b{color:var(--primary-deep)}
+.qrcard{background:#fffaf2;border-radius:28px;padding:26px 28px;box-shadow:0 20px 44px rgba(80,50,20,.16);text-align:center;display:flex;flex-direction:column;align-items:center;gap:14px}
+.qrt{font:700 24px var(--serif);margin:0}
+.qrcard p{font:400 16px/1.5 var(--sans);color:var(--ink2);margin:0}
+.qrcard .primary{min-height:60px;font-size:18px;padding:0 24px}
+.qr{position:relative;display:grid;grid-template-columns:repeat(21,1fr);width:190px;height:190px;padding:10px;background:#fff;border-radius:14px;box-shadow:inset 0 0 0 2px #eadcc6}
+.qr i{background:#3b2a20}.qr b{background:transparent}
+.qr u{position:absolute;width:52px;height:52px;margin:10px;border:9px solid #3b2a20;background:#fff;box-shadow:inset 0 0 0 7px #fff,inset 0 0 0 30px #3b2a20}
+.qrcard.on{padding:34px 28px}
+.ai-orb{display:grid;place-items:center;width:96px;height:96px;border-radius:50%;color:#fffaf2;background:radial-gradient(circle at 40% 35%,#eef2ff,#a9b9f0 55%,#6f86d6);box-shadow:0 0 0 12px rgba(130,150,230,.18),0 0 44px 12px rgba(120,140,225,.4)}
+.ai-orb .star{width:44px;height:44px}
+
+/* 둘러보기 with 내 AI */
+.heading-tools{display:flex;align-items:center;gap:14px}
+.ai-bar:empty{display:none}
+.ai-hint,.ai-ask,.ai-again{display:inline-flex;align-items:center;gap:8px;min-height:56px;padding:0 20px;border:0;border-radius:999px;font:500 17px var(--sans)}
+.ai-hint{background:rgba(238,242,255,.7);color:#3b4a86;box-shadow:inset 0 0 0 2px rgba(111,134,214,.25)}
+.ai-hint .star,.ai-state .star{color:#6f86d6;width:20px;height:20px}
+.ai-ask{background:#6f86d6;color:#fff;box-shadow:0 10px 22px rgba(111,134,214,.3)}
+.ai-ask .icon{width:22px;height:22px}
+.ai-state{display:inline-flex;align-items:center;gap:8px;font:500 16px var(--sans);color:#3b4a86}
+.ai-state.warn{color:var(--primary-deep)}
+.ai-again{min-height:44px;padding:0 14px;background:rgba(238,242,255,.8);color:#3b4a86}
+.ai-research{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:36px;align-items:start;padding:8px 6px}
+.ai-title{font:700 30px/1.3 var(--serif);margin:0 0 14px}
+.ai-title .star{color:#6f86d6}
+.ai-steps{list-style:none;margin:0;padding:0}
+.ai-steps li{display:flex;align-items:center;gap:14px;font:400 21px/1.3 var(--sans);padding:9px 0;color:var(--ink)}
+.ai-steps li small{font-size:15px;color:var(--ink2)}
+.ai-steps li:before{content:"";flex:none;width:24px;height:24px;border-radius:50%}
+.ai-steps li.ok:before{background:#7d8a5f radial-gradient(circle,#fffaf2 0 4px,transparent 5px);box-shadow:0 0 0 5px rgba(125,138,95,.18)}
+.ai-steps li.run{color:#5d6fb0}
+.ai-steps li.run:before{border:4px solid rgba(111,134,214,.3);border-top-color:#6f86d6;width:16px;height:16px;animation:aispin 1s linear infinite}
+@keyframes aispin{to{transform:rotate(360deg)}}
+.ai-sent{background:rgba(238,242,255,.78);border-radius:24px;padding:20px 22px;box-shadow:inset 0 0 0 2px rgba(111,134,214,.22);display:flex;flex-direction:column;gap:14px;align-items:flex-start}
+.ai-sent p{font:400 16px/1.55 var(--sans);color:var(--ink2);margin:0}
+.ai-sent b{color:#3b4a86;font-weight:600}
+.vehicle-display .ai-card .art{height:118px;flex-basis:118px}
+.vehicle-display .ai-card .card-body{gap:6px;padding:12px 18px 14px}
+.ai-why{display:block;font:400 25px/1.2 var(--hand);color:#3b4a86;background:rgba(238,242,255,.75);border-radius:14px;padding:8px 12px 10px}
+.ai-why b{display:flex;align-items:center;gap:6px;font:600 14px var(--sans);color:#5d6fb0;margin-bottom:2px}
+.ai-why .star{color:#6f86d6}
+.src-chips{display:flex;flex-wrap:wrap;gap:6px}
+.src{font:500 13px var(--sans);color:#4f5c39;background:#e5e6d2;border-radius:14px;padding:4px 10px}
+.src.q{color:var(--primary-deep);background:#f8dcc4}
+.vehicle-display .pagination .ai-page-note{display:inline-flex;align-items:center;gap:8px;font:500 16px var(--sans);color:#3b4a86}
+.ai-page-note .star{color:#6f86d6}
+.ai-chat{display:flex;flex-direction:column;gap:14px}
+.me-say{align-self:flex-start;background:#fff6e6;border-radius:22px 22px 22px 6px;padding:14px 20px;font:400 36px/1.2 var(--hand);color:#5b3a2a;box-shadow:0 8px 20px rgba(80,50,20,.1)}
+.ai-say{align-self:flex-start;margin-left:40px;background:rgba(238,242,255,.9);border-radius:22px 22px 22px 6px;padding:14px 20px;font:400 19px/1.55 var(--sans);color:#2f3b6e;box-shadow:inset 0 0 0 2px rgba(111,134,214,.22)}
+.me-say .lbl,.ai-say .lbl{display:flex;align-items:center;gap:8px;font:600 14px var(--sans);color:var(--ink2);margin-bottom:4px}
+.me-say .lbl .icon{width:16px;height:16px}
+.ai-say .lbl{color:#5d6fb0}.ai-say .lbl .star{color:#6f86d6}
+.keep-card{display:flex;gap:18px;align-items:center;margin-top:18px;background:rgba(248,220,196,.55);border-radius:22px;padding:16px 20px}
+.keep-card .kface{flex:0 0 72px;width:72px;height:72px;border-radius:50%;background:#f8dcc4;padding:4px}
+.keep-card .kface svg{width:100%;height:100%;display:block}
+.keep-card h3{font:700 24px/1.3 var(--serif);margin:0}
+.keep-card p{font:400 16px/1.5 var(--sans);color:var(--ink2);margin:4px 0 0}
+.drive-ai{display:flex;align-items:center;gap:12px;font:400 20px/1.4 var(--sans);color:#c8d2f6;margin:0 0 12px}
+.drive-ai .star{width:28px;height:28px;color:#a9b9f0}
+
+/* 여정 계획: say when */
+.mic-pill{display:inline-flex;align-items:center;gap:10px;min-height:58px;padding:0 24px;border:0;border-radius:999px;background:var(--primary);color:#fff8ef;font:500 19px var(--sans);box-shadow:0 10px 22px rgba(180,83,42,.24);margin-bottom:6px}
+.mic-pill .icon{width:24px;height:24px}
+.plan-heard{font:400 32px/1.2 var(--hand);color:#5b3a2a;margin:0 0 6px}
+.plan-heard span{display:block;font:400 15px var(--sans);color:var(--ink2);margin-bottom:2px}
+
+/* 다녀온 기록: one sheet */
+.vehicle-display dialog.sheet{width:1000px}
+.visit-sheet{display:flex;flex-direction:column;gap:14px}
+.sheet-q{display:flex;flex-direction:column;gap:6px}
+.sheet-title{font:700 30px/1.25 var(--serif);letter-spacing:-.5px;margin:0;color:var(--ink)}
+.sheet-title.small{font-size:24px}
+.sheet-obs{font:400 16px/1.5 var(--sans);color:var(--ink2);margin:0}
+.sheet-answers{display:flex;gap:14px;justify-content:flex-end;margin-top:6px}
+.sheet-yes{align-self:flex-start;font:600 16px var(--sans);color:#4f5c39;background:#e5e6d2;border-radius:999px;padding:6px 14px}
+.sheet-rows{display:flex;flex-direction:column;background:rgba(255,250,242,.8);border-radius:22px;box-shadow:var(--soft);padding:4px 22px}
+.sheet-row{display:grid;grid-template-columns:120px minmax(0,1fr) auto;align-items:center;gap:6px 18px;min-height:64px;padding:8px 0;border-top:1.5px dashed #eadcc6}
+.sheet-row:first-child{border-top:0}
+.sheet-row .k,.sheet-note .k{font:500 16px var(--sans);color:var(--ink2)}
+.sheet-row .v{display:flex;align-items:center;flex-wrap:wrap;gap:4px 10px;font:700 21px var(--serif);color:var(--ink)}
+.sheet-row .v em{font:400 18px var(--sans);color:#b4644f;font-style:normal}
+.sheet-row .v small{font:400 14px var(--sans);color:#9b836f}
+.sheet-row .v .mini{width:30px;height:30px}
+.sheet-row .fix{min-height:48px;padding:0 18px;border:0;border-radius:999px;background:none;box-shadow:inset 0 0 0 2px #dcc7ac;font:500 16px var(--sans);color:var(--ink2)}
+.sheet-choices{grid-column:2/-1;display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding-bottom:4px}
+.vehicle-display .sheet-choices .chip,.vehicle-display .note-chips .chip{min-height:52px;min-width:0;padding:6px 18px;font-size:18px;flex-direction:row;gap:8px}
+.vehicle-display .chip.ghost{background:none;box-shadow:inset 0 0 0 2px #dcc7ac;color:var(--ink2)}
+.pager{display:inline-flex;align-items:center;gap:8px;font:400 15px var(--sans);color:var(--ink2)}
+.sheet-note{display:grid;grid-template-columns:120px minmax(0,1fr);gap:8px 18px;align-items:center;padding:0 22px}
+.note-main{display:flex;align-items:center;gap:26px}
+.vehicle-display .mic.big-mic{flex:0 0 92px;width:92px;height:92px;box-shadow:0 0 0 10px rgba(180,83,42,.14),0 0 0 22px rgba(180,83,42,.07),0 12px 24px rgba(180,83,42,.28)}
+.mic.big-mic .icon{width:38px;height:38px}
+.vehicle-display .visit-sheet .visit-note-preview{font:400 32px/1.2 var(--hand);color:#5b3a2a;background:none;border:0;padding:0;min-height:0}
+.note-chips{grid-column:2/-1;display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.note-chips .demo-note,.visit-sheet .demo-note{font:400 14px var(--sans);color:#9b836f;margin:0}
+.voice-inline{display:flex;flex-direction:column;gap:8px;align-items:flex-start}
+.vehicle-display .voice-inline .voice-transcript{margin:0;background:#fff6e6;border-radius:12px;padding:10px 16px}
+.row-actions{display:flex;gap:10px}
+.row-actions .primary,.row-actions .outline{min-height:56px;font-size:18px;padding:0 22px}
+.voice-secondary{background:none;border:0;font:400 14px var(--sans);color:#9b836f;text-decoration:underline;min-height:40px}
+.sheet-foot{display:flex;align-items:center;gap:16px;border-top:1.5px solid #f0e3d0;padding-top:14px}
+.sheet-status{flex:1;font:400 15px/1.5 var(--sans);color:var(--ink2);margin:0}
+.vehicle-display .sheet-foot .visit-delete{min-height:52px;margin:0;background:none;border:0;color:var(--primary-deep);font:500 16px var(--sans);text-decoration:underline}
+
+.vehicle-display dialog.sheet .modal-head{margin-bottom:4px}
+.vehicle-display dialog.sheet #modalBody{padding:24px 32px 22px}
+.visit-sheet{gap:12px}
+.sheet-obs .sheet-yes{margin-right:10px}
+.sheet-yes{display:inline-block;padding:4px 12px}
+.sheet-row{min-height:54px;padding:5px 0}
+.sheet-row .fix{min-height:46px}
+.note-main{gap:22px;align-items:center}
+.vehicle-display .mic.big-mic{flex:0 0 76px;width:76px;height:76px;box-shadow:0 0 0 9px rgba(180,83,42,.14),0 0 0 18px rgba(180,83,42,.07),0 10px 20px rgba(180,83,42,.26)}
+.mic.big-mic .icon{width:32px;height:32px}
+.note-side{display:flex;flex-direction:column;gap:6px;min-width:0}
+.vehicle-display .visit-sheet .visit-note-preview small{display:block;font:400 14px var(--sans);color:#9b836f;margin-top:2px}
+.sheet-note{padding:0 22px;margin-left:0}
+.note-chips{grid-column:auto}
+.sheet-foot{padding-top:12px}
+.manual-pick:not([open]){flex:0 0 auto}
+.settings-main{left:24px;right:24px;padding:10px 40px 10px 40px}
+.vehicle-display #settings .mic{box-shadow:0 0 0 10px rgba(180,83,42,.14),0 0 0 20px rgba(180,83,42,.07),0 12px 24px rgba(180,83,42,.28)}
+.qrcard .qrt{font:700 24px var(--serif);color:var(--ink)}
+.vehicle-display .sheet-note .k{align-self:start;padding-top:24px}
 </style></head><body><div class="lab-toolbar"><div><b>다녀왔습니다 / 차량 화면 목업</b><span>14.6인치 · 16:9 · 1920×1080 설계 기준</span></div><div class="lab-actions"><button data-view="knowledge">지식 모델 검토</button><button id="exportBtn">지식 그래프 JSON ↓</button><button id="fullscreenBtn">전체 화면</button></div></div>
 <div class="lab-body"><div id="displayStage" class="display-stage"><div id="displaySizer"><div id="vehicleDisplay" class="vehicle-display">
-<header class="top"><a class="brand" href="#" aria-label="다녀왔습니다 홈"><span class="brand-icon">↗</span>다녀왔습니다<span class="brand-dot">.</span></a><nav class="side-nav" aria-label="주 메뉴"><button class="nav active" data-view="home"><span>⌂</span>홈</button><button class="nav" data-view="explore"><span>⌁</span>둘러보기</button><button class="nav" data-view="memory"><span>⚑</span>발자국</button><button class="nav" data-view="mapView"><span>⌖</span>지도</button><button id="routeBtn" class="route-nav"><span>＋</span>담은 곳<b id="routeCount">0</b></button></nav><div class="top-right"><span class="home-date" id="homeDate">11월 14일 · 토요일</span><span class="park" id="parkLabel">P 정차 중</span><span class="clock" id="clock">10:30</span><button id="profileBtn" class="avatar" aria-label="취향 설정">나</button></div></header>
+<header class="top"><a class="brand" href="#" aria-label="다녀왔습니다 홈"><span class="brand-icon">↗</span>다녀왔습니다<span class="brand-dot">.</span></a><nav class="side-nav" aria-label="주 메뉴"><button class="nav active" data-view="home"><span>⌂</span>홈</button><button class="nav" data-view="explore"><span>⌁</span>둘러보기</button><button class="nav" data-view="memory"><span>⚑</span>발자국</button><button class="nav" data-view="mapView"><span>⌖</span>지도</button><button class="nav" data-view="aiLink"><span>✦</span>내 AI</button><button id="routeBtn" class="route-nav"><span>＋</span>담은 곳<b id="routeCount">0</b></button></nav><div class="top-right"><span class="home-date" id="homeDate">11월 14일 · 토요일</span><span class="park" id="parkLabel">P 정차 중</span><span class="clock" id="clock">10:30</span><button id="profileBtn" class="avatar" aria-label="취향 설정">나</button></div></header>
 <div class="vehicle-content"><main><section id="home" class="view"><div id="thread" class="thread" aria-label="기억과 약속을 잇는 실"></div><div id="nowCard" class="now-card"></div><div class="home-shortcuts" id="homeShortcuts"></div></section><section id="explore" class="view">
-<div class="home-heading"><div><p id="tripSummary"></p><h1>어디에 들러볼까요?</h1></div><button class="touch-outline" data-view="settings" id="tripSettings">여정 설정</button></div>
+<div class="home-heading"><div><p id="tripSummary"></p><h1>어디에 들러볼까요?</h1></div><div class="heading-tools"><div id="aiBar" class="ai-bar"></div><button class="touch-outline" data-view="settings" id="tripSettings">여정 설정</button></div></div>
 <p id="sourceBanner" class="source-banner" hidden></p><div id="cards" class="cards"></div><div id="pagination" class="pagination" aria-label="추천 페이지"></div><span id="resultCount" hidden></span></section>
-<section id="settings" class="view hidden"><div class="page-heading"><h2>이번 여정</h2><button class="primary" data-view="explore">추천 보기 →</button></div><div class="contextbar"><label>목적지 <select id="destination"><option>안목해변</option><option>청초호</option><option>해변 마을</option></select></label><div class="divider"></div><button id="companionBtn">동행 미정 ▾</button><span id="weatherLabel">☀ 맑은 오후</span><button id="tasteBtn" class="context-taste">나의 취향 <span>조용함 · 가벼운 식사</span> ↗</button></div>
-<button id="exactDestination" class="touch-outline" data-action="destination"></button><div id="memoryPrompt"></div>
+<section id="settings" class="view hidden has-thread"><div id="settingsThread" class="thread mini-thread" aria-label="이번 여정의 실"></div><div class="settings-main"><div class="voice-ask"><button class="mic" id="tripVoice" data-trip-voice="listen" aria-label="눌러서 말하기"></button><div class="voice-copy" id="tripVoiceCopy"></div></div><div id="memoryPrompt"></div><div class="settings-actions"><button id="aiChip" class="ai-chip" data-view="aiLink"></button><button class="primary" data-view="explore">추천 보기 →</button></div>
+<details id="manualPick" class="manual-pick"><summary>직접 고르기 <small>목적지 · 동행 · 취향 · 종류 · 주제</small></summary><div class="manual-body"><div class="contextbar"><label>목적지 <select id="destination"><option>안목해변</option><option>청초호</option><option>해변 마을</option></select></label><div class="divider"></div><button id="companionBtn">동행 미정 ▾</button><span id="weatherLabel">☀ 맑은 오후</span><button id="tasteBtn" class="context-taste">나의 취향 <span>조용함 · 가벼운 식사</span> ↗</button></div>
+<button id="exactDestination" class="touch-outline" data-action="destination"></button>
 <div class="filters"><div class="segmented" id="categories"><button data-cat="all" class="selected">전체</button><button data-cat="food">음식점</button><button data-cat="cafe">카페</button><button data-cat="visit">방문지</button></div><label class="novel"><input id="novel" type="checkbox"> 새로운 곳 먼저</label></div>
-<button id="themeBtn" class="touch-outline" data-action="themes">주제 고르기</button><button id="whyBtn" class="touch-outline">추천 기준 보기</button></section>
+<div class="manual-row"><button id="themeBtn" class="touch-outline" data-action="themes">주제 고르기</button><button id="whyBtn" class="touch-outline">추천 기준 보기</button></div></div></details></div></section>
+<section id="aiLink" class="view hidden has-thread" aria-label="내 AI 연결"></section>
 <section id="mapView" class="view hidden"><div class="page-heading"><h2>주변의 발자국</h2><span class="muted">다녀온 곳은 ✓로 표시해요</span></div><aside class="map-pane"><div class="map-head"><div><span class="tiny">YOUR EXPLORATION MAP</span><h3>주변의 발자국</h3></div><span class="map-indicator">개념 지도</span></div><div id="map" class="map"></div><div class="legend"><span><b class="legend-new"></b> 새로 만날 곳</span><span><b class="legend-done">✓</b> 방문한 곳</span></div><div class="passport"><div><span class="tiny">MY LOCAL PASSPORT</span><h3>다녀온 장소</h3></div><div class="passport-count" id="passportCount"></div><div id="stamps" class="stamps"></div><p>직접 확인한 방문만 발자국으로 남아요.</p></div><div class="map-note"><span>✧</span><p>이미 가본 곳도 좋아요.<br>누구와 가느냐에 따라 새로운 장소가 되니까요.</p></div></aside></section>
 <section id="memory" class="view hidden"><div class="section-heading"><div><p class="eyebrow">YOUR STORY, YOUR CONTROL</p><h2>함께 다녀온 장면들</h2></div><button id="addVisit" class="primary">방문 기록 남기기 ＋</button></div><p class="muted">함께한 사람과 기억하고 싶은 순간을 남겨보세요.</p><div id="memories" class="memory-grid"></div></section>
 <section id="knowledge" class="view hidden"><div class="section-heading"><div><p class="eyebrow">BEHIND THE RECOMMENDATION</p><h2>지식 모델 검토 · 시연 도구</h2></div></div><p class="muted">가상 데이터의 연결을 살펴보는 제작 검토 화면입니다. 사용자용 추천 설명과는 별도입니다.</p><div class="knowledge-layout"><div class="graph-card"><div class="graph-toolbar"><label>탐색할 장소 <select id="graphPlace"></select></label><span>노드를 눌러 근거를 확인하세요</span></div><div id="graph"></div><div class="graph-legend">● 장소 &nbsp; <span>● 속성</span> &nbsp; ● 확인된 방문 &nbsp; ● 출처</div></div><div id="evidencePanel" class="evidence"></div></div><div class="expertise"><article><span>01 / 사람에 맞게</span><h3>동행 적합성</h3><p>추정한 나이 대신 직접 확인한 선호로 걷기 환경과 공간의 특성을 연결합니다.</p></article><article><span>02 / 여정에 맞게</span><h3>실행 가능한 제안</h3><p>목적지 주변, 이동 부담, 날씨와 실내 여부를 함께 살펴봅니다.</p></article><article><span>03 / 믿을 수 있게</span><h3>근거가 보이는 안내</h3><p>추천 이유에 출처와 확인 상태를 붙입니다. 모르는 사실은 모른다고 표시합니다.</p></article></div></section>
@@ -437,7 +624,7 @@ body{background:#211915}
 </main><div id="driveView" class="drive-view" role="region" aria-label="주행 모드" aria-live="polite" hidden></div></div>
 <div class="vehicle-system" aria-label="차량 시스템 영역 예시"><div><span class="system-glyph">⌂</span><span class="system-divider"></span><span>운전자 <b>22°</b></span><span class="system-muted">AUTO</span></div><span class="system-status">차량 시스템 영역 · 표시 예시</span><div><span class="system-muted">A/C</span><span>동승자 <b>22°</b></span><span class="system-glyph">♫</span></div></div>
 <dialog id="modal"><div id="modalBody"></div></dialog><div id="toast" role="status" aria-live="polite"></div>
-</div></div></div><aside id="labRail" class="lab-rail" aria-label="시연 도구 · 차량 화면 밖"><h3>시연 도구</h3><p class="rail-note">차량 화면 밖의 시연용 조작입니다. 위치·날씨·연료·도어·내비 응답·장소 검색·음성 인식은 모두 <b>가상 데이터</b>이며 Pleos SDK와 연결하지 않았습니다.</p>
+</div></div></div><aside id="labRail" class="lab-rail" aria-label="시연 도구 · 차량 화면 밖"><h3>시연 도구</h3><p class="rail-note">차량 화면 밖의 시연용 조작입니다. 위치·날씨·연료·도어·내비 응답·장소 검색·음성 인식·내 AI 응답은 모두 <b>가상 데이터</b>이며 Pleos SDK와 연결하지 않았습니다.</p>
 <section><h4>차량 상태 <small>주행/정차 판단 대신</small></h4><div class="rail-row"><button data-rail="gear" data-value="park">P 정차·주차</button><button data-rail="gear" data-value="drive">D 주행</button><button data-rail="gear" data-value="unknown">상태 확인 불가</button></div></section>
 <section><h4>도어 <small>Vehicle Door 관측 대신</small></h4><button data-rail="door">도어 열림 → 닫힘</button><p id="railDoor" class="rail-meta">관측 없음</p></section>
 <section><h4>연료 <small>Vehicle Fuel 대신</small></h4><div class="rail-row"><button data-rail="fuel" data-value="20">20%</button><button data-rail="fuel" data-value="40">40%</button><button data-rail="fuel" data-value="80">80%</button></div></section>
@@ -445,6 +632,7 @@ body{background:#211915}
 <section><h4>내비 응답 <small>NaviHelper 콜백 대신</small></h4><div class="rail-row"><button data-rail="navi" data-value="success">성공</button><button data-rail="navi" data-value="error">실패</button></div></section>
 <section><h4>날씨 <small>외부 API 대신</small></h4><div class="rail-row"><button data-rail="weather" data-value="sun">맑음</button><button data-rail="weather" data-value="rain">비</button></div></section>
 <section><h4>외부 장소 검색 <small>외부 API 대신</small></h4><div class="rail-row"><button data-rail="source" data-value="ready">정상</button><button data-rail="source" data-value="failed">실패</button></div></section>
+<section><h4>내 AI 응답 <small>연결한 AI 대신</small></h4><div class="rail-row"><button data-rail="ai" data-value="ok">정상</button><button data-rail="ai" data-value="fail">실패</button></div></section>
 <button class="rail-reset" data-rail="reset">처음 상태로</button></aside></div><div class="lab-caption"><span>고정된 차량 화면 비율로 표시합니다. 작은 창에서는 전체 화면이 축소됩니다.</span><span id="scaleLabel">화면 맞춤</span></div>
 <script>(function(root){
 const tags={quiet:'조용한 분위기',light:'가벼운 식사',sea:'바다 전망',easy:'걷기 편함',parking:'주차 정보',indoor:'실내 공간',local:'지역의 맛',outdoor:'야외 산책'};
@@ -581,7 +769,7 @@ function renderPromise(){
 function renderPlan(){
  const f=state.first,p=promisePlace(f);if(!p){$('#plan').innerHTML='';return;}
  const failed=state.sourceState==='failed';
- $('#plan').innerHTML=head(`${f.promise.who==='unknown'?'':esc(whoName(f))+'와 '}${esc(p.name)}`,'여정 초안 · 확정해도 바로 실행하지 않아요')+`<div class="trip-body plan-grid"><div class="plan-pick"><p class="label">날짜</p><div class="chips">${Object.entries(PLAN_DAYS).map(([k,d])=>`<button class="chip ${f.plan.day===k?'sel':''}" data-plan-day="${k}" aria-pressed="${f.plan.day===k}">${d.label}<small>${dateShort(d.date)}</small></button>`).join('')}</div><p class="label">출발 시각</p><div class="chips">${PLAN_TIMES.map(t=>`<button class="chip ${f.plan.time===t?'sel':''}" data-plan-time="${t}" aria-pressed="${f.plan.time===t}">${t}</button>`).join('')}</div></div><div class="kv"><span class="k">동선</span><span>${routeStops(f).map(esc).join(' → ')}</span><span class="k">날씨</span><span>${state.weather==='rain'?'비':'맑음'} <span class="src">· 예보 · ${state.clock} 조회 · 시연 데이터</span></span><span class="k">${esc(p.name)}</span><span>${failed?'<span class="unknown">미확인</span> <span class="src">· 장소 정보를 불러오지 못했어요</span>':p.id==='p10'?'10:00~21:00 영업 <span class="src">· 장소 정보 · 시연 데이터</span>':'<span class="unknown">영업 정보 미확인</span>'}</span><span class="k">주차</span><span><span class="unknown">미확인</span> <span class="src">· 정보가 없어 추측하지 않아요</span></span></div></div><div class="trip-dock"><button class="outline spacer" data-view="promise">← 뒤로</button><button class="primary" data-view="approve">승인할 작업 확인</button></div>`;
+ $('#plan').innerHTML=head(`${f.promise.who==='unknown'?'':esc(whoName(f))+'와 '}${esc(p.name)}`,'여정 초안 · 확정해도 바로 실행하지 않아요')+`<div class="trip-body plan-grid"><div class="plan-pick">${f.planHeard?`<p class="plan-heard"><span>이렇게 들었어요 · 음성 인식 시연</span>“이번 일요일 열 시 반에 가자”</p>`:`<button class="mic-pill" data-plan-voice>${icon('mic')} 언제 갈지 말로 정하기</button>`}<p class="label">날짜</p><div class="chips">${Object.entries(PLAN_DAYS).map(([k,d])=>`<button class="chip ${f.plan.day===k?'sel':''}" data-plan-day="${k}" aria-pressed="${f.plan.day===k}">${d.label}<small>${dateShort(d.date)}</small></button>`).join('')}</div><p class="label">출발 시각</p><div class="chips">${PLAN_TIMES.map(t=>`<button class="chip ${f.plan.time===t?'sel':''}" data-plan-time="${t}" aria-pressed="${f.plan.time===t}">${t}</button>`).join('')}</div></div><div class="kv"><span class="k">동선</span><span>${routeStops(f).map(esc).join(' → ')}</span><span class="k">날씨</span><span>${state.weather==='rain'?'비':'맑음'} <span class="src">· 예보 · ${state.clock} 조회 · 시연 데이터</span></span><span class="k">${esc(p.name)}</span><span>${failed?'<span class="unknown">미확인</span> <span class="src">· 장소 정보를 불러오지 못했어요</span>':p.id==='p10'?'10:00~21:00 영업 <span class="src">· 장소 정보 · 시연 데이터</span>':'<span class="unknown">영업 정보 미확인</span>'}</span><span class="k">주차</span><span><span class="unknown">미확인</span> <span class="src">· 정보가 없어 추측하지 않아요</span></span></div></div><div class="trip-dock"><button class="outline spacer" data-view="promise">← 뒤로</button><button class="primary" data-view="approve">승인할 작업 확인</button></div>`;
 }
 function renderApprove(){
  const f=state.first,rows=[['route','내비게이션 경로 적용','출발할 때 구간마다 다시 확인한 뒤 적용해요',false],['hvac',`${whoName(f)} 자리 공조 설정`,'이 차량에서 지원 여부를 확인하지 못했어요',true],['share','가족에게 출발 소식 보내기','실제 출발 뒤 초안만 만들고, 보내기 전에 다시 물어요',false]];
@@ -606,11 +794,11 @@ function renderDrive(){
  else if(f.trip==='leg2'){to=p.name;eta='25분';say=f.promise.who==='unknown'?`${p.name}까지 25분. 지난번에 남겨 둔 약속의 장소예요.`:`${p.name}까지 25분. ${whoName(f)}가 가보고 싶다고 하신 곳이에요.`;cur=stops.length-2;}
  else if(f.trip==='return'){to='집';eta='안내 중';say='집으로 가는 길이에요. 다녀온 기록은 정차한 뒤에 남겨요.';cur=stops.length-1;}
  else if(state.navigation?.status==='applied'){to=place(state.navigation.destination)?.name||to;say='들를 곳은 내비게이션 안내를 따라가요. 기록은 정차한 뒤에 남겨요.';}
- const trip=cur>=0&&f.promise;$('#driveView').innerHTML=`<div class="drive-thread">${threadHtml(trip?tripModel(f,true):{progress:640,items:[{kind:'light',x:640,label:'나'}]},{night:true,id:'drive',y0:36})}</div><div class="drive-main"><p class="drive-to">${eta?esc(to)+'까지':'다음 목적지 · '+esc(to)}</p>${eta?`<p class="drive-eta">${eta}</p>`:''}<p class="drive-say">${icon('speaker')}<span>${esc(say)}</span></p><p class="drive-lock">주행 중에는 화면 조작을 받지 않아요 · 음성 안내 시연</p></div>`;
+ const trip=cur>=0&&f.promise;const aiReady=state.ai?.provider&&state.ai.stage==='done'&&state.ai.result==='ok';$('#driveView').innerHTML=`<div class="drive-thread">${threadHtml(withAiStar(trip?tripModel(f,true):{progress:640,items:[{kind:'light',x:640,label:'나'}]}),{night:true,id:'drive',y0:36})}</div><div class="drive-main"><p class="drive-to">${eta?esc(to)+'까지':'다음 목적지 · '+esc(to)}</p>${eta?`<p class="drive-eta">${eta}</p>`:''}<p class="drive-say">${icon('speaker')}<span>${esc(say)}</span></p>${aiReady?`<p class="drive-ai">${STAR}<span>근처에 들를 곳 두 곳을 정리해 뒀어요. 도착하면 보여 드릴게요.</span></p>`:''}<p class="drive-lock">주행 중에는 화면 조작을 받지 않아요${state.ai?.provider?' · 내 AI에도 묻지 않아요':''} · 음성 안내 시연</p></div>`;
 }
 function renderRail(){
  const pressed=(sel,val)=>document.querySelectorAll(`[data-rail="${sel}"]`).forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.value===String(val))));
- pressed('gear',state.vehicleState);pressed('fuel',state.fuel);pressed('location',state.location);pressed('navi',state.navOutcome);pressed('weather',state.weather);pressed('source',state.sourceState);
+ pressed('gear',state.vehicleState);pressed('fuel',state.fuel);pressed('location',state.location);pressed('navi',state.navOutcome);pressed('weather',state.weather);pressed('source',state.sourceState);pressed('ai',state.aiOutcome);
  const d=$('#railDoor');if(d)d.textContent=state.doorAt?`마지막 관측 ${state.doorAt}`:'관측 없음';
 }
 function renderTrip(){renderThread();renderShortcuts();renderMemo();renderPromise();renderPlan();renderApprove();renderPrep();renderBoard();renderDrive();renderRail();$('#homeDate').textContent=dateLong(state.today);$('#clock').textContent=state.clock;}
@@ -649,6 +837,7 @@ function tripAction(b){
  }
  if(d.memoPlace){m.place=d.memoPlace;render();return true;}
  if(d.memoWho){m.who=d.memoWho;render();return true;}
+ if(b.hasAttribute('data-plan-voice')){f.plan.day='sun1';f.plan.time='10:30';f.planHeard=true;render();toast('말한 대로 채웠어요. 틀리면 아래에서 고쳐 주세요.');return true;}
  if(d.planDay){f.plan.day=d.planDay;render();return true;}
  if(d.planTime){f.plan.time=d.planTime;render();return true;}
  if(d.check){if(d.check==='hvac')return true;f.checks[d.check]=!f.checks[d.check];if(!f.checks.route)cancelLegs();render();return true;}
@@ -671,7 +860,7 @@ function tripAction(b){
 // Demo rail outside the vehicle screen. Vehicle state controls only; no scene jumps.
 function railGear(v){
  const f=state.first,was=state.vehicleState;state.vehicleState=v;state.driving=v!=='park';
- if(v!=='park'){close();cancelLegs();}
+ if(v!=='park'){close();cancelLegs();if(state.ai?.stage==='research'){state.ai.stage='idle';aiSerial++;}}
  if(v==='drive'&&was!=='drive'){
   const next={today:hasPickup(f)?'leg1':'leg2',atGrandma:'leg2',atPlace:'return'}[f.trip];
   if(next){f.trip=next;state.clock=tripClock(next);state.view='home';}
@@ -692,6 +881,7 @@ function railAction(b){
  case 'navi':state.navOutcome=v;break;
  case 'weather':state.weather=v;state.page=0;break;
  case 'source':state.sourceState=v;state.page=0;break;
+ case 'ai':state.aiOutcome=v;aiReset();break;
  case 'reset':resetDemo();return;
  }
  render();
@@ -719,6 +909,7 @@ function threadItem(it,y0){
  if(it.kind==='tag')return `<div class="hang" style="${pos(-8)}"><i class="pin"></i><div class="tag${it.ghost?' ghost':''}${it.who&&FACE[it.who]?' signed':''}" style="--r:${it.r||0}deg">${it.ghost?esc(it.text):`<q>${esc(it.text)}</q><small>${esc(it.meta)}</small>${it.who&&FACE[it.who]?`<span class="sig">${face(it.who)}</span>`:''}`}</div></div>`;
  if(it.kind==='stop')return `<div class="stop${it.future?' future':''}" style="${pos()}"><i></i>${it.label?`<span>${it.who&&FACE[it.who]?`<b class="mini">${face(it.who)}</b>`:''}${esc(it.label)}</span>`:''}</div>`;
  if(it.kind==='light')return `<div class="light ${it.who?'companion':'me'}${it.wait?' wait':''}" style="${pos(it.dy)}"><i>${it.who?face(it.who):''}</i>${it.label?`<span>${esc(it.label)}</span>`:''}</div>`;
+ if(it.kind==='ai')return `<div class="light ai${it.wait?' wait':''}" style="${pos(it.dy)}" aria-label="내 AI"><i>${STAR}</i>${it.label?`<span>${esc(it.label)}</span>`:''}</div>`;
  if(it.kind==='knot')return `<svg class="knot" style="${pos()}" viewBox="0 0 46 30" aria-hidden="true"><path d="M8 15c0-8 14-8 15 0s15 8 15 0-14-8-15 0-15 8-15 0z" fill="none" stroke="#8e3a1a" stroke-width="5"/></svg>`;
  return '';
 }
@@ -752,23 +943,24 @@ function homeModel(){
  if(f.stage==='saved'||f.stage==='planned'){items.push({kind:'light',x:620,label:'지금'});items.push(promiseTag(f,900));return {progress:620,items};}
  items.push({kind:'light',x:860,label:'오늘'});items.push({kind:'tag',x:1110,ghost:true,text:'다음 약속',r:4});return {progress:860,items};
 }
+function withAiStar(m){if(!state.ai?.provider)return m;const me=m.items.filter(it=>it.kind==='light').map(it=>it.x);const x=me.length?Math.max(...me)+(me.length>1?70:90):m.progress+90;m.items.push({kind:'ai',x:Math.min(x,1230),dy:-34});return m;}
 function skyClass(){const h=Number(String(state.clock||'12:00').slice(0,2));return h<11?'sky-morning':h<15?'sky-day':h<18?'sky-golden':'sky-evening';}
 function renderThread(){
- const el=$('#thread');if(el)el.innerHTML=threadHtml(homeModel(),{id:'home',y0:36});
+ const el=$('#thread');if(el)el.innerHTML=threadHtml(withAiStar(homeModel()),{id:'home',y0:36});
  const vd=$('#vehicleDisplay');['sky-morning','sky-day','sky-golden','sky-evening'].forEach(c=>vd.classList.toggle(c,c===skyClass()));
 }
 </script><script>const $=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const KEY='journey-context-demo-v1';
-function freshState(){return {destination:'안목해변',destinationPlace:'p2',theme:'all',sourceState:'ready',navOutcome:'success',tripPhase:'planning',navigation:null,companion:'unknown',weather:'sun',driving:false,vehicleState:'park',category:'all',page:0,novel:false,route:[],visits:structuredClone(KB.initialVisits),profile:structuredClone(KB.initialProfile),view:'home',graphPlace:'p1',...freshVehicle(),first:freshFirst()};}
+function freshState(){return {destination:'안목해변',destinationPlace:'p2',theme:'all',sourceState:'ready',navOutcome:'success',tripPhase:'planning',navigation:null,companion:'unknown',weather:'sun',driving:false,vehicleState:'park',category:'all',page:0,novel:false,route:[],visits:structuredClone(KB.initialVisits),profile:{...structuredClone(KB.initialProfile),likes:[]},view:'home',graphPlace:'p1',...freshVehicle(),first:freshFirst(),ai:freshAi(),aiOutcome:'ok',tripVoice:null};}
 let state=freshState();
-try{const saved=JSON.parse(localStorage.getItem(KEY));if(saved&&Array.isArray(saved.visits)&&Array.isArray(saved.route)&&saved.profile&&Array.isArray(saved.profile.preferences)){state={...state,...saved,first:{...freshFirst(),...(saved.first||{})},destinationPlace:saved.destinationPlace??null,driving:false,vehicleState:'park',view:'home',navigation:null,tripPhase:'planning'};['leg1','leg2'].forEach(l=>{if(state.first[l]==='wait')state.first[l]='idle';});if(DRIVING_LEGS.includes(state.first.trip)){state.vehicleState='drive';state.driving=true;}}}catch(e){}
+try{const saved=JSON.parse(localStorage.getItem(KEY));if(saved&&Array.isArray(saved.visits)&&Array.isArray(saved.route)&&saved.profile&&Array.isArray(saved.profile.preferences)){state={...state,...saved,first:{...freshFirst(),...(saved.first||{})},ai:{...freshAi(),...(saved.ai||{}),stage:'idle',reorder:null},profile:{likes:[],...saved.profile},destinationPlace:saved.destinationPlace??null,driving:false,vehicleState:'park',view:'home',navigation:null,tripPhase:'planning'};['leg1','leg2'].forEach(l=>{if(state.first[l]==='wait')state.first[l]='idle';});if(DRIVING_LEGS.includes(state.first.trip)){state.vehicleState='drive';state.driving=true;}}}catch(e){}
 if(sceneFromHash())state=scenePreset(sceneFromHash());
 let modalReturnFocus;let toastTimer;function toast(t){$('#toast').textContent=t;$('#toast').classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('#toast').classList.remove('show'),2600)}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){toast('이 환경에서는 저장이 어려워요. 현재 화면에서 계속 사용할 수 있어요.')}}
 function guard(){if(!state.driving)return true;toast('주행 중에는 화면 조작을 잠시 쉬어요. 정차 후 이어가세요.');return false;}
-function setCompanion(c){if(!guard())return;state.companion=c;state.page=0;save();render();toast(c==='mom'?'어머니와 동행 예정으로 반영했어요. 실제 방문 동행은 따로 확인해요.':c==='solo'?'이번 여정은 혼자예요. 동행자 선호를 적용하지 않아요.':'이번 동행은 미정으로 두었어요.');}
+function setCompanion(c){if(!guard())return;state.companion=c;state.page=0;aiReset();save();render();toast(c==='mom'?'어머니와 동행 예정으로 반영했어요. 실제 방문 동행은 따로 확인해요.':c==='solo'?'이번 여정은 혼자예요. 동행자 선호를 적용하지 않아요.':'이번 동행은 미정으로 두었어요.');}
 function showModal(title,body){if(!$('#modal').open)modalReturnFocus=document.activeElement;$('#modalBody').innerHTML=`<div class="modal-head"><h2>${title}</h2><button class="close" data-action="close" aria-label="닫기">×</button></div>${body}`;if(!$('#modal').open)$('#modal').show();$('#vehicleDisplay').classList.add('dialog-open');$('#modal').setAttribute('aria-modal','true');const focusable=$('#modal').querySelector('button,input,select,textarea');if(focusable)focusable.focus();}
-function close(){if(state.navigation?.status==='pending'){state.navigation=null;navigationSerial++;}visitDraft=null;$('#modal').close();$('#vehicleDisplay').classList.remove('dialog-open');if(modalReturnFocus?.isConnected)modalReturnFocus.focus();}
+function close(){if(state.navigation?.status==='pending'){state.navigation=null;navigationSerial++;}visitDraft=null;if(state.ai)state.ai.pending=null;$('#modal').classList.remove('sheet');$('#modal').close();$('#vehicleDisplay').classList.remove('dialog-open');if(modalReturnFocus?.isConnected)modalReturnFocus.focus();}
 function place(id){return KB.places.find(p=>p.id===id)}
 const categories={food:'음식점',cafe:'카페',visit:'방문지'};
 function art(p){return artSvg(p.art,p.name);}
@@ -790,13 +982,17 @@ function previousVisit(){return state.visits.filter(v=>v.use&&v.place===state.de
 function render(){
  renderJourney();
  $('#tripSummary').textContent=(place(state.destinationPlace)?.name||state.destination)+' 주변 · '+({unknown:'동행 미정',mom:'어머니와 함께',solo:'혼자 떠나는 여정'})[state.companion];$('#tripSettings').textContent=state.companion==='unknown'?'동행 · 여정 설정':'여정 설정';$('#destination').value=state.destination;$('#novel').checked=state.novel;$('#companionBtn').textContent=({unknown:'동행 미정',mom:'어머니와 동행 예정',solo:'오늘은 혼자'})[state.companion]+' ▾';$('#weatherLabel').textContent=state.weather==='rain'?'☂ 비 오는 오후':'☀ 맑은 오후';$('#parkLabel').textContent=state.vehicleState==='unknown'?'차량 상태 확인 필요':state.driving?'주행 중 · 화면 조작 쉬기':'P 정차 중';$('#routeCount').textContent=state.route.length;$('#vehicleDisplay').classList.toggle('is-driving',state.driving);$('#vehicleDisplay').classList.toggle('is-unknown',state.vehicleState==='unknown');document.querySelector('main').inert=state.driving;document.querySelector('.side-nav').inert=state.driving;
+ renderSettings();renderAiLink();
  $('#tasteBtn span').textContent=state.profile.preferences.slice(0,2).map(t=>KB.tags[t]).join(' · ')||'아직 선택하지 않았어요';
  document.querySelectorAll('.nav').forEach(b=>b.classList.toggle('active',b.dataset.view===state.view||(b.dataset.view==='home'&&TRIP_VIEWS.includes(state.view))));document.querySelectorAll('.view').forEach(v=>v.classList.toggle('hidden',v.id!==state.view));
  document.querySelectorAll('[data-cat]').forEach(b=>b.classList.toggle('selected',b.dataset.cat===state.category));
  const prior=previousVisit();
  $('#memoryPrompt').innerHTML=state.driving?'<div class="drive-banner">차량 상태를 확인한 뒤 정차 중에 이어가세요.</div>':prior&&prior.companions.includes('mom')&&state.companion==='unknown'?`<div class="recall"><span class="recall-icon">↺</span><div><strong>이번에도 어머니와 함께 가시나요?</strong><p>${esc(prior.date)} · ${esc(place(prior.place).name)}에 함께 다녀왔어요.</p></div><div class="actions"><button class="pill dark" data-comp="mom">함께 가요</button><button class="pill" data-comp="solo">혼자 가요</button></div></div>`:`<div class="recall"><span class="recall-icon">✧</span><div><strong>${state.companion==='mom'?'함께 걷기 편한 곳도 찾아볼게요.':state.companion==='solo'?'오늘은 나의 취향에 맞춰볼게요.':'동행은 나중에 정해도 괜찮아요.'}</strong><p>${state.companion==='mom'?'어머니가 고른 취향을 이번 추천에 반영해요.':'방문했던 장소와 새로운 곳을 함께 살펴보세요.'}</p></div></div>`;
  const results=ranked().filter(p=>state.category==='all'||p.category===state.category);$('#resultCount').textContent=results.length;const pages=Math.max(1,Math.ceil(results.length/2));state.page=Math.max(0,Math.min(state.page||0,pages-1));const visible=results.slice(state.page*2,state.page*2+2);$('#pagination').innerHTML=`<button data-page="prev" ${state.page===0?'disabled':''} aria-label="이전 추천">← 이전</button><span>${state.page+1} / ${pages} </span><button data-page="next" ${state.page===pages-1?'disabled':''} aria-label="다음 추천">다음 →</button>`;
- $('#cards').innerHTML=results.length?visible.map(p=>`<button class="place-card" data-detail="${p.id}" aria-label="${esc(p.name)}, ${p.visited.length?'다녀온 곳':'새로운 곳'}, 자세히 보기"><span class="art">${art(p)}<span class="card-status ${p.visited.length?'done':''}">${p.visited.length?'✓ 다녀온 곳':'새로운 곳'}</span></span><span class="card-body"><span class="card-kicker">${categories[p.category]} · 주변 이동 약 ${p.minutes}분 · 예시</span><strong>${esc(p.name)}</strong><span class="reason">${esc(shortReason(p))}</span><span class="card-open">${state.route.includes(p.id)?'✓ 여정에 담은 곳':'살펴보기'} <b>→</b></span></span></button>`).join(''):'<div class="empty">이 조건에 맞는 장소가 없어요. 여정 설정에서 주제나 장소 종류를 바꿔보세요.</div>';
+ const aiMode=aiCardsMode();renderAiBar(aiMode);
+ if(aiMode==='research'){$('#cards').innerHTML=aiResearchHtml(results);$('#pagination').innerHTML='';}
+ else if(aiMode==='cards'){$('#cards').innerHTML=aiCardsHtml(results);$('#pagination').innerHTML=`<span class="ai-page-note">${STAR} ${esc(PROV[state.ai.provider])}가 고른 두 곳 · 시연</span><button data-ai-stop>기본 추천 전체 보기</button>`;}
+ else $('#cards').innerHTML=results.length?visible.map(p=>`<button class="place-card" data-detail="${p.id}" aria-label="${esc(p.name)}, ${p.visited.length?'다녀온 곳':'새로운 곳'}, 자세히 보기"><span class="art">${art(p)}<span class="card-status ${p.visited.length?'done':''}">${p.visited.length?'✓ 다녀온 곳':'새로운 곳'}</span></span><span class="card-body"><span class="card-kicker">${categories[p.category]} · 주변 이동 약 ${p.minutes}분 · 예시</span><strong>${esc(p.name)}</strong><span class="reason">${esc(shortReason(p))}</span><span class="card-open">${state.route.includes(p.id)?'✓ 여정에 담은 곳':'살펴보기'} <b>→</b></span></span></button>`).join(''):'<div class="empty">이 조건에 맞는 장소가 없어요. 여정 설정에서 주제나 장소 종류를 바꿔보세요.</div>';
  renderMap();renderMemory();renderGraph();renderTrip();save();
 }
 const coords=[[29,29],[65,21],[26,62],[61,49],[72,78],[46,83]];
@@ -804,7 +1000,7 @@ function renderMap(){const ps=KB.places.filter(p=>p.destination===state.destinat
 const count=ps.filter(p=>state.visits.some(v=>v.place===p.id)).length;$('#passportCount').innerHTML=`<b>${count}</b> / ${ps.length}`;$('#stamps').innerHTML=ps.map((p,i)=>`<button class="stamp ${state.visits.some(v=>v.place===p.id)?'filled':''}" data-detail="${p.id}" aria-label="${p.name} 방문 상태">${state.visits.some(v=>v.place===p.id)?'✓':String(i+1).padStart(2,'0')}</button>`).join('');}
 function renderMemory(){$('#memories').innerHTML=state.visits.length?state.visits.slice().reverse().map(v=>`<article class="memory-card"><span class="ph">${place(v.place)?artSvg(place(v.place).art,''):''}${figures(v.companions)}</span><span class="date">${esc(v.date)} · 확인한 방문</span><h3>${esc(place(v.place)?.name||v.place)}</h3><span class="reason">✓ ${companionText(v.companions)} · 사용자가 확인한 방문</span><blockquote>${esc(v.note||'남긴 메모가 없어요.')}</blockquote><small class="muted">${v.use?'이 기억을 다음 추천에 활용해요':'추천 활용에서 제외했어요'}</small><div class="memory-actions"><button data-destination="${esc(v.place)}">다시 가기</button><button data-edit="${esc(v.id)}">기억 수정</button><button data-toggle="${esc(v.id)}">${v.use?'추천에서 제외':'추천에 활용'}</button></div></article>`).join(''):'<div class="empty">아직 확인한 방문이 없어요. 다녀온 뒤 첫 발자국을 남겨보세요.</div>';}
 function detail(id){if(!guard())return;const p=ranked().find(p=>p.id===id)||KB.rank({...state,destination:place(id).destination},state.visits,state.profile).find(p=>p.id===id);showModal(esc(p.name),`<div class="detail-overview"><div class="art">${art(p)}</div><div><p class="modal-copy">${categories[p.category]} · 주변 이동 약 ${p.minutes}분 · 예시</p><h3>왜 이곳을 추천했나요?</h3><p class="detail-reason">${esc(shortReason(p))}</p><p class="modal-copy">${esc(p.description)}</p>${p.unknown.length?'<p class="notice">아직 확인하지 못한 정보가 있어요.</p>':''}</div></div><div class="modal-actions"><button class="primary" data-add="${id}" ${state.destinationPlace===id?'disabled':''}>${state.destinationPlace===id?'목적지로 선택한 곳':state.route.includes(id)?'여정에서 빼기':'여정에 담기'}</button><button class="outline" data-visit="${id}">다녀온 기록 남기기</button></div><div class="modal-actions"><button class="textbtn" data-source="${id}">추천 이유와 정보 출처</button></div>`);}
-function sources(id){const p=KB.rank({...state,destination:place(id).destination},state.visits,state.profile).find(p=>p.id===id);showModal('추천 이유와 정보 출처',`<p class="modal-copy">${esc(p.name)}</p>${p.reasons.map(r=>`<div class="fact">${esc(reasonText(r))}<small>${r.visit?esc(r.visit.date)+' · 내가 남긴 방문 기록':'장소 정보: 시연을 위해 만든 예시'}</small></div>`).join('')||'<p>맞는 취향 정보가 적어, 목적지 주변에서 골랐어요.</p>'}${p.unknown.map(e=>`<p class="notice">${esc(KB.tags[e.to.slice(2)])}: 아직 확인하지 못했어요.</p>`).join('')}<div class="fact">장소 정보 <small>가상 장소·이동 시간 · 카카오 Local / TourAPI 미연결</small></div><div class="fact">주제 추천 <small>목업 자체 예시 · 100×100 목록은 아직 연결하지 않았어요.</small></div><p class="notice">선정 이력으로 영업·주차·동행 적합성을 보장하지 않아요.</p><button class="outline" data-detail="${id}">← 장소로 돌아가기</button>`);}
+function sources(id){const p=KB.rank({...state,destination:place(id).destination},state.visits,state.profile).find(p=>p.id===id);showModal('추천 이유와 정보 출처',`<p class="modal-copy">${esc(p.name)}</p>${p.reasons.map(r=>`<div class="fact">${esc(reasonText(r))}<small>${r.visit?esc(r.visit.date)+' · 내가 남긴 방문 기록':'장소 정보: 시연을 위해 만든 예시'}</small></div>`).join('')||'<p>맞는 취향 정보가 적어, 목적지 주변에서 골랐어요.</p>'}${p.unknown.map(e=>`<p class="notice">${esc(KB.tags[e.to.slice(2)])}: 아직 확인하지 못했어요.</p>`).join('')}<div class="fact">장소 정보 <small>가상 장소·이동 시간 · 카카오 Local / TourAPI 미연결</small></div><div class="fact">주제 추천 <small>목업 자체 예시 · 대한민국 명소발굴 추천지는 아직 연결하지 않았어요.</small></div><p class="notice">선정 이력으로 영업·주차·동행 적합성을 보장하지 않아요.</p><button class="outline" data-detail="${id}">← 장소로 돌아가기</button>`);}
 
 function profile(){if(!guard())return;showModal('좋아하는 것을 알려주세요',`<p class="modal-copy">좋아하는 것을 골라주세요. 다음 추천에 반영할게요.</p><form id="profileForm"><h4>나의 취향</h4><div class="choice-list">${Object.entries(KB.tags).map(([id,t])=>`<label><input type="checkbox" name="preference" value="${id}" ${state.profile.preferences.includes(id)?'checked':''}> ${t}</label>`).join('')}</div><h4>어머니의 취향 <small class="muted">데모 설정</small></h4><div class="choice-list">${['easy','quiet','indoor','light'].map(id=>`<label><input type="checkbox" name="mom" value="${id}" ${state.profile.momPreferences.includes(id)?'checked':''}> ${KB.tags[id]}</label>`).join('')}</div><p class="notice">동행 예정이 ‘어머니와 함께’일 때만 동행자 선호를 적용합니다.</p><button class="primary" type="submit">취향 반영하기</button></form>`);$('#profileForm').onsubmit=e=>{e.preventDefault();const d=new FormData(e.target);state.profile.preferences=d.getAll('preference');state.profile.momPreferences=d.getAll('mom');state.page=0;close();render();toast('명시한 취향을 추천에 반영했어요.');};}
 function companion(){if(!guard())return;showModal('이번 여정은 누구와 함께인가요?',`<p class="modal-copy">이번에 함께할 분을 알려주세요. 다녀온 기록은 나중에 따로 남길 수 있어요.</p><div class="modal-actions"><button class="primary" data-comp="mom">어머니와 함께</button><button class="outline" data-comp="solo">혼자</button><button class="outline" data-comp="unknown">아직 미정</button></div>`);}
@@ -817,43 +1013,102 @@ function dateShort(iso){const [,m,d]=String(iso).split('-').map(Number);return `
 function dateLong(iso){return dateShort(iso)+' · '+'일월화수목금토'[new Date(iso+'T00:00:00Z').getUTCDay()]+'요일';}
 function companionText(list){return list?.length?list.map(c=>KB.people[c]||c).join('·')+'와 함께':'혼자';}
 let visitDraft=null;
-function visitForm(id,editId,opts={}){if(!guard())return;const old=state.visits.find(v=>v.id===editId),trip=!!opts.fromTrip;visitDraft={editId:old?.id,place:old?.place||id||null,date:old?.date||(trip?visitToday():null),companion:old?(old.companions[0]||'solo'):(opts.companion||null),note:old?.note||'',use:old?.use??true,step:trip?-2:(id||old?0:-1),placePage:0,fromTrip:trip,notes:trip?tripNotes:quickNotes};visitStep();}
-function visitStep(){if(!visitDraft)return;const d=visitDraft,today=visitToday(),yesterday=shiftDate(today,-1);let body='';
-if(d.step===-1){const ps=KB.places.slice(d.placePage*4,d.placePage*4+4);body=`<p class="wizard-question">어디에 다녀오셨나요?</p><div class="visit-choices place-choices">${ps.map(p=>`<button class="outline" data-visit-place="${p.id}">${esc(p.name)}<small>${esc(p.destination)}</small></button>`).join('')}</div><div class="wizard-actions"><button class="outline" data-place-page="-1" ${d.placePage===0?'disabled':''}>← 이전</button><span>${d.placePage+1} / ${Math.ceil(KB.places.length/4)}</span><button class="outline" data-place-page="1" ${(d.placePage+1)*4>=KB.places.length?'disabled':''}>다음 →</button></div>`;}
-else {const labels=d.fromTrip?['방문','날짜','동행','한마디','확인']:['날짜','동행','한마디','확인'],idx=d.fromTrip?(d.step===-2?0:d.step+1):d.step,name=esc(place(d.place).name);body=`<p class="wizard-progress">${idx+1} / ${labels.length} · ${labels[idx]} <span>${name}</span></p>`;
-if(d.step===-2){const f=state.first;body+=`<p class="wizard-question">${name}에 다녀오셨나요?</p><div class="visit-review trip-observe"><p><b>오늘 이동</b> ${routeStops(f).map(esc).join(' → ')}</p><p><b>${name}</b> 근처 정차 ${durationText(f.stopMin||0)} 관측 <small>· 차량 위치 기록 · 시연 데이터</small></p></div><p class="wizard-status">정차만으로 방문을 확정하지 않아요. 직접 확인해 주세요.</p><div class="wizard-actions"><button class="outline" data-trip-skip>들르지 못했어요</button><button class="primary" data-trip-visited>네, 다녀왔어요</button></div>`;}
-if(d.step===0)body+=`<p class="wizard-question">언제 다녀오셨나요?</p><div class="visit-choices"><button class="outline ${d.date===today?'chosen':''}" data-visit-date="${today}" aria-pressed="${d.date===today}">오늘<small>${dateShort(today)}</small></button><button class="outline ${d.date===yesterday?'chosen':''}" data-visit-date="${yesterday}" aria-pressed="${d.date===yesterday}">어제<small>${dateShort(yesterday)}</small></button><button class="outline" data-visit-calendar>다른 날짜</button></div><p class="wizard-status">${d.date?esc(d.date)+' 방문':'방문한 날짜를 골라주세요.'} <small>시연 기준 ${today.replaceAll('-','.')}</small></p>`;
-if(d.step===1){const f=state.first;body+=`<p class="wizard-question">그날 누구와 함께했나요?</p><div class="visit-choices">${[['grandma','할머니와 함께'],['mom','어머니와 함께'],['solo','혼자']].map(([k,t])=>`<button class="outline ${d.companion===k?'chosen':''}" data-visit-comp="${k}" aria-pressed="${d.companion===k}">${t}</button>`).join('')}</div><p class="wizard-status">${d.fromTrip&&f.companion==='yes'?`출발 때 확인한 동행: ${esc(whoName(f))} · 실제로 함께한 분을 골라 주세요.`:'함께 갈 예정이었던 분과 달라도 괜찮아요.'}</p>`;}
-if(d.step===2)body+=`<p class="wizard-question">어떤 기억을 남길까요?</p><div class="visit-choices note-choices">${d.notes.map((t,i)=>`<button class="outline ${d.note===t?'chosen':''}" data-visit-note="${i}" aria-pressed="${d.note===t}">${t}</button>`).join('')}</div><div class="visit-note-preview" aria-live="polite">${esc(d.note||'한마디 없이 남겨도 괜찮아요.')}</div><div class="voice-actions"><button class="outline" data-visit-voice>${icon('mic')} 말로 남기기</button><button class="outline" data-visit-clear>한마디 없이</button></div>`;
-if(d.step===3)body+=`<p class="wizard-question">이렇게 남길까요?</p><div class="visit-review"><p>${esc(d.date)} · ${companionText(d.companion==='solo'?[]:[d.companion])}${d.fromTrip?' · 사진은 고르는 방법을 준비 중이에요':''}</p><blockquote>${esc(d.note||'한마디 없이 방문만 기록해요.')}</blockquote></div><p class="wizard-status">${d.fromTrip?`저장하면 ‘${esc(withWho(state.first))} ${name}’ 약속이 완료돼요. 저장 전에는 아무것도 기록하지 않아요.`:'확인하면 다녀온 곳에 ✓가 남아요.'}</p>`;
-if(d.step>=0)body+=`<div class="wizard-actions"><button class="outline" data-visit-back>← ${d.step===0&&!d.fromTrip?'장소 변경':'이전'}</button>${d.step===3?'<button class="primary" data-visit-save>확인하고 저장</button>':`<button class="primary" data-visit-next ${(d.step===0&&!d.date)||(d.step===1&&!d.companion)?'disabled':''}>${d.step===2?'기록 확인':'다음 →'}</button>`}</div>`;}
-if(d.editId&&d.step===3)body+=`<button class="visit-delete" data-delete="${esc(d.editId)}">이 기록 삭제</button>`;
-showModal(d.editId?'방문 기억 바로잡기':d.fromTrip?'다녀온 기록 남기기':'다녀온 발자국 남기기',`<div id="visitWizard">${body}</div>`);}
+// One-sheet visit record: observations prefill the rows, the driver fixes what is wrong and saves once.
+function visitForm(id,editId,opts={}){if(!guard())return;const old=state.visits.find(v=>v.id===editId),trip=!!opts.fromTrip;visitDraft={editId:old?.id,place:old?.place||id||null,date:old?.date||visitToday(),companion:old?(old.companions[0]||'solo'):(opts.companion||null),note:old?.note||'',use:old?.use??true,fromTrip:trip,confirmed:!trip,open:null,placePage:0,voice:null,notes:(trip?tripNotes:quickNotes).slice(0,3),dateSource:old?'남긴 기록':trip?'차량 기록 · 오늘':'오늘',whoSource:old?'남긴 기록':opts.companion?'출발 때 함께 간다고 답했어요':'실제로 함께한 분을 골라 주세요'};visitStep();}
+function visitReady(d=visitDraft){return !!(d&&d.confirmed&&place(d.place)&&d.date&&d.date<=visitToday()&&d.companion);}
+function sheetRow(key,label,value,src,choices){const d=visitDraft,open=d.open===key||!value;return `<div class="sheet-row${open?' open':''}" data-row="${key}"><span class="k">${label}</span><span class="v">${value||'<em>골라 주세요</em>'}<small>${src}</small></span>${value&&!open?`<button class="fix" data-sheet-fix="${key}">고치기</button>`:''}${open?`<div class="sheet-choices">${choices}</div>`:''}</div>`;}
+function visitStep(){if(!visitDraft)return;const d=visitDraft,p=place(d.place),name=p?esc(p.name):'',today=visitToday(),yesterday=shiftDate(today,-1);let body='';
+ const title=d.fromTrip?`${name}에 다녀오셨나요?`:d.editId?`${name} · 기억 바로잡기`:p?`${name}에 다녀오셨군요`:'어디에 다녀오셨나요?';
+ if(d.fromTrip){const f=state.first;body+=`<div class="sheet-q"><p class="sheet-obs">${d.confirmed?'<span class="sheet-yes">✓ 다녀왔어요</span>':''}근처 정차 ${durationText(f.stopMin||0)} 관측 · 차량 위치 기록 · 시연 데이터. 정차만으로 방문을 확정하지 않아요.</p>${d.confirmed?'':'<div class="sheet-answers"><button class="outline" data-trip-skip>들르지 못했어요</button><button class="primary" data-trip-visited>네, 다녀왔어요</button></div>'}</div>`;}
+ else body+=`<div class="sheet-q"><p class="sheet-obs">${d.editId?'남긴 기록이에요. ':''}확인한 내용만 발자국으로 남아요. 틀린 칸만 고쳐 주세요.</p></div>`;
+ if(d.confirmed){
+  const ps=KB.places.slice(d.placePage*4,d.placePage*4+4),pages=Math.ceil(KB.places.length/4);
+  const placeChoices=`${ps.map(q=>`<button class="chip ${d.place===q.id?'sel':''}" data-visit-place="${q.id}">${esc(q.name)}<small>${esc(q.destination)}</small></button>`).join('')}<span class="pager"><button class="chip ghost" data-place-page="-1" ${d.placePage===0?'disabled':''} aria-label="이전 장소">←</button>${d.placePage+1} / ${pages}<button class="chip ghost" data-place-page="1" ${d.placePage===pages-1?'disabled':''} aria-label="다음 장소">→</button></span>`;
+  const dateChoices=`<button class="chip ${d.date===today?'sel':''}" data-visit-date="${today}" aria-pressed="${d.date===today}">오늘 <small>${dateShort(today)}</small></button><button class="chip ${d.date===yesterday?'sel':''}" data-visit-date="${yesterday}" aria-pressed="${d.date===yesterday}">어제 <small>${dateShort(yesterday)}</small></button><button class="chip" data-visit-calendar>다른 날짜</button>`;
+  const whoChoices=[['grandma','할머니와 함께'],['mom','어머니와 함께'],['solo','혼자']].map(([k,t])=>`<button class="chip person ${d.companion===k?'sel':''}" data-visit-comp="${k}" aria-pressed="${d.companion===k}">${FACE[k]?`<b class="mini">${face(k)}</b>`:''}${t}</button>`).join('');
+  body+=`<div class="sheet-rows">${sheetRow('place','장소',p?name:'',d.fromTrip?'정차 위치 근처':'고른 곳',placeChoices)}${sheetRow('date','날짜',d.date?esc(dateLong(d.date)):'',esc(d.dateSource),dateChoices)}${sheetRow('who','함께한 사람',d.companion?(d.companion==='solo'?'혼자':(FACE[d.companion]?`<b class="mini">${face(d.companion)}</b>`:'')+esc(PEOPLE[d.companion]||d.companion)+'와 함께'):'',esc(d.whoSource),whoChoices)}</div>`;
+  let note='';
+  if(d.voice==='result')note=`<div id="voicePanel" class="voice-inline"><blockquote class="voice-transcript">“${esc(VOICE_SAMPLE)}”</blockquote><p class="demo-note">이렇게 들었어요 · 음성 인식 시연 · 마이크를 사용하지 않아요</p><div class="row-actions"><button class="outline" data-voice-cancel>취소</button><button class="outline" data-voice-retry>다시 말하기</button><button class="primary" data-voice-accept>이 문장 쓰기</button></div><button class="voice-secondary" data-voice-error>인식 실패 상황 보기</button></div>`;
+  else if(d.voice==='error')note=`<div id="voicePanel" class="voice-inline"><p class="sheet-title small">말씀을 알아듣지 못했어요</p><p class="demo-note">다시 말하거나 아래 문구를 골라 주세요 · 음성 인식 시연</p><div class="row-actions"><button class="outline" data-voice-cancel>문구 고르기</button><button class="primary" data-voice-retry>다시 말하기</button></div></div>`;
+  else note=`<div class="note-main"><button class="mic big-mic" data-visit-voice aria-label="말로 남기기">${icon('mic')}</button><div class="note-side"><div class="visit-note-preview" aria-live="polite">${d.note?'“'+esc(d.note)+'”':'눌러서 한마디를 말해 주세요'}<small>누를 때만 들어요 · 음성 인식 시연</small></div><div class="note-chips">${d.notes.slice(0,2).map((t,i)=>`<button class="chip ${d.note===t?'sel':''}" data-visit-note="${i}" aria-pressed="${d.note===t}">${t}</button>`).join('')}${d.note?'<button class="chip ghost" data-visit-clear>한마디 없이</button>':''}</div></div></div>`;
+  body+=`<div class="sheet-note"><span class="k">한마디</span>${note}</div>`;
+ }
+ body+=`<div class="sheet-foot"><p class="sheet-status">${d.fromTrip?`저장하면 ‘${esc(withWho(state.first))} ${name}’ 약속이 완료돼요. `:''}누르기 전에는 아무것도 기록하지 않아요.</p>${d.editId?`<button class="visit-delete" data-delete="${esc(d.editId)}">이 기록 삭제</button>`:''}${d.confirmed?`<button class="primary" data-visit-save ${visitReady()?'':'disabled'}>${d.editId?'이대로 고치기':'이대로 남기기'}</button>`:''}</div>`;
+ showModal(title,`<div id="visitWizard" class="visit-sheet" aria-label="${d.editId?'방문 기억 바로잡기':d.fromTrip?'다녀온 기록 남기기':'다녀온 발자국 남기기'}">${body}</div>`);$('#modal').classList.add('sheet');}
 function visitCalendar(){const d=visitDraft,today=visitToday();if(!d)return;if(!d.calendar)d.calendar=d.date||today;const parts=d.calendar.split('-');showModal('방문 날짜 선택',`<p class="wizard-status">화살표로 날짜를 맞춰주세요.</p><div class="date-steppers">${['년','월','일'].map((label,i)=>`<div><button class="outline" data-date-part="${i}" data-date-delta="1" aria-label="${label} 늘리기">＋</button><output>${Number(parts[i])}<small>${label}</small></output><button class="outline" data-date-part="${i}" data-date-delta="-1" aria-label="${label} 줄이기">−</button></div>`).join('')}</div><p class="wizard-status" role="status">${esc(d.calendar)}${d.calendar>today?' · 미래 날짜는 선택할 수 없어요.':''}</p><div class="wizard-actions"><button class="outline" data-date-cancel>취소</button><button class="primary" data-date-accept ${d.calendar>today?'disabled':''}>이 날짜 선택</button></div>`);}
 function adjustVisitDate(part,delta){const a=visitDraft.calendar.split('-').map(Number);if(part===0)a[0]=Math.max(1900,Math.min(2100,a[0]+delta));if(part===1){a[1]+=delta;if(a[1]===0){a[0]--;a[1]=12;}if(a[1]===13){a[0]++;a[1]=1;}}if(part===2){const t=new Date(Date.UTC(a[0],a[1]-1,a[2]+delta));visitDraft.calendar=t.toISOString().slice(0,10);visitCalendar();return;}a[2]=Math.min(a[2],new Date(Date.UTC(a[0],a[1],0)).getUTCDate());visitDraft.calendar=a.map((v,i)=>String(v).padStart(i===0?4:2,'0')).join('-');visitCalendar();}
-function visitVoice(stage='ready'){if(!visitDraft)return;visitDraft.voiceStage=stage;const sample=VOICE_SAMPLE;showModal('말로 남기기',`<div id="voicePanel"><p class="voice-demo-label">음성 입력 시연 · 마이크를 사용하지 않아요</p><div class="voice-orb" aria-hidden="true">◉</div><p class="wizard-question">${stage==='ready'?'기억하고 싶은 한마디를 말해보세요':stage==='error'?'말씀을 알아듣지 못했어요':'이렇게 들었어요'}</p>${stage==='result'?`<blockquote class="voice-transcript">${esc(sample)}</blockquote>`:'<p class="wizard-status">'+(stage==='error'?'다시 시도하거나 문구를 골라주세요.':'시연에서는 예시 문장이 표시됩니다.')+'</p>'}<div class="wizard-actions">${stage==='result'?'<button class="outline" data-voice-retry>다시 말하기</button><button class="primary" data-voice-accept>이 문장 사용</button>':'<button class="outline" data-voice-cancel>문구 고르기</button><button class="primary" data-voice-sample>음성 입력 시연</button>'}</div>${stage==='result'?'<button class="voice-secondary" data-voice-cancel>취소하고 돌아가기</button>':'<button class="voice-secondary" data-voice-error>인식 실패 상황 보기</button>'}</div>`);}
 function visitAction(b){if(!visitDraft)return false;const d=visitDraft;
-if(b.hasAttribute('data-visit-place')){d.place=b.dataset.visitPlace;d.step=0;visitStep();}
+if(b.hasAttribute('data-visit-place')){d.place=b.dataset.visitPlace;d.open=null;visitStep();}
 else if(b.hasAttribute('data-place-page')){d.placePage=Math.max(0,Math.min(Math.ceil(KB.places.length/4)-1,d.placePage+Number(b.dataset.placePage)));visitStep();}
-else if(b.hasAttribute('data-visit-date')){d.date=b.dataset.visitDate;visitStep();}
-else if(b.hasAttribute('data-visit-comp')){d.companion=b.dataset.visitComp;visitStep();}
+else if(b.hasAttribute('data-visit-date')){d.date=b.dataset.visitDate;d.dateSource=d.date===visitToday()?'오늘':'직접 골랐어요';d.open=null;visitStep();}
+else if(b.hasAttribute('data-visit-comp')){d.companion=b.dataset.visitComp;d.whoSource='직접 골랐어요';d.open=null;visitStep();}
+else if(b.hasAttribute('data-sheet-fix')){d.open=d.open===b.dataset.sheetFix?null:b.dataset.sheetFix;visitStep();}
 else if(b.hasAttribute('data-visit-note')){d.note=d.notes[Number(b.dataset.visitNote)];visitStep();}
 else if(b.hasAttribute('data-visit-clear')){d.note='';visitStep();}
-else if(b.hasAttribute('data-visit-next')){if(d.step===0&&!d.date||d.step===1&&!d.companion)return true;d.step=Math.min(3,d.step+1);visitStep();}
-else if(b.hasAttribute('data-visit-back')){d.step=d.fromTrip&&d.step===0?-2:Math.max(-1,d.step-1);visitStep();}
-else if(b.hasAttribute('data-trip-visited')){d.step=0;visitStep();}
+else if(b.hasAttribute('data-trip-visited')){d.confirmed=true;visitStep();}
 else if(b.hasAttribute('data-trip-skip')){const f=state.first;f.trip='none';f.stage='saved';Object.assign(f,{leg1:'idle',leg2:'idle',companion:null,doorAt:null,fuelStop:null,stopMin:null});close();state.view='home';render();toast('방문으로 기록하지 않았어요. 약속은 그대로예요.');}
 else if(b.hasAttribute('data-visit-calendar')){d.calendar=d.date||visitToday();visitCalendar();}
 else if(b.hasAttribute('data-date-part'))adjustVisitDate(Number(b.dataset.datePart),Number(b.dataset.dateDelta));
 else if(b.hasAttribute('data-date-cancel'))visitStep();
-else if(b.hasAttribute('data-date-accept')){if(d.calendar>visitToday())return true;d.date=d.calendar;visitStep();}
-else if(b.hasAttribute('data-visit-voice')||b.hasAttribute('data-voice-retry'))visitVoice();
-else if(b.hasAttribute('data-voice-sample'))visitVoice('result');
-else if(b.hasAttribute('data-voice-error'))visitVoice('error');
-else if(b.hasAttribute('data-voice-cancel'))visitStep();
-else if(b.hasAttribute('data-voice-accept')){if(d.voiceStage!=='result')return true;d.note=VOICE_SAMPLE;visitStep();}
-else if(b.hasAttribute('data-visit-save')){if(d.step!==3||!d.date||!d.companion||!place(d.place)||d.date>visitToday())return true;const v={id:d.editId||'v'+Date.now(),place:d.place,date:d.date,companions:d.companion==='solo'?[]:[d.companion],note:d.note,use:d.use};if(d.editId)state.visits[state.visits.findIndex(v=>v.id===d.editId)]=v;else state.visits.push(v);const trip=d.fromTrip;if(trip){state.first.stage='done';state.first.trip='none';state.view='home';}else if(state.tripPhase==='review'){state.tripPhase='recorded';state.navigation=null;}close();render();toast(trip?'기록을 저장하고 약속을 완료했어요.':'다녀온 발자국을 남겼어요.');}
+else if(b.hasAttribute('data-date-accept')){if(d.calendar>visitToday())return true;d.date=d.calendar;d.dateSource='직접 골랐어요';d.open=null;visitStep();}
+else if(b.hasAttribute('data-visit-voice')||b.hasAttribute('data-voice-retry')){d.voice='result';visitStep();}
+else if(b.hasAttribute('data-voice-error')){d.voice='error';visitStep();}
+else if(b.hasAttribute('data-voice-cancel')){d.voice=null;visitStep();}
+else if(b.hasAttribute('data-voice-accept')){if(d.voice!=='result')return true;d.note=VOICE_SAMPLE;d.voice=null;visitStep();}
+else if(b.hasAttribute('data-visit-save')){if(!visitReady(d))return true;const v={id:d.editId||'v'+Date.now(),place:d.place,date:d.date,companions:d.companion==='solo'?[]:[d.companion],note:d.note,use:d.use};if(d.editId)state.visits[state.visits.findIndex(v=>v.id===d.editId)]=v;else state.visits.push(v);const trip=d.fromTrip;if(trip){state.first.stage='done';state.first.trip='none';state.view='home';}else if(state.tripPhase==='review'){state.tripPhase='recorded';state.navigation=null;}close();render();toast(trip?'기록을 저장하고 약속을 완료했어요.':'다녀온 발자국을 남겼어요.');}
 else return false;return true;}
+
+// "이번 여정": voice first. A fixed demo sentence fills destination, companion and taste chips.
+function tripUtterance(){const name=place(state.destinationPlace)?.name||state.destination;return `${name}에 어머니랑 갈래. 조용한 곳이면 좋겠어.`;}
+function renderSettings(){
+ const v=state.tripVoice,dest=place(state.destinationPlace),taste=state.profile.preferences.slice(0,1).map(t=>KB.tags[t])[0]||'아직 없어요';
+ $('#tripVoice').innerHTML=icon('mic');
+ $('#tripVoiceCopy').innerHTML=v?`<p class="obs">이렇게 들었어요 · 음성 인식 시연</p><blockquote class="heard-line">“${esc(v.said)}”</blockquote><div class="said-chips"><button class="said-chip" data-action="destination"><span>목적지</span><b>${esc(dest?.name||state.destination)}</b><i>고치기</i></button><button class="said-chip" data-said="comp"><span>동행</span><b>${({unknown:'미정',mom:'어머니와 함께',solo:'혼자'})[state.companion]}</b><i>고치기</i></button><button class="said-chip" data-said="taste"><span>취향</span><b>${esc(taste)}</b><i>고치기</i></button></div>`:`<p class="obs">이번 여정 · 정차 중</p><h2>어디로, 누구와 갈지 말해 주세요</h2><p class="hint">누를 때만 들어요 · 음성 인식 시연 · 틀린 칸만 고치면 돼요</p>`;
+ $('#tripVoice').setAttribute('aria-label',v?'다시 말하기':'눌러서 말하기');
+ $('#aiChip').innerHTML=state.ai.provider?`${STAR}<span>${esc(PROV[state.ai.provider])} 연결됨</span>`:`${STAR}<span>내 AI 연결하기</span>`;
+ const m={progress:240,items:[{kind:'light',x:state.companion==='mom'?214:240,label:'나'}]};
+ if(state.companion==='mom')m.items.push({kind:'light',x:266,who:'mom',label:'어머니'});
+ if(state.ai.provider)m.items.push({kind:'ai',x:420,dy:-26,label:PROV[state.ai.provider]});
+ m.items.push({kind:'stop',x:1060,future:true,label:dest?.name||state.destination});
+ $('#settingsThread').innerHTML=threadHtml(m,{id:'set',y0:18});
+}
+function fillFromVoice(){state.tripVoice={said:tripUtterance()};state.companion='mom';if(!state.profile.preferences.includes('quiet'))state.profile.preferences=['quiet',...state.profile.preferences];state.page=0;aiReset();render();toast('말한 내용으로 채웠어요. 틀린 칸만 고쳐 주세요.');}
+
+// 내 AI 연결 (Claude · ChatGPT · Gemini). Demo only: no account linking, no API calls, canned answers.
+const PROV={claude:'Claude',chatgpt:'ChatGPT',gemini:'Gemini'};
+const STAR='<svg class="star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2c.6 4.6 2.4 6.4 7 7-4.6.6-6.4 2.4-7 7-.6-4.6-2.4-6.4-7-7 4.6-.6 6.4-2.4 7-7z" fill="currentColor"/></svg>';
+function freshAi(){return {provider:null,pick:null,stage:'idle',reorder:null};}
+let aiSerial=0;
+function aiReset(){if(!state.ai)return;if(state.ai.stage!=='idle'||state.ai.reorder){state.ai.stage='idle';state.ai.reorder=null;aiSerial++;}}
+function aiCardsMode(){const a=state.ai;if(!a.provider||state.view!=='explore')return null;if(state.driving)return a.stage==='done'&&state.aiOutcome==='ok'?'cards':null;if(a.stage==='idle'){a.stage='research';const tok=++aiSerial;setTimeout(()=>aiResearchDone(tok),1600);}if(a.stage==='research')return 'research';if(a.stage==='done'&&a.result==='ok')return 'cards';return null;}
+function aiResearchDone(tok){const a=state.ai;if(tok!==undefined&&tok!==aiSerial)return;if(a.stage!=='research')return;if(state.driving){a.stage='idle';render();return;}a.stage='done';a.result=state.aiOutcome;render();}
+function aiWho(){return state.companion==='mom'?['mom','어머니']:['grandma','할머니'];}
+function renderAiBar(mode){const a=state.ai,P=esc(PROV[a.provider]||'');$('#aiBar').innerHTML=!a.provider?`<button class="ai-hint" data-view="aiLink">${STAR}내 AI 연결하면 더 넓게 찾아 드려요</button>`:mode==='research'?`<span class="ai-state">${STAR}${P}가 살펴보는 중 · 시연</span>`:mode==='cards'?`<button class="ai-ask" data-ai-ask>${icon('mic')} 말로 다시 고르기</button>`:a.stage==='done'&&a.result==='fail'?`<span class="ai-state warn">${P} 응답을 받지 못해 기본 추천을 보여 드려요 · 시연</span>`:a.stage==='off'?`<span class="ai-state">기본 추천을 보여 드려요 · <button class="ai-again" data-ai-again>${P}에 다시 묻기</button></span>`:'';}
+function aiResearchHtml(results){const P=esc(PROV[state.ai.provider]),mine=state.visits.filter(v=>place(v.place)?.destination===state.destination).length,tags=[state.companion==='mom'?'어르신 동행':'',...state.profile.preferences.slice(0,1).map(t=>KB.tags[t])].filter(Boolean).join(' · ')||'직접 고른 조건 없음';return `<div class="ai-research"><div><p class="ai-title">${STAR} ${P}가 ${esc(place(state.destinationPlace)?.name||state.destination)} 근처를 살펴보고 있어요</p><ul class="ai-steps"><li class="ok">관광 정보 · 근처 ${results.length}곳 <small>${esc(state.clock)} 조회 · 시연</small></li><li class="ok">대한민국 명소발굴 추천지 · ‘바다를 품은 곳’ <small>예시 주제</small></li><li class="ok">내 기록 · 이 근처 다녀온 곳 ${mine}곳</li><li class="run">날씨와 영업 정보 확인 중…</li></ul></div><div class="ai-sent"><p>${P}에는 후보 장소의 공개 정보와 <b>“${esc(tags)}”</b> 조건만 보냈어요. 가족 이름, 남긴 한마디, 집 주소는 보내지 않아요.</p><button class="outline" data-ai-stop>그만 찾고 기본 추천 보기</button></div></div>`;}
+const FEAT={quiet:'조용히 오래 머물 수 있어요',light:'가볍게 한 끼 하기 좋아요',sea:'바다가 보이는 자리가 있어요',easy:'걷기 편해서 오래 걷지 않아도 돼요',indoor:'실내라 날씨와 상관없이 쉬어 가요',local:'이 지역의 맛을 볼 수 있어요',outdoor:'바람 쐬며 걷기 좋아요',parking:'주차 정보가 있어요'};
+function aiPicks(results){const list=results.filter(p=>p.id!==state.destinationPlace);const r=state.ai.reorder;if(r){const i=list.findIndex(p=>p.id===r);if(i>0)list.unshift(...list.splice(i,1));}return list.slice(0,2);}
+function aiReason(p){const [,who]=aiWho(),liked=state.ai.reorder===p.id;if(liked)return `${who}가 따뜻한 차를 좋아하신다고 하셔서, 실내에서 차를 마시며 쉬어 갈 곳을 먼저 골랐어요.`;if(p.visited.length)return `지난번 ${state.companion==='mom'?'어머니와 ':''}다녀온 곳이라, 익숙한 자리에서 쉬어 갈 수 있어요.`;const pref=[...state.profile.preferences,...(state.companion==='mom'?state.profile.momPreferences:[])].find(t=>p.features.includes(t));const other=p.features.find(f=>f!==pref&&f!=='parking')||pref||p.features[0];return pref?`직접 고른 ‘${KB.tags[pref]}’에 맞춰 골랐어요. ${FEAT[other]}.`:`목적지 가까이에서 골랐어요. ${FEAT[other]}.`;}
+function aiChips(p,i){const c=['<span class="src">관광 정보 · 시연</span>'];if(i===1||p.features.some(f=>f==='sea'||f==='local'))c.push('<span class="src">대한민국 명소발굴 추천지 · 예시</span>');if(p.visited.length)c.push(`<span class="src">내 기록 · ${esc(p.visited.at(-1).date)}</span>`);c.push(`<span class="src q">미확인: ${p.unknown.length?esc(KB.tags[p.unknown[0].to.slice(2)]):'오늘 영업'}</span>`);return c.join('');}
+function aiCardsHtml(results){const P=esc(PROV[state.ai.provider]);return aiPicks(results).map((p,i)=>`<button class="place-card ai-card" data-detail="${p.id}" aria-label="${esc(p.name)}, ${P}가 정리한 추천, 자세히 보기"><span class="art">${art(p)}<span class="card-status ${p.visited.length?'done':''}">${p.visited.length?'✓ 다녀온 곳':'새로운 곳'}</span></span><span class="card-body"><span class="card-kicker">${categories[p.category]} · 주변 이동 약 ${p.minutes}분 · 예시</span><strong>${esc(p.name)}</strong><span class="ai-why"><b>${STAR}${P}가 정리한 이유 · 시연</b>${esc(aiReason(p))}</span><span class="src-chips">${aiChips(p,i)}</span></span></button>`).join('');}
+function aiAsk(){if(!guard())return;const a=state.ai;if(!a.provider||a.stage!=='done'||a.result!=='ok')return;const [k,who]=aiWho(),P=esc(PROV[a.provider]),pool=ranked().filter(p=>p.id!==state.destinationPlace),pick=pool.find(p=>p.category==='cafe'&&p.features.includes('indoor'))||pool[0];if(!pick)return;a.pending=pick.id;
+ showModal(`${P}와 이어서 고르기`,`<div class="ai-chat"><div class="me-say"><span class="lbl">${icon('mic')} 들은 말 · 음성 인식 시연</span>“${who}가 따뜻한 차를 좋아하셔.”</div><div class="ai-say"><span class="lbl">${STAR}${P} · 시연</span>그럼 차를 마시며 쉬어 갈 곳을 먼저 보여 드릴게요. <b>${esc(pick.name)}</b>은 실내에서 조용히 쉬기 좋은 곳이에요. ${pick.unknown.length?esc(KB.tags[pick.unknown[0].to.slice(2)])+'는 아직 확인하지 못했어요.':'오늘 영업 여부는 아직 확인하지 못했어요.'}</div></div><div class="keep-card"><span class="kface">${face(k)}</span><div><h3>이 취향을 ${who} 기억에 남길까요?</h3><p>앞으로 ${who}와 갈 때 추천에 써요. 이 차에만 저장되고, 언제든 지울 수 있어요.</p></div></div><div class="modal-actions"><button class="outline" data-ai-once>이번만 쓰기</button><button class="primary" data-ai-keep>남기기</button></div>`);}
+function aiAction(b){const a=state.ai,d=b.dataset;
+ if(d.aiPick){a.pick=d.aiPick;render();return true;}
+ if(b.hasAttribute('data-ai-confirm')){if(!a.pick)return true;a.provider=a.pick;a.stage='idle';a.reorder=null;render();toast(`${PROV[a.provider]}와 연결했어요 · 휴대폰 연결 시연`);return true;}
+ if(b.hasAttribute('data-ai-disconnect')){Object.assign(state.ai,freshAi());aiSerial++;render();toast('연결을 끊었어요. 기본 추천으로 돌아가요.');return true;}
+ if(b.hasAttribute('data-ai-stop')){aiSerial++;a.stage='off';a.reorder=null;render();return true;}
+ if(b.hasAttribute('data-ai-again')){a.stage='idle';render();return true;}
+ if(b.hasAttribute('data-ai-ask')){aiAsk();return true;}
+ if(b.hasAttribute('data-ai-keep')||b.hasAttribute('data-ai-once')){if(!a.pending)return true;const [k]=aiWho();a.reorder=a.pending;a.pending=null;const keep=b.hasAttribute('data-ai-keep');if(keep&&!state.profile.likes.some(l=>l.who===k&&l.text==='따뜻한 차를 좋아함'))state.profile.likes.push({who:k,text:'따뜻한 차를 좋아함',source:'운전자의 말 · 저장을 허락함',date:visitToday()});close();render();toast(keep?'기억에 남겼어요. 이 차에만 저장돼요.':'이번 추천에만 썼어요. 기억에는 남기지 않았어요.');return true;}
+ if(d.trip==='voice'||d.tripVoice){if(d.tripVoice==='again'){state.tripVoice=null;render();return true;}fillFromVoice();return true;}
+ if(d.said==='comp'){companion();return true;}
+ if(d.said==='taste'){profile();return true;}
+ return false;}
+function qrHtml(){let x=7,cells='';for(let i=0;i<441;i++){x=(x*1103515245+12345)&0x7fffffff;cells+=(x>>16)%100<48?'<i></i>':'<b></b>';}return `<div class="qr" aria-hidden="true">${cells}<u style="left:0;top:0"></u><u style="right:0;top:0"></u><u style="left:0;bottom:0"></u></div>`;}
+function renderAiLink(){const a=state.ai,on=!!a.provider,P=esc(PROV[a.provider]||'');
+ const m={progress:200,items:[{kind:'light',x:200,label:'나'},{kind:'ai',x:330,wait:!on,label:on?PROV[a.provider]:'내 AI?'}]};
+ $('#aiLink').innerHTML=`<div class="thread mini-thread">${threadHtml(m,{id:'ai',y0:18})}</div><div class="ai-link"><div class="ai-left"><p class="obs">${on?'연결됨 · 정차 중':'설정 · 정차 중'}</p><h2>${on?`${P}와 연결돼 있어요`:'쓰던 AI를 연결할까요?'}</h2><p class="lead">연결하면 우리 가족 여정에 맞춰, 들를 곳을 더 넓게 찾아 드려요.</p><div class="provs">${Object.entries(PROV).map(([k,t])=>`<button class="prov ${(on?a.provider:a.pick)===k?'sel':''}" data-ai-pick="${k}" aria-pressed="${(on?a.provider:a.pick)===k}" ${on?'disabled':''}><i></i>${t}</button>`).join('')}</div><div class="sendrow"><div><b>보내는 것</b>들를 곳 후보의 공개 정보 · 직접 고른 조건(예: 어르신 동행, 오래 걷지 않기)</div><div><b>보내지 않는 것</b>가족 이름 · 남긴 한마디 · 집 주소 · 실제 경로</div></div></div>
+ ${on?`<div class="qrcard on"><span class="ai-orb">${STAR}</span><p class="qrt">${P} 연결됨</p><p>휴대폰에서 연결했어요 · 시연<br>주행 중에는 묻지 않아요.</p><button class="outline" data-ai-disconnect>연결 끊기</button></div>`:`<div class="qrcard"><p class="qrt">휴대폰으로 이어서 연결</p>${qrHtml()}<p>휴대폰에서 내 API 키를 등록해요. 차에서는 키를 입력하지 않아요.<br>요금은 내 API 계정으로 청구되고, 연결은 언제든 끊을 수 있어요.</p><button class="primary" data-ai-confirm ${a.pick?'':'disabled'}>휴대폰에서 연결했어요 · 시연</button></div>`}</div>`;}
 
 // Local demonstration only. No Pleos API, POI conversion, or network requests.
 let navigationSerial=0;
@@ -871,14 +1126,14 @@ function renderJourney(){
 }
 function selectDestination(id){
  const p=place(id);if(!p)return;
- state.destinationPlace=id;state.destination=p.destination;state.companion='unknown';state.category='all';state.theme='all';state.page=0;state.route=[];state.navigation=null;navigationSerial++;state.tripPhase='planning';close();state.view='settings';render();
+ state.destinationPlace=id;state.destination=p.destination;state.companion='unknown';state.tripVoice=null;aiReset();state.category='all';state.theme='all';state.page=0;state.route=[];state.navigation=null;navigationSerial++;state.tripPhase='planning';close();state.view='settings';render();
 }
 function destinations(page=0){
  const ps=KB.places.filter(p=>p.destination===state.destination),pages=Math.ceil(ps.length/4);
  page=Math.max(0,Math.min(page,pages-1));
  showModal('어디로 가시나요?',`<p class="modal-copy">${esc(state.destination)} · 같은 장소의 방문 기억을 이어볼게요.</p><div class="visit-choices place-choices">${ps.slice(page*4,page*4+4).map(p=>`<button class="outline" data-destination="${p.id}">${esc(p.name)}<small>${state.visits.some(v=>v.place===p.id)?'✓ 다녀온 곳':categories[p.category]}</small></button>`).join('')}</div><div class="wizard-actions"><button class="outline" data-dest-page="${page-1}" ${page===0?'disabled':''}>← 이전</button><span>${page+1} / ${pages}</span><button class="outline" data-dest-page="${page+1}" ${page===pages-1?'disabled':''}>다음 →</button></div>`);
 }
-function themes(){showModal('이번에는 어떤 시간을 보낼까요?',`<p class="modal-copy">취향과 동행에 맞춰, 고른 주제의 장소를 찾아볼게요.</p><div class="visit-choices place-choices">${Object.entries(themeLabels).map(([id,label])=>`<button class="outline ${state.theme===id?'chosen':''}" data-theme="${id}">${label}</button>`).join('')}</div><p class="notice">목업 자체 주제 예시예요. 100×100 선정 목록과는 아직 연결되지 않았어요.</p>`);}
+function themes(){showModal('이번에는 어떤 시간을 보낼까요?',`<p class="modal-copy">취향과 동행에 맞춰, 고른 주제의 장소를 찾아볼게요.</p><div class="visit-choices place-choices">${Object.entries(themeLabels).map(([id,label])=>`<button class="outline ${state.theme===id?'chosen':''}" data-theme="${id}">${label}</button>`).join('')}</div><p class="notice">목업 자체 주제 예시예요. 대한민국 명소발굴 추천지와는 아직 연결되지 않았어요.</p>`);}
 function route(){
  if(!guard())return;
  const dest=place(state.destinationPlace);
@@ -907,7 +1162,7 @@ function finishNavigation(token,outcome){
 function journeyAction(b){
  if(b.dataset.destination){selectDestination(b.dataset.destination);return true;}
  if(b.hasAttribute('data-dest-page')){destinations(Number(b.dataset.destPage));return true;}
- if(b.dataset.theme){state.theme=b.dataset.theme;state.page=0;close();state.view='explore';render();return true;}
+ if(b.dataset.theme){state.theme=b.dataset.theme;state.page=0;aiReset();close();state.view='explore';render();return true;}
  switch(b.dataset.action){
  case 'destination':destinations();return true;
  case 'themes':themes();return true;
@@ -925,7 +1180,7 @@ function setView(v){if(!guard())return;state.view=v;render();}
 document.addEventListener('click',e=>{const b=e.target.closest('button,[data-node]');if(!b)return;
 if(b.dataset.rail){railAction(b);return;}
 if(b.dataset.action==='close'){close();return;}if(b.id==='fullscreenBtn')return;
-if(!guard())return;if(b.disabled)return;if(visitAction(b))return;if(tripAction(b))return;if(journeyAction(b))return;
+if(!guard())return;if(b.disabled)return;if(visitAction(b))return;if(aiAction(b))return;if(tripAction(b))return;if(journeyAction(b))return;
 if(b.dataset.view){setView(b.dataset.view);return;}
 if(b.dataset.page){state.page+=(b.dataset.page==='next'?1:-1);render();return;}
 if(b.dataset.cat){state.category=b.dataset.cat;state.page=0;render();return;}
@@ -947,7 +1202,7 @@ if(b.id==='whyBtn'){showModal('이번 추천은 이렇게 골랐어요',`<p clas
 if(b.id==='exportBtn'){const blob=new Blob([JSON.stringify(KB.graph(state.visits,state.profile),null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='journey-knowledge-graph.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);toast('지식 그래프를 내려받았어요.');return;}
 });
 document.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.matches('[data-node]')){e.preventDefault();e.target.dispatchEvent(new MouseEvent('click',{bubbles:true}));}});
-$('#destination').onchange=e=>{if(!guard()){e.target.value=state.destination;return;}state.destination=e.target.value;state.destinationPlace=null;state.companion='unknown';state.route=[];state.navigation=null;state.tripPhase='planning';state.theme='all';state.category='all';state.page=0;render();};$('#novel').onchange=e=>{if(!guard()){e.target.checked=state.novel;return;}state.novel=e.target.checked;state.page=0;render();};$('#graphPlace').onchange=e=>{if(!guard()){e.target.value=state.graphPlace;return;}state.graphPlace=e.target.value;renderGraph();};
+$('#destination').onchange=e=>{if(!guard()){e.target.value=state.destination;return;}state.destination=e.target.value;state.destinationPlace=null;state.companion='unknown';state.tripVoice=null;aiReset();state.route=[];state.navigation=null;state.tripPhase='planning';state.theme='all';state.category='all';state.page=0;render();};$('#novel').onchange=e=>{if(!guard()){e.target.checked=state.novel;return;}state.novel=e.target.checked;state.page=0;render();};$('#graphPlace').onchange=e=>{if(!guard()){e.target.value=state.graphPlace;return;}state.graphPlace=e.target.value;renderGraph();};
 $('.brand').onclick=e=>{e.preventDefault();setView('home');};window.addEventListener('hashchange',()=>{const id=sceneFromHash();if(!id)return;cancelLegs();close();state=scenePreset(id);render();});$('#modal').addEventListener('click',e=>{if(e.target===$('#modal'))close();});render();
 </script><script>(function(){
  const embedded=new URLSearchParams(location.search).get('embed')==='1';document.documentElement.classList.toggle('embedded',embedded);

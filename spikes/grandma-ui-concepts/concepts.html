@@ -208,12 +208,198 @@ body.solo .cell .wrap{border-radius:0;box-shadow:none}
 .AA .tag{padding-right:110px}
 .AA .tag.ghost{padding-right:36px}
 .AA .pola i .fig{position:absolute;left:0;bottom:0;width:100%;height:100%}
+
+/* ---------- 내 AI 연결 ---------- */
+.AA .light.ai i{width:56px;height:56px;padding:12px;background:radial-gradient(circle at 40% 35%,#eef2ff,#a9b9f0 55%,#6f86d6);box-shadow:0 0 0 10px rgba(130,150,230,.2),0 0 46px 14px rgba(120,140,225,.42)}
+.AA .light.ai i svg{display:block;width:100%;height:100%}
+.AA .light.ai.wait i{background:rgba(255,248,240,.5);box-shadow:none;border:4px dashed rgba(111,134,214,.7)}
+.AA .light.ai.wait i svg path{fill:#a9b9f0}
+.AA .light.ai.wait span{color:#5d6fb0}
+.AA .light.ai.sm i{width:40px;height:40px;padding:8px}
+.AA .lead2{font:400 36px/1.5 var(--sans);color:var(--ink2);margin:-14px 0 34px}
+.AA .provs{display:flex;gap:22px}
+.AA .prov{display:inline-flex;align-items:center;gap:16px;height:104px;padding:0 44px;border-radius:52px;font:600 38px var(--sans);color:var(--ink);background:rgba(255,250,242,.7);box-shadow:inset 0 0 0 3px var(--line)}
+.AA .prov i{width:26px;height:26px;border-radius:50%;box-shadow:inset 0 0 0 3px #b9a184}
+.AA .prov.sel{box-shadow:inset 0 0 0 4px #6f86d6,0 14px 30px rgba(111,134,214,.2);background:#fffaf2}
+.AA .prov.sel i{background:#6f86d6;box-shadow:inset 0 0 0 6px #fffaf2,0 0 0 3px #6f86d6}
+.AA .sendrow{display:flex;gap:26px;margin-top:40px}
+.AA .sendrow div{flex:1;font:400 27px/1.5 var(--sans);color:var(--ink2);background:rgba(255,250,242,.6);border-radius:24px;padding:22px 26px}
+.AA .sendrow b{display:block;font:700 28px var(--sans);color:var(--ink);margin-bottom:6px}
+.AA .sendrow div+div b{color:#a8482a}
+.AA .qrcard{position:absolute;right:120px;top:360px;width:500px;background:#fffaf2;border-radius:34px;padding:40px 44px;box-shadow:0 30px 60px rgba(80,50,20,.16);text-align:center;z-index:4}
+.AA .qrt{font:700 36px var(--serif);margin-bottom:24px}
+.AA .qrcard p{font:400 26px/1.55 var(--sans);color:var(--ink2);margin-top:24px}
+.AA .qr{position:relative;display:grid;grid-template-columns:repeat(21,1fr);width:300px;height:300px;margin:0 auto;padding:14px;background:#fff;border-radius:18px;box-shadow:inset 0 0 0 2px #eadcc6}
+.AA .qr i{background:#3b2a20}.AA .qr b{background:transparent}
+.AA .qr u{position:absolute;width:86px;height:86px;margin:14px;border:14px solid #3b2a20;background:#fff;box-shadow:inset 0 0 0 10px #fff,inset 0 0 0 40px #3b2a20}
+.AA .steps{list-style:none;margin-top:6px}
+.AA .steps li{display:flex;align-items:center;gap:18px;font:400 36px/1.3 var(--sans);color:var(--ink);padding:12px 0}
+.AA .steps li small{font-size:26px;color:var(--ink2)}
+.AA .steps li:before{content:"";flex:none;width:34px;height:34px;border-radius:50%}
+.AA .steps li.ok:before{background:#7d8a5f radial-gradient(circle,#fffaf2 0 5px,transparent 6px);box-shadow:0 0 0 6px rgba(125,138,95,.18)}
+.AA .steps li.run{color:#5d6fb0}
+.AA .steps li.run:before{border:5px solid rgba(111,134,214,.3);border-top-color:#6f86d6}
+.AA .sentnote{position:absolute;right:120px;top:520px;width:600px;font:400 28px/1.55 var(--sans);color:var(--ink2);background:rgba(238,242,255,.75);border-radius:28px;padding:30px 34px;z-index:4;box-shadow:inset 0 0 0 2px rgba(111,134,214,.25)}
+.AA .sentnote b{color:#3b4a86;font-weight:600}
+.AA .pick{position:absolute;top:490px;width:800px;height:470px;background:#fffaf2;border-radius:30px;box-shadow:0 26px 56px rgba(80,50,20,.18);display:flex;gap:30px;padding:30px;z-index:4}
+.AA .pick>i{flex:none;width:200px;height:100%;border-radius:20px}
+.AA .pbody{display:flex;flex-direction:column;min-width:0}
+.AA .pbody h4{font:700 46px var(--serif);color:var(--ink)}
+.AA .pbody .meta{font:400 26px var(--sans);color:var(--ink2);margin:6px 0 14px}
+.AA .why{font:400 31px/1.3 var(--hand);color:#3b4a86;background:rgba(238,242,255,.7);border-radius:18px;padding:12px 18px 14px}
+.AA .why .by{display:flex;align-items:center;gap:8px;font:600 22px var(--sans);color:#5d6fb0;margin-bottom:4px}
+.AA .why .by svg{width:24px;height:24px;border-radius:50%;background:#6f86d6;padding:4px}
+.AA .srcs{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 auto}
+.AA .src{font:500 22px var(--sans);color:#4f5c39;background:#e5e6d2;border-radius:20px;padding:6px 14px}
+.AA .src.q{color:#a8482a;background:#f8dcc4}
+.AA .pbody .btn{align-self:flex-start}
+.AA .chat{position:absolute;left:120px;top:360px;width:1000px;z-index:4;display:flex;flex-direction:column;gap:26px}
+.AA .chat .me{align-self:flex-start;max-width:760px;background:#fffaf2;border-radius:30px 30px 30px 8px;padding:24px 32px;font:400 52px/1.25 var(--hand);color:#5b3a2a;box-shadow:0 14px 30px rgba(80,50,20,.12)}
+.AA .chat .ai{align-self:flex-start;margin-left:60px;max-width:900px;background:rgba(238,242,255,.85);border-radius:30px 30px 30px 8px;padding:26px 34px;font:400 34px/1.5 var(--sans);color:#2f3b6e;box-shadow:inset 0 0 0 2px rgba(111,134,214,.25)}
+.AA .chat .lbl{display:flex;align-items:center;gap:10px;font:600 24px var(--sans);color:var(--ink2);margin-bottom:8px}
+.AA .chat .ai .lbl{color:#5d6fb0}
+.AA .chat .ai .lbl i{display:inline-grid;width:32px;height:32px;border-radius:50%;background:#6f86d6;padding:5px}
+.AA .chat .ai .lbl i svg{width:100%;height:100%}
+.AA .keep{position:absolute;left:120px;top:800px;display:flex;gap:30px;align-items:flex-start;z-index:4;display:none}
+.AA .keep{display:flex;left:auto;right:100px;top:480px;width:700px;background:#fffaf2;border-radius:32px;padding:34px;box-shadow:0 26px 56px rgba(80,50,20,.16)}
+.AA .keep .kface{flex:none;width:96px;height:96px;border-radius:50%;background:#f8dcc4;padding:6px}
+.AA .keep h4{font:700 36px/1.3 var(--serif);color:var(--ink)}
+.AA .keep p{font:400 27px/1.5 var(--sans);color:var(--ink2);margin-top:10px}
+.AA .drvnote{font:400 26px var(--sans);color:#9c8670;margin-top:22px}
+.ph-tea{background:radial-gradient(circle at 50% 62%,#fffaf2 0 15%,transparent 16%),radial-gradient(ellipse at 50% 70%,#c86a4a 0 28%,transparent 29%),linear-gradient(#f2dcc0,#d8b48a)}
+.ph-book{background:repeating-linear-gradient(90deg,#c86a4a 0 18px,#e39a45 18px 30px,#7d8a5f 30px 46px,#f2dcc0 46px 52px) 0 20%/100% 30% no-repeat,repeating-linear-gradient(90deg,#6d8aa0 0 22px,#f2dcc0 22px 28px,#c86a4a 28px 44px) 0 62%/100% 30% no-repeat,linear-gradient(#f6e7d2,#e6cfae)}
 </style>
 </head>
 <body>
 <main class="gal">
   <h1>다녀왔습니다 · 화면 콘셉트 제안</h1>
   <p class="lead">지금 목업은 왼쪽 메뉴, 큰 카드, 아래 타일 세 개가 있는 웹 대시보드 구조입니다. 같은 장면을 세 방향(A, B, C)으로 다시 그렸고, 맨 위의 A+는 A를 바탕으로 감성을 더한 발전안입니다. 문구, 시각, 사진은 예시입니다. 주행 중에는 세 방향 모두 버튼이 없습니다.</p>
+
+  <!-- ===================== AI ===================== -->
+  <section class="dir" data-d="AI">
+    <h2>내 AI 연결 (A+ 확장안)</h2>
+    <p class="why">운전자가 쓰던 <b>Claude, ChatGPT, Gemini</b> 중 하나를 연결하면, 그 AI가 실 위의 <b>작은 별빛</b>으로 함께 다닙니다. 연결은 휴대폰에서 하고 차에서는 키를 입력하지 않습니다. AI는 관광 정보·대한민국 명소발굴 추천지·내 기록에서 <b>모은 후보 안에서만</b> 들를 곳을 고르고, 이유와 출처를 함께 보여 줍니다. 대화로 더한 취향은 운전자가 허락할 때만 가족 기억에 남고, 주행 중에는 AI에 묻지 않습니다.</p>
+    <div class="row">
+      <div class="cell" data-id="AI-1"><a href="#AI-1"><div class="wrap">
+        <div class="frame AA t-morn">
+          <div class="app">
+            <svg class="hills" viewBox="0 0 1920 360" preserveAspectRatio="none"><path d="M0 220 C 300 140 600 160 900 210 S 1500 130 1920 190 V360 H0Z" fill="#ecd0ae"/><path d="M0 290 C 400 230 800 250 1200 290 S 1700 250 1920 280 V360 H0Z" fill="#e2c09b"/></svg>
+            <div class="brand">다녀왔습니다<i>.</i></div>
+            <div class="status"><span class="chip">P 정차</span>10:05</div>
+            <svg class="yarn" data-p="6"></svg>
+            <div class="stop" data-x="200"><i></i><span>집</span></div>
+            <div class="light " data-x="300" data-dy="0"><i></i><span>나</span></div>
+            <div class="light ai wait" data-x="420" data-dy="0"><i><svg viewBox="0 0 24 24"><path d="M12 2c.6 4.6 2.4 6.4 7 7-4.6.6-6.4 2.4-7 7-.6-4.6-2.4-6.4-7-7 4.6-.6 6.4-2.4 7-7z" fill="#fffaf2"/></svg></i><span>내 AI?</span></div>
+            <div class="ask" style="top:380px;width:1050px"><span class="obs">설정 · 정차 중</span><h3 style="font-size:78px">쓰던 AI를 연결할까요?</h3>
+              <p class="lead2">연결하면 우리 가족 여정에 맞춰, 들를 곳을 더 넓게 찾아 드려요.</p>
+              <div class="provs"><span class="prov sel"><i></i>Claude</span><span class="prov"><i></i>ChatGPT</span><span class="prov"><i></i>Gemini</span></div>
+              <div class="sendrow"><div><b>보내는 것</b>들를 곳 후보의 공개 정보 · 직접 고른 조건(예: 어르신 동행, 오래 걷지 않기)</div><div><b>보내지 않는 것</b>가족 이름 · 남긴 한마디 · 집 주소 · 실제 경로</div></div>
+            </div>
+            <div class="qrcard"><div class="qrt">휴대폰으로 이어서 연결</div><div class="qr"><i></i><i></i><b></b><i></i><b></b><i></i><i></i><b></b><i></i><i></i><i></i><i></i><i></i><b></b><i></i><i></i><b></b><b></b><b></b><i></i><b></b><i></i><b></b><i></i><i></i><i></i><i></i><b></b><i></i><b></b><b></b><i></i><b></b><i></i><i></i><i></i><b></b><i></i><i></i><b></b><i></i><i></i><b></b><b></b><i></i><b></b><b></b><b></b><b></b><i></i><b></b><i></i><i></i><b></b><i></i><b></b><i></i><b></b><b></b><b></b><b></b><i></i><b></b><b></b><b></b><i></i><b></b><b></b><i></i><b></b><i></i><b></b><b></b><b></b><b></b><i></i><i></i><b></b><i></i><i></i><i></i><i></i><i></i><b></b><i></i><i></i><i></i><b></b><i></i><i></i><b></b><b></b><b></b><b></b><i></i><i></i><i></i><b></b><b></b><i></i><i></i><i></i><i></i><b></b><b></b><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b><b></b><i></i><b></b><b></b><b></b><b></b><i></i><i></i><i></i><b></b><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b></b><b></b><i></i><i></i><i></i><i></i><i></i><b></b><b></b><i></i><b></b><i></i><i></i><i></i><i></i><b></b><i></i><i></i><b></b><b></b><i></i><b></b><i></i><b></b><b></b><b></b><b></b><i></i><i></i><i></i><b></b><b></b><b></b><i></i><i></i><b></b><b></b><b></b><b></b><b></b><b></b><i></i><b></b><i></i><i></i><i></i><i></i><i></i><b></b><b></b><i></i><b></b><b></b><b></b><i></i><i></i><i></i><i></i><i></i><b></b><b></b><b></b><i></i><b></b><b></b><i></i><b></b><b></b><b></b><b></b><i></i><i></i><b></b><i></i><b></b><b></b><i></i><i></i><b></b><b></b><i></i><i></i><i></i><b></b><b></b><i></i><b></b><b></b><b></b><i></i><b></b><i></i><i></i><b></b><b></b><b></b><b></b><i></i><b></b><b></b><i></i><i></i><i></i><i></i><b></b><i></i><i></i><i></i><b></b><i></i><i></i><b></b><b></b><i></i><b></b><b></b><b></b><b></b><i></i><i></i><i></i><i></i><b></b><i></i><i></i><b></b><b></b><i></i><b></b><b></b><b></b><i></i><b></b><i></i><i></i><b></b><b></b><b></b><b></b><b></b><i></i><b></b><b></b><b></b><b></b><i></i><b></b><i></i><b></b><b></b><b></b><b></b><i></i><b></b><b></b><b></b><i></i><i></i><i></i><i></i><i></i><i></i><b></b><b></b><b></b><i></i><b></b><b></b><i></i><b></b><b></b><i></i><b></b><i></i><b></b><b></b><b></b><i></i><i></i><b></b><i></i><i></i><i></i><b></b><i></i><b></b><i></i><i></i><i></i><b></b><b></b><i></i><b></b><b></b><b></b><i></i><i></i><i></i><b></b><i></i><i></i><i></i><b></b><b></b><i></i><i></i><b></b><b></b><b></b><i></i><i></i><b></b><i></i><i></i><b></b><b></b><b></b><i></i><b></b><i></i><b></b><i></i><i></i><b></b><b></b><i></i><i></i><b></b><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b></b><i></i><b></b><i></i><i></i><i></i><i></i><i></i><b></b><b></b><i></i><i></i><b></b><i></i><b></b><i></i><b></b><b></b><i></i><b></b><b></b><b></b><i></i><b></b><b></b><b></b><i></i><i></i><i></i><i></i><i></i><b></b><i></i><i></i><i></i><b></b><b></b><b></b><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b></b><b></b><b></b><i></i><b></b><i></i><i></i><i></i><i></i><i></i><b></b><i></i><b></b><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b></b><b></b><b></b><b></b><b></b><u style="left:0;top:0"></u><u style="right:0;top:0"></u><u style="left:0;bottom:0"></u></div><p>차에서는 비밀번호나 키를 입력하지 않아요.<br>연결은 언제든 끊을 수 있어요.</p></div>
+
+          </div>
+          <div class="sys"><span>⌂</span><span>운전자 <b>22°</b></span><span class="mid">차량 시스템 영역 · 표시 예시</span><span>동승자 <b>22°</b></span><span>♫</span></div>
+        </div></div></a><p class="cap">연결 · 쓰던 AI를 고르고 휴대폰으로 이어서 연결</p></div>
+      <div class="cell" data-id="AI-2"><a href="#AI-2"><div class="wrap">
+        <div class="frame AA t-morn">
+          <div class="app">
+            <svg class="hills" viewBox="0 0 1920 360" preserveAspectRatio="none"><path d="M0 220 C 300 140 600 160 900 210 S 1500 130 1920 190 V360 H0Z" fill="#ecd0ae"/><path d="M0 290 C 400 230 800 250 1200 290 S 1700 250 1920 280 V360 H0Z" fill="#e2c09b"/></svg>
+            <div class="brand">다녀왔습니다<i>.</i></div>
+            <div class="status"><span class="chip">P 정차</span>10:20</div>
+            <svg class="yarn" data-p="9"></svg>
+            <div class="stop" data-x="200"><i></i><span>집</span></div>
+            <div class="light " data-x="270" data-dy="0"><i></i><span>나</span></div>
+            <div class="stop" data-x="760"><i></i><span>할머니 댁</span></div>
+            <div class="hang" data-x="1320" data-dy="-14"><div class="pin"></div><div class="sway" style="transform:rotate(-3deg)"><div class="pola" style="padding:10px 10px 44px"><i class="ph-sea" style="width:200px;height:140px;position:relative"><svg class="fig" viewBox="0 0 360 260" preserveAspectRatio="xMidYMax meet"><circle cx="160" cy="190" r="13" fill="#5b4636"/><path d="M141 250Q143 206 160 203Q177 206 179 250Z" fill="#6d8aa0"/><circle cx="206" cy="185" r="6" fill="#ddd6d0"/><circle cx="206" cy="198" r="12" fill="#d6cfc9"/><path d="M188 252Q190 214 206 211Q222 214 224 252Z" fill="#c86a4a"/></svg></i><em style="font-size:30px">11월, 할머니랑</em></div></div></div>
+            <div class="light ai" data-x="1110" data-dy="-6"><i><svg viewBox="0 0 24 24"><path d="M12 2c.6 4.6 2.4 6.4 7 7-4.6.6-6.4 2.4-7 7-.6-4.6-2.4-6.4-7-7 4.6-.6 6.4-2.4 7-7z" fill="#fffaf2"/></svg></i><span>Claude</span></div>
+            <div class="ask" style="top:390px"><span class="obs">다시 가는 날 · 할머니와 함께 (운전자가 답함)</span><h3 style="font-size:64px">Claude가 바다 카페 근처를<br>살펴보고 있어요</h3>
+              <ul class="steps">
+                <li class="ok">관광 정보 · 근처 12곳 <small>조회 10:20</small></li>
+                <li class="ok">대한민국 명소발굴 추천지 · '바다를 품은 곳' 2곳 <small>예시 주제</small></li>
+                <li class="ok">내 기록 · 할머니와 다녀온 곳 2곳</li>
+                <li class="run">날씨와 영업 정보 확인 중…</li>
+              </ul>
+            </div>
+            <div class="sentnote">Claude에는 후보 장소의 공개 정보와 <b>"어르신 동행 · 오래 걷지 않기"</b> 조건만 보냈어요.<span class="btn sec" style="height:96px;font-size:32px;padding:0 40px;margin-top:22px">그만 찾고 기본 추천 보기</span></div>
+
+          </div>
+          <div class="sys"><span>⌂</span><span>운전자 <b>22°</b></span><span class="mid">차량 시스템 영역 · 표시 예시</span><span>동승자 <b>22°</b></span><span>♫</span></div>
+        </div></div></a><p class="cap">조사 · 별빛이 목적지 쪽으로 가며 근처를 살펴봄</p></div>
+      <div class="cell" data-id="AI-3"><a href="#AI-3"><div class="wrap">
+        <div class="frame AA t-morn">
+          <div class="app">
+            <svg class="hills" viewBox="0 0 1920 360" preserveAspectRatio="none"><path d="M0 220 C 300 140 600 160 900 210 S 1500 130 1920 190 V360 H0Z" fill="#ecd0ae"/><path d="M0 290 C 400 230 800 250 1200 290 S 1700 250 1920 280 V360 H0Z" fill="#e2c09b"/></svg>
+            <div class="brand">다녀왔습니다<i>.</i></div>
+            <div class="status"><span class="chip">P 정차</span>10:21</div>
+            <svg class="yarn" data-p="9"></svg>
+            <div class="stop" data-x="200"><i></i><span>집</span></div>
+            <div class="light " data-x="270" data-dy="0"><i></i><span>나</span></div>
+            <div class="stop" data-x="760"><i></i><span>할머니 댁</span></div>
+            <div class="hang" data-x="1320" data-dy="-14"><div class="pin"></div><div class="sway" style="transform:rotate(-3deg)"><div class="pola" style="padding:10px 10px 44px"><i class="ph-sea" style="width:200px;height:140px;position:relative"><svg class="fig" viewBox="0 0 360 260" preserveAspectRatio="xMidYMax meet"><circle cx="160" cy="190" r="13" fill="#5b4636"/><path d="M141 250Q143 206 160 203Q177 206 179 250Z" fill="#6d8aa0"/><circle cx="206" cy="185" r="6" fill="#ddd6d0"/><circle cx="206" cy="198" r="12" fill="#d6cfc9"/><path d="M188 252Q190 214 206 211Q222 214 224 252Z" fill="#c86a4a"/></svg></i><em style="font-size:30px">11월, 할머니랑</em></div></div></div>
+            <div class="light ai" data-x="1110" data-dy="-6"><i><svg viewBox="0 0 24 24"><path d="M12 2c.6 4.6 2.4 6.4 7 7-4.6.6-6.4 2.4-7 7-.6-4.6-2.4-6.4-7-7 4.6-.6 6.4-2.4 7-7z" fill="#fffaf2"/></svg></i></div>
+            <div class="ask" style="top:330px"><span class="obs">추천 이유와 정보 출처를 함께 보여 드려요</span><h3 style="font-size:64px;margin-bottom:0">할머니와 함께라면, 이 두 곳은 어때요?</h3></div>
+            <div class="pick" style="left:120px">
+              <i class="ph-tea"></i>
+              <div class="pbody"><h4>솔바람 찻집</h4><div class="meta">바다 카페에서 1.2km · 차로 4분</div>
+                <div class="why"><span class="by"><svg viewBox="0 0 24 24"><path d="M12 2c.6 4.6 2.4 6.4 7 7-4.6.6-6.4 2.4-7 7-.6-4.6-2.4-6.4-7-7 4.6-.6 6.4-2.4 7-7z" fill="#fffaf2"/></svg>Claude가 정리한 이유</span>직접 고른 "오래 걷지 않기"에 맞춰, 주차장에서 입구까지 평지인 곳을 골랐어요.</div>
+                <div class="srcs"><span class="src ">관광 정보</span><span class="src ">대한민국 명소발굴 추천지 (예시)</span><span class="src q">미확인: 오늘 영업</span></div>
+                <span class="btn pri" style="height:76px;font-size:30px;padding:0 36px">여기 들르기</span></div>
+            </div>
+            <div class="pick" style="left:1000px">
+              <i class="ph-book"></i>
+              <div class="pbody"><h4>파도 서가</h4><div class="meta">바다 카페에서 800m · 걸어서 12분</div>
+                <div class="why"><span class="by"><svg viewBox="0 0 24 24"><path d="M12 2c.6 4.6 2.4 6.4 7 7-4.6.6-6.4 2.4-7 7-.6-4.6-2.4-6.4-7-7 4.6-.6 6.4-2.4 7-7z" fill="#fffaf2"/></svg>Claude가 정리한 이유</span>지난 방문처럼 바다가 보이는 자리가 있고, 앉아서 오래 머물 수 있는 곳이에요.</div>
+                <div class="srcs"><span class="src ">관광 정보</span><span class="src ">내 기록 · 바다 카페 (11월)</span><span class="src q">미확인: 주차</span></div>
+                <span class="btn sec" style="height:76px;font-size:30px;padding:0 36px">여기 들르기</span></div>
+            </div>
+
+          </div>
+          <div class="sys"><span>⌂</span><span>운전자 <b>22°</b></span><span class="mid">차량 시스템 영역 · 표시 예시</span><span>동승자 <b>22°</b></span><span>♫</span></div>
+        </div></div></a><p class="cap">추천 · 두 곳과 "Claude가 정리한 이유", 출처, 미확인</p></div>
+      <div class="cell" data-id="AI-4"><a href="#AI-4"><div class="wrap">
+        <div class="frame AA t-morn">
+          <div class="app">
+            <svg class="hills" viewBox="0 0 1920 360" preserveAspectRatio="none"><path d="M0 220 C 300 140 600 160 900 210 S 1500 130 1920 190 V360 H0Z" fill="#ecd0ae"/><path d="M0 290 C 400 230 800 250 1200 290 S 1700 250 1920 280 V360 H0Z" fill="#e2c09b"/></svg>
+            <div class="brand">다녀왔습니다<i>.</i></div>
+            <div class="status"><span class="chip">P 정차</span>10:34</div>
+            <svg class="yarn" data-p="42"></svg>
+            <div class="stop" data-x="200"><i></i><span>집</span></div>
+            <div class="light " data-x="270" data-dy="0"><i></i><span>나</span></div>
+            <div class="stop" data-x="760"><i></i><span>할머니 댁</span></div>
+            <div class="light gm" data-x="840" data-dy="0"><i><svg viewBox="0 0 64 64"><circle cx="32" cy="30" r="22" fill="#cfc8c2"/><circle cx="32" cy="9" r="8" fill="#d6cfc9" stroke="#b8afa8" stroke-width="1.5"/><ellipse cx="32" cy="37" rx="18" ry="19" fill="#f7dcc6"/><path d="M14 31Q17 15 32 16Q47 15 50 31Q44 23 32 23Q20 23 14 31Z" fill="#ddd6d0"/><circle cx="24.5" cy="37" r="5.5" fill="none" stroke="#8a6a55" stroke-width="1.6"/><circle cx="39.5" cy="37" r="5.5" fill="none" stroke="#8a6a55" stroke-width="1.6"/><path d="M30 37h4" stroke="#8a6a55" stroke-width="1.6"/><path d="M22 37.5q2.5-2.2 5 0M37 37.5q2.5-2.2 5 0" fill="none" stroke="#5b4030" stroke-width="1.6" stroke-linecap="round"/><circle cx="20" cy="45" r="3.2" fill="#f2a48e" opacity=".65"/><circle cx="44" cy="45" r="3.2" fill="#f2a48e" opacity=".65"/><path d="M27.5 47.5q4.5 3.5 9 0" fill="none" stroke="#b2604a" stroke-width="1.8" stroke-linecap="round"/></svg></i><span>할머니</span></div>
+            <div class="hang" data-x="1320" data-dy="-14"><div class="pin"></div><div class="sway" style="transform:rotate(3deg)"><div class="pola" style="padding:10px 10px 44px"><i class="ph-tea" style="width:200px;height:140px;position:relative"><svg class="fig" viewBox="0 0 360 260" preserveAspectRatio="xMidYMax meet"><circle cx="160" cy="190" r="13" fill="#5b4636"/><path d="M141 250Q143 206 160 203Q177 206 179 250Z" fill="#6d8aa0"/><circle cx="206" cy="185" r="6" fill="#ddd6d0"/><circle cx="206" cy="198" r="12" fill="#d6cfc9"/><path d="M188 252Q190 214 206 211Q222 214 224 252Z" fill="#c86a4a"/></svg></i><em style="font-size:30px">솔바람 찻집?</em></div></div></div>
+            <div class="light ai" data-x="1110" data-dy="-6"><i><svg viewBox="0 0 24 24"><path d="M12 2c.6 4.6 2.4 6.4 7 7-4.6.6-6.4 2.4-7 7-.6-4.6-2.4-6.4-7-7 4.6-.6 6.4-2.4 7-7z" fill="#fffaf2"/></svg></i></div>
+            <div class="chat">
+              <div class="me"><span class="lbl"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#8a6a55" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>들은 말 (음성 인식)</span>"할머니가 따뜻한 차를 좋아하셔."</div>
+              <div class="ai"><span class="lbl"><i><svg viewBox="0 0 24 24"><path d="M12 2c.6 4.6 2.4 6.4 7 7-4.6.6-6.4 2.4-7 7-.6-4.6-2.4-6.4-7-7 4.6-.6 6.4-2.4 7-7z" fill="#fffaf2"/></svg></i>Claude</span>그럼 찻집을 먼저 보여 드릴게요. 근처 찻집 두 곳 가운데 입구까지 평지인 곳은 <b>솔바람 찻집</b>이에요. 오늘 영업 여부는 아직 확인하지 못했어요.</div>
+            </div>
+            <div class="keep"><div class="kface"><svg viewBox="0 0 64 64"><circle cx="32" cy="30" r="22" fill="#cfc8c2"/><circle cx="32" cy="9" r="8" fill="#d6cfc9" stroke="#b8afa8" stroke-width="1.5"/><ellipse cx="32" cy="37" rx="18" ry="19" fill="#f7dcc6"/><path d="M14 31Q17 15 32 16Q47 15 50 31Q44 23 32 23Q20 23 14 31Z" fill="#ddd6d0"/><circle cx="24.5" cy="37" r="5.5" fill="none" stroke="#8a6a55" stroke-width="1.6"/><circle cx="39.5" cy="37" r="5.5" fill="none" stroke="#8a6a55" stroke-width="1.6"/><path d="M30 37h4" stroke="#8a6a55" stroke-width="1.6"/><path d="M22 37.5q2.5-2.2 5 0M37 37.5q2.5-2.2 5 0" fill="none" stroke="#5b4030" stroke-width="1.6" stroke-linecap="round"/><circle cx="20" cy="45" r="3.2" fill="#f2a48e" opacity=".65"/><circle cx="44" cy="45" r="3.2" fill="#f2a48e" opacity=".65"/><path d="M27.5 47.5q4.5 3.5 9 0" fill="none" stroke="#b2604a" stroke-width="1.8" stroke-linecap="round"/></svg></div><div><h4>이 취향을 할머니 기억에<br>남길까요?</h4><p>앞으로 할머니와 갈 때 추천에 써요. 이 차에만 저장되고, 언제든 지울 수 있어요.</p>
+              <div style="display:flex;gap:20px;margin-top:26px"><span class="btn pri" style="height:96px;font-size:34px;padding:0 44px">남기기</span><span class="btn sec" style="height:96px;font-size:34px;padding:0 44px">이번만 쓰기</span></div></div></div>
+
+          </div>
+          <div class="sys"><span>⌂</span><span>운전자 <b>22°</b></span><span class="mid">차량 시스템 영역 · 표시 예시</span><span>동승자 <b>22°</b></span><span>♫</span></div>
+        </div></div></a><p class="cap">이어 묻기 · 한마디로 다시 고르고, 취향은 허락받아 기억에</p></div>
+      <div class="cell" data-id="AI-5"><a href="#AI-5"><div class="wrap">
+        <div class="frame AA t-night">
+          <div class="app">
+            <svg class="hills" viewBox="0 0 1920 360" preserveAspectRatio="none"><path d="M0 220 C 300 140 600 160 900 210 S 1500 130 1920 190 V360 H0Z" fill="#2a1e17"/><path d="M0 290 C 400 230 800 250 1200 290 S 1700 250 1920 280 V360 H0Z" fill="#241913"/></svg>
+            <div class="brand">다녀왔습니다<i>.</i></div>
+            <div class="status"><span class="chip drive">주행 중</span>10:48</div>
+            <svg class="yarn" data-p="51"></svg>
+            <div class="stop" data-x="200"><i></i><span>집</span></div>
+            <div class="stop" data-x="760"><i></i><span>할머니 댁</span></div>
+            <div class="light " data-x="975" data-dy="0"><i></i><span>나</span></div>
+            <div class="light gm" data-x="1045" data-dy="0"><i><svg viewBox="0 0 64 64"><circle cx="32" cy="30" r="22" fill="#cfc8c2"/><circle cx="32" cy="9" r="8" fill="#d6cfc9" stroke="#b8afa8" stroke-width="1.5"/><ellipse cx="32" cy="37" rx="18" ry="19" fill="#f7dcc6"/><path d="M14 31Q17 15 32 16Q47 15 50 31Q44 23 32 23Q20 23 14 31Z" fill="#ddd6d0"/><circle cx="24.5" cy="37" r="5.5" fill="none" stroke="#8a6a55" stroke-width="1.6"/><circle cx="39.5" cy="37" r="5.5" fill="none" stroke="#8a6a55" stroke-width="1.6"/><path d="M30 37h4" stroke="#8a6a55" stroke-width="1.6"/><path d="M22 37.5q2.5-2.2 5 0M37 37.5q2.5-2.2 5 0" fill="none" stroke="#5b4030" stroke-width="1.6" stroke-linecap="round"/><circle cx="20" cy="45" r="3.2" fill="#f2a48e" opacity=".65"/><circle cx="44" cy="45" r="3.2" fill="#f2a48e" opacity=".65"/><path d="M27.5 47.5q4.5 3.5 9 0" fill="none" stroke="#b2604a" stroke-width="1.8" stroke-linecap="round"/></svg></i><span>할머니</span></div>
+            <div class="light ai sm" data-x="1180" data-dy="-40"><i><svg viewBox="0 0 24 24"><path d="M12 2c.6 4.6 2.4 6.4 7 7-4.6.6-6.4 2.4-7 7-.6-4.6-2.4-6.4-7-7 4.6-.6 6.4-2.4 7-7z" fill="#fffaf2"/></svg></i></div>
+            <div class="hang" data-x="1320" data-dy="-14"><div class="pin"></div><div class="sway" style="transform:rotate(-3deg)"><div class="pola" style="padding:10px 10px 44px"><i class="ph-sea" style="width:200px;height:140px;position:relative"><svg class="fig" viewBox="0 0 360 260" preserveAspectRatio="xMidYMax meet"><circle cx="160" cy="190" r="13" fill="#5b4636"/><path d="M141 250Q143 206 160 203Q177 206 179 250Z" fill="#6d8aa0"/><circle cx="206" cy="185" r="6" fill="#ddd6d0"/><circle cx="206" cy="198" r="12" fill="#d6cfc9"/><path d="M188 252Q190 214 206 211Q222 214 224 252Z" fill="#c86a4a"/></svg></i><em style="font-size:30px">바다 카페</em></div></div></div>
+            <div class="stop f" data-x="1760"><i></i><span>집</span></div>
+            <div class="drv"><small>바다 카페까지</small><strong>25분</strong><p><svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="#f0b878" stroke-width="2" stroke-linecap="round"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16 9a4 4 0 0 1 0 6M18.5 6.5a8 8 0 0 1 0 11"/></svg>근처에 들를 곳 두 곳을 정리해 뒀어요. 도착하면 보여 드릴게요.</p><div class="drvnote">주행 중에는 AI에 묻지 않아요 · 출발 전에 정리해 둔 결과만 안내해요</div></div>
+
+          </div>
+          <div class="sys"><span>⌂</span><span>운전자 <b>22°</b></span><span class="mid">차량 시스템 영역 · 표시 예시</span><span>동승자 <b>22°</b></span><span>♫</span></div>
+        </div></div></a><p class="cap">주행 · 출발 전에 정리한 결과만 음성으로</p></div>
+    </div>
+  </section>
 
   <!-- ===================== A+ ===================== -->
   <section class="dir" data-d="AA">

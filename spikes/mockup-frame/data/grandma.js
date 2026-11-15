@@ -18,7 +18,7 @@ window.MOCKUP_DATA["grandma"] = {
     },
     {
       "id": "SC-02",
-      "title": "조율·확정",
+      "title": "계획과 승인",
       "state": "정차",
       "sdk": "— (외부 날씨·장소 API, 확인 필요)",
       "src": "../grandma-journey-context/journey-demo.html?embed=1#SC-02",
@@ -34,7 +34,7 @@ window.MOCKUP_DATA["grandma"] = {
     },
     {
       "id": "SC-04",
-      "title": "주행 (1구간)",
+      "title": "할머니 댁으로",
       "state": "주행",
       "sdk": "TextToSpeech · 주행 판단: AAOS (Q11)",
       "src": "../grandma-journey-context/journey-demo.html?embed=1#SC-04",
@@ -42,7 +42,7 @@ window.MOCKUP_DATA["grandma"] = {
     },
     {
       "id": "SC-05",
-      "title": "동행",
+      "title": "함께 출발",
       "state": "정차",
       "sdk": "Vehicle Door · Seat · NaviHelper",
       "src": "../grandma-journey-context/journey-demo.html?embed=1#SC-05",
@@ -50,7 +50,7 @@ window.MOCKUP_DATA["grandma"] = {
     },
     {
       "id": "SC-06",
-      "title": "주행 (2구간)",
+      "title": "바다 카페로",
       "state": "주행",
       "sdk": "TextToSpeech",
       "src": "../grandma-journey-context/journey-demo.html?embed=1#SC-06",
@@ -68,7 +68,7 @@ window.MOCKUP_DATA["grandma"] = {
       "id": "SC-08",
       "title": "다시 가는 여정",
       "state": "정차",
-      "sdk": "NaviHelper · FusedLocation · SpeechToText (목업은 시연)",
+      "sdk": "NaviHelper · FusedLocation · SpeechToText · 외부 LLM API (목업은 시연)",
       "src": "../grandma-journey-context/journey-demo.html?embed=1#SC-08",
       "kind": "html"
     }
